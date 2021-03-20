@@ -89,7 +89,8 @@ class BBoxAnchors(nn.Module):
         # bboxes: [*, k, 4]
         # self.anchors: [k, 4]
         cboxes = bbox2cbox(bboxes)
-        centers = (cboxes[..., :2] - self.anchors[..., :2]) / self.anchors[..., 2:]  # [*, k, 2]
+        centers = (cboxes[..., :2] - self.anchors[..., :2]) / \
+            self.anchors[..., 2:]  # [*, k, 2]
         sizes = cboxes[..., 2:] / self.anchors[..., 2:]
         sizes = torch.log(sizes)    # [*, k, 2]
         deltas = torch.cat([centers, sizes], dim=-1)
@@ -99,20 +100,23 @@ class BBoxAnchors(nn.Module):
     def decode_bboxes(self, deltas):
         deltas = (deltas * self.encode_std) + self.encode_mean
         sizes = torch.exp(deltas[..., 2:]) * self.anchors[..., 2:]
-        centers = deltas[..., :2] * self.anchors[..., 2:] + self.anchors[..., :2]
+        centers = deltas[..., :2] * \
+            self.anchors[..., 2:] + self.anchors[..., :2]
         cboxes = torch.cat([centers, sizes], dim=-1)
         return cbox2bbox(cboxes)
 
     def encode_points(self, points):
         # points: [*, k, p, 2]
-        deltas = (points - self.anchors[..., None, :2]) / self.anchors[..., None, 2:]
+        deltas = (points - self.anchors[..., None, :2]
+                  ) / self.anchors[..., None, 2:]
         deltas = (deltas - self.encode_mean[:2]) / self.encode_std[:2]
         return deltas
 
     def decode_points(self, deltas):
         # deltas: [*, k, p, 2]
         deltas = (deltas * self.encode_std[:2]) + self.encode_mean[:2]
-        points = deltas * self.anchors[..., None, 2:] + self.anchors[..., None, :2]
+        points = deltas * self.anchors[...,
+                                       None, 2:] + self.anchors[..., None, :2]
         return points
 
     def match(self, labels, bboxes):
@@ -143,7 +147,7 @@ class BBoxAnchors(nn.Module):
         scores[ignores] = 0
         return scores, box_indice
 
-    def forward(self, labels, bboxes, *others): # we don't encode 
+    def forward(self, labels, bboxes, *others):  # we don't encode
         # labels: [B, n]
         # bboxes: [B, n, 4]
         # points: [B, n, p, 2]

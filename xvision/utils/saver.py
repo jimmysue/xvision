@@ -27,7 +27,7 @@ class Saver:
             while(len(self.histories) > self.keep_num):
                 toremove = self.histories.popleft()
                 os.unlink(toremove)
-            
+
     def save_best(self, state):
         filename = self.folder / Saver.BEST
         torch.save(state, filename)
@@ -51,7 +51,6 @@ class Saver:
     def load_best_from_folder(folder, *args, **kwargs):
         filename = Path(folder) / Saver.BEST
         return torch.load(filename, *args, **kwargs)
-
 
 
 if __name__ == '__main__':

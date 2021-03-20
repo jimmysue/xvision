@@ -9,9 +9,11 @@ NIMA is released under the MIT license. See LICENSE for the fill license text.
 import torch
 import torch.nn as nn
 
+
 class NIMA(nn.Module):
 
     """Neural IMage Assessment model by Google"""
+
     def __init__(self, base_model, num_classes=10):
         super(NIMA, self).__init__()
         self.features = base_model.features
@@ -42,4 +44,3 @@ def single_emd_loss(p, q, r=2):
     for i in range(1, length + 1):
         emd_loss += torch.abs(sum(p[:i] - q[:i])) ** r
     return (emd_loss / length) ** (1. / r)
-

@@ -21,7 +21,8 @@ def draw_points(image, points, color=(0, 0, 255), radius=1):
 
     for pt in points:
         pt = tuple(pt.tolist())
-        cv2.circle(image, pt, radius, color, thickness=radius, shift=draw_shiftbits)
+        cv2.circle(image, pt, radius, color,
+                   thickness=radius, shift=draw_shiftbits)
 
     return image
 
@@ -43,4 +44,3 @@ def draw_shape(image, shapes, radius=1, cmap="plasma"):
         color = tuple(colors[i].tolist())
         draw_points(image, pts,  color=color, radius=radius)
     return image
-

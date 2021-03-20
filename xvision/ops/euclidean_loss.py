@@ -9,7 +9,7 @@ def euclidean_loss(inputs, targets, reduction='none'):
 
     if reduction == 'sum':
         loss = loss.sum()
-    
+
     elif reduction == 'mean':
         loss = loss.mean()
 

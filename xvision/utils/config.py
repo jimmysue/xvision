@@ -150,7 +150,8 @@ class CfgNode(dict):
 
         _assert_with_logging(
             name not in self.__dict__,
-            "Invalid attempt to modify internal CfgNode state: {}".format(name),
+            "Invalid attempt to modify internal CfgNode state: {}".format(
+                name),
         )
         _assert_with_logging(
             _valid_type(value, allow_cfg_node=True),
@@ -240,9 +241,11 @@ class CfgNode(dict):
                 )
                 d = d[subkey]
             subkey = key_list[-1]
-            _assert_with_logging(subkey in d, "Non-existent key: {}".format(full_key))
+            _assert_with_logging(
+                subkey in d, "Non-existent key: {}".format(full_key))
             value = self._decode_cfg_value(v)
-            value = _check_and_coerce_cfg_value_type(value, d[subkey], subkey, full_key)
+            value = _check_and_coerce_cfg_value_type(
+                value, d[subkey], subkey, full_key)
             d[subkey] = value
 
     def freeze(self):
@@ -291,7 +294,8 @@ class CfgNode(dict):
         """
         _assert_with_logging(
             old_name not in self.__dict__[CfgNode.RENAMED_KEYS],
-            "key {} is already registered as a renamed cfg key".format(old_name),
+            "key {} is already registered as a renamed cfg key".format(
+                old_name),
         )
         value = new_name
         if message:
@@ -301,7 +305,8 @@ class CfgNode(dict):
     def key_is_deprecated(self, full_key):
         """Test if a key is deprecated."""
         if full_key in self.__dict__[CfgNode.DEPRECATED_KEYS]:
-            logger.warning("Deprecated config key (ignoring): {}".format(full_key))
+            logger.warning(
+                "Deprecated config key (ignoring): {}".format(full_key))
             return True
         return False
 
@@ -362,7 +367,8 @@ class CfgNode(dict):
         elif isinstance(cfg_file_obj_or_str, _FILE_TYPES):
             return cls._load_cfg_from_file(cfg_file_obj_or_str)
         else:
-            raise NotImplementedError("Impossible to reach here (unless there's a bug)")
+            raise NotImplementedError(
+                "Impossible to reach here (unless there's a bug)")
 
     @classmethod
     def _load_cfg_from_file(cls, file_obj):
@@ -375,7 +381,8 @@ class CfgNode(dict):
         else:
             raise Exception(
                 "Attempt to load from an unsupported file type {}; "
-                "only {} are supported".format(file_obj, _YAML_EXTS.union(_PY_EXTS))
+                "only {} are supported".format(
+                    file_obj, _YAML_EXTS.union(_PY_EXTS))
             )
 
     @classmethod

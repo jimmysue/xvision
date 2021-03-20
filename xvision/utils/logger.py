@@ -19,6 +19,7 @@ def get_logger(fullpath=None):
 
     return logger
 
+
 if __name__ == '__main__':
 
     logger = get_logger('./log.txt')

@@ -54,11 +54,11 @@ class AVADataset(data.Dataset):
                 hist = np.array(items[1:]).astype(np.float32)
                 path = Path(image_dir) / name
                 data.append(
-                        {
-                            'path': path,
-                            'annotations': hist
-                        }
-                    )
+                    {
+                        'path': path,
+                        'annotations': hist
+                    }
+                )
 
         return data
 
