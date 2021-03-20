@@ -37,11 +37,36 @@ def box_iou_itemwise(bboxes1, bboxes2):
 
 
 def box_diou_pairwise(bboxes1, bboxes2):
-    # bboxes []
-    raise NotImplementedError
-    pass
+    # bboxes1 [m, 4]
+    # bboxes2 [n, 4]
+
+    # Distance-IoU = IoU - pho^2 / c^2
+    # where pho is the distance of boxex center
+    # and c is diagonal length of enclosing box
+
+    # calc enclosing box
+    lt = torch.min(bboxes1[:, None, :2], bboxes2[None, :, :2])  # [m, n, 2]
+    rb = torch.max(bboxes1[:, None, 2:], bboxes2[None, :, 2:])  # [m, n, 2]
+
+    c2 = torch.square(lt - rb).sum(-1)
+
+    ctr1 = (bboxes1[:, 2:] - bboxes1[:, :2]) / 2   # [m, 2]
+    ctr2 = (bboxes2[:, 2:] - bboxes2[:, :2]) / 2   # [n, 2]
+
+    pho2 = torch.square(ctr1[:, None, :] - ctr2[None, :, :]).sum(-1)
+    diou = box_iou_pairwise - pho2 / c2
+    return diou
 
 
 def box_diou_itemwise(bboxes1, bboxes2):
     raise NotImplementedError
     pass
+
+
+if __name__ == '__main__':
+
+    box1 = torch.tensor([0, 0, 1, 1]).reshape(-1, 4)
+    box2 = torch.tensor([0, 0, 1, 1]).reshape(-1, 4)
+
+    diou = box_diou_pairwise(box1, box2)
+    iou = box_iou_pairwise(box1, box2)
