@@ -7,7 +7,6 @@ from matplotlib.pyplot import sca
 import torch
 from torch.utils.data import Dataset
 
-
 from xvision.transforms import matrix2d
 from xvision.transforms.warp import warp_affine
 from xvision.transforms.boxes import bbox_affine
@@ -163,6 +162,7 @@ def wider_collate(items):
     items['image'] = torch.stack(items['image'])
     return items
 
+
 if __name__ == '__main__':
     import torch
     import tqdm
@@ -177,8 +177,10 @@ if __name__ == '__main__':
     data = WiderFace(train, dir, with_points=True,
                      min_size=10, transform=transform)
 
-    loader = DataLoader(data, batch_size=128, shuffle=True, num_workers=8, collate_fn=wider_collate)
-    anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides, fsizes=cfg.fsizes, layouts=cfg.layouts)
+    loader = DataLoader(data, batch_size=128, shuffle=True,
+                        num_workers=8, collate_fn=wider_collate)
+    anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides,
+                          fsizes=cfg.fsizes, layouts=cfg.layouts)
 
     # for batch in tqdm.tqdm(loader):
     #     image = batch['image']
@@ -188,7 +190,6 @@ if __name__ == '__main__':
     #     mask = batch['mask']
     #     scores, bboxes, points = anchors(label, bbox, point, mask)
 
-    
     val = "/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/val/label.txt"
     dir = "/Users/jimmy/Documents/data/WIDER/WIDER_val/images"
 
@@ -196,8 +197,10 @@ if __name__ == '__main__':
     data = WiderFace(val, dir, with_points=False,
                      min_size=10, transform=transform)
 
-    loader = DataLoader(data, batch_size=128, shuffle=True, num_workers=8, collate_fn=wider_collate)
-    anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides, fsizes=cfg.fsizes, layouts=cfg.layouts)
+    loader = DataLoader(data, batch_size=128, shuffle=True,
+                        num_workers=8, collate_fn=wider_collate)
+    anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides,
+                          fsizes=cfg.fsizes, layouts=cfg.layouts)
 
     for batch in tqdm.tqdm(loader):
         image = batch['image']
