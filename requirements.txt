@@ -1,0 +1,10 @@
+torch=1.7.1
+torchvision=0.8.2
+opencv-python==3.4.13.47
+tqdm
+opencv-transforms
+tensorboardX
+tensorboard
+matplotlib
+PyYAML
+fvcore

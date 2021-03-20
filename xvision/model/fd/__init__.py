@@ -1,0 +1,1 @@
+from .mb_slim import Slim
