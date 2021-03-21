@@ -9,7 +9,8 @@ from pathlib import Path
 from xvision.utils import get_logger, Saver
 from xvision.data import WiderFace, wider_collate, BasicTransform
 from xvision.data.loader import repeat_loader
-from xvision.model.fd import Slim
+from xvision.model import fd as fd_models
+from xvision.model import initailize_model
 from xvision.ops.anchors import BBoxAnchors
 from xvision.ops.multibox import score_box_point_loss, score_box_loss
 from xvision.utils.meter import MetricLogger, SmoothedValue
@@ -83,7 +84,7 @@ def main(args):
 
     logger.info(f'use device: {device}')
     # model
-    model = Slim(phase='train')
+    model = initailize_model(fd_models, args.model.name, *args.model.args, **args.model.kwargs)
     prior = BBoxAnchors(args.dsize, args.strides, args.fsizes, args.layouts, args.iou_threshold, args.encode_mean, args.encode_std)
     # optimizer and lr scheduler
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
