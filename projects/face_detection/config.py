@@ -29,14 +29,14 @@ _C.weight_decay = 5e-4
 _C.gamma = 0.1
 _C.batch_size = 128
 _C.start_step = 0       # for resume
-_C.total_steps = 1000   # training steps
+_C.total_steps = 10000   # training steps
 _C.num_workers = 8
 _C.device = None        # auto determine
 _C.eval_interval = 10    # evaluate interval
 
 # data parameters
-_C.train_label = '/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/train/label.txt'
-_C.train_image = '/Users/jimmy/Documents/data/WIDER/WIDER_train/images'
-_C.val_label = '/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/val/label.txt'
-_C.val_image = '/Users/jimmy/Documents/data/WIDER/WIDER_val/images'
+_C.train_label = '/home/mist/data/WIDER/train/label.txt'
+_C.train_image = '/home/mist/data/WIDER/WIDER_train/images'
+_C.val_label = '/home/mist/data/WIDER/val/label.txt'
+_C.val_image = '/home/mist/data/WIDER/WIDER_val/images'
 

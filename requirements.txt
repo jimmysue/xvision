@@ -1,6 +1,6 @@
-torch==1.7.1
-torchvision==0.8.2
-opencv-python==3.4.13.47
+torch
+torchvision
+opencv-python
 tqdm
 opencv-transforms
 tensorboardX
