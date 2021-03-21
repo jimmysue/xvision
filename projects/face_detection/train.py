@@ -149,7 +149,7 @@ def main(args):
             img_s = args.eval_interval * args.batch_size / duration
             eval_meter = evaluate(model, valloader, prior, device)
 
-            logger.info(f'Step [{step}/{args.total_steps}] img/s: {img_s:.2f} train: [{train_meter}] eval: [{eval_meter}]')
+            logger.info(f'Step [{step + 1}/{args.total_steps}] img/s: {img_s:.2f} train: [{train_meter}] eval: [{eval_meter}]')
             train_meter = reset_meter()
             start = time.time()
             curr_loss = eval_meter.meters['total'].global_avg
