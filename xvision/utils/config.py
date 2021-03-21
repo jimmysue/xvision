@@ -70,8 +70,9 @@ class CfgNode(dict):
     DEPRECATED_KEYS = "__deprecated_keys__"
     RENAMED_KEYS = "__renamed_keys__"
     NEW_ALLOWED = "__new_allowed__"
+    RECURSIVE = "__recursive__"
 
-    def __init__(self, init_dict=None, key_list=None, new_allowed=False):
+    def __init__(self, init_dict=None, key_list=None, new_allowed=False, recursive=True):
         """
         Args:
             init_dict (dict): the possibly-nested dictionary to initailize the CfgNode.
@@ -107,6 +108,9 @@ class CfgNode(dict):
 
         # Allow new attributes after initialisation
         self.__dict__[CfgNode.NEW_ALLOWED] = new_allowed
+        # update attributes recursively or just replace
+        self.__dict__[CfgNode.RECURSIVE] = recursive
+        
 
     @classmethod
     def _create_config_tree_from_dict(cls, dic, key_list):
@@ -480,7 +484,7 @@ def _merge_a_into_b(a, b, root, key_list):
         if k in b:
             v = _check_and_coerce_cfg_value_type(v, b[k], k, full_key)
             # Recursively merge dicts
-            if isinstance(v, CfgNode):
+            if isinstance(v, CfgNode) and b[k].__dict__[CfgNode.RECURSIVE]:
                 try:
                     _merge_a_into_b(v, b[k], root, key_list + [k])
                 except BaseException:
