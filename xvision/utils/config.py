@@ -110,7 +110,6 @@ class CfgNode(dict):
         self.__dict__[CfgNode.NEW_ALLOWED] = new_allowed
         # update attributes recursively or just replace
         self.__dict__[CfgNode.RECURSIVE] = recursive
-        
 
     @classmethod
     def _create_config_tree_from_dict(cls, dic, key_list):
@@ -449,6 +448,26 @@ class CfgNode(dict):
         except SyntaxError:
             pass
         return value
+
+    # similar with ArgumentParser.parse_args()
+    def parse_args(self, args=None):
+        if args is None:
+            # args default to the system args
+            args = sys.argv[1:]
+        else:
+            # make sure that args are mutable
+            args = list(args)
+
+        kv = []
+        for v in args:
+            if v.startswith('@'):
+                self.merge_from_file(v[1::])
+            elif v.startswith('--'):
+                kv.append(v[2::])
+            else:
+                kv.append(v)
+        self.merge_from_list(kv)
+        return self
 
 
 load_cfg = (
