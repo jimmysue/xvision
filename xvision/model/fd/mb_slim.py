@@ -118,11 +118,14 @@ class Slim(nn.Module):
 
         x14 = self.conv14(x13)
         detections.append(x14)
-
+        fsizes = []
         for (x, l, c, lam) in zip(detections, self.loc, self.conf, self.landm):
             loc.append(l(x).permute(0, 2, 3, 1).contiguous())
             conf.append(c(x).permute(0, 2, 3, 1).contiguous())
             landm.append(lam(x).permute(0, 2, 3, 1).contiguous())
+            fsizes.append(
+                (x.size(-1), x.size(-2))
+            )
 
         bbox_regressions = torch.cat(
             [o.view(o.size(0), -1, 4) for o in loc], 1)
@@ -135,7 +138,7 @@ class Slim(nn.Module):
             output = (classifications, bbox_regressions, ldm_regressions)
         else:
             output = (torch.sigmoid(classifications),
-                      bbox_regressions, ldm_regressions)
+                      bbox_regressions, ldm_regressions, fsizes)
         return output
 
 

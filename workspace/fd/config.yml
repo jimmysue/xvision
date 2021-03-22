@@ -1,0 +1,59 @@
+batch_size: 128
+device: null
+dsize:
+- 320
+- 320
+encode_mean: null
+encode_std:
+- 0.1
+- 0.1
+- 0.2
+- 0.2
+eval_interval: 10
+fsizes:
+- - 40
+  - 40
+- - 20
+  - 20
+- - 10
+  - 10
+- - 5
+  - 5
+gamma: 0.1
+iou_threshold: 0.3
+layouts:
+- - 10
+  - 16
+  - 24
+- - 32
+  - 48
+- - 64
+  - 96
+- - 128
+  - 192
+  - 256
+lr: 0.01
+model:
+  args: []
+  kwargs: {}
+  name: SlimFpn
+momentum: 0.9
+num_workers: 8
+start_step: 0
+strides:
+- 8
+- 16
+- 32
+- 64
+test:
+  image_dir: path/to/image/
+  iou_threshold: 0.5
+  result_dir: result
+  score_threshold: 0.1
+total_steps: 10000
+train_image: /home/mist/data/WIDER/WIDER_train/images
+train_label: /home/mist/data/WIDER/train/label.txt
+val_image: /home/mist/data/WIDER/WIDER_val/images
+val_label: /home/mist/data/WIDER/val/label.txt
+weight_decay: 0.0005
+workdir: workspace/fd

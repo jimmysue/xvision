@@ -10,7 +10,7 @@ from xvision.utils import get_logger, Saver
 from xvision.data import WiderFace, wider_collate, BasicTransform
 from xvision.data.loader import repeat_loader
 from xvision.model import fd as fd_models
-from xvision.model import initailize_model
+from xvision.model import initialize_model
 from xvision.ops.anchors import BBoxAnchors
 from xvision.ops.multibox import score_box_point_loss, score_box_loss
 from xvision.utils.meter import MetricLogger, SmoothedValue
@@ -61,6 +61,9 @@ def main(args):
     workdir.mkdir(parents=True, exist_ok=True)
     logger = get_logger(workdir / 'log.txt')
     logger.info(f'config: \n{args}')
+    # dump all configues to later use, such as for testing
+    with open(workdir / 'config.yml', 'wt') as f:
+        args.dump(stream=f)
 
     saver = Saver(workdir, keep_num=10)
     
@@ -84,7 +87,7 @@ def main(args):
 
     logger.info(f'use device: {device}')
     # model
-    model = initailize_model(fd_models, args.model.name, *args.model.args, **args.model.kwargs)
+    model = initialize_model(fd_models, args.model.name, *args.model.args, **args.model.kwargs)
     prior = BBoxAnchors(args.dsize, args.strides, args.fsizes, args.layouts, args.iou_threshold, args.encode_mean, args.encode_std)
     # optimizer and lr scheduler
     optimizer = SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
@@ -172,17 +175,7 @@ def main(args):
 
 
 if __name__ == '__main__':
-    import sys
     from config import cfg
-
-    value_args = []
-    for arg in sys.argv[1::]:
-        if arg.startswith('@'):
-            cfg.merge_from_file(arg[1::])
-        else:
-            value_args.append(arg)
-    if value_args:
-        cfg.merge_from_list(value_args)
-        
+    cfg.parse_args()
     cfg.freeze()
     main(cfg)
