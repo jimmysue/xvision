@@ -1,3 +1,4 @@
+import cv2
 from xvision.utils.config import CfgNode as CN
 
 _C = CN()
@@ -38,6 +39,12 @@ _C.total_steps = 10000   # training steps
 _C.num_workers = 8
 _C.device = None        # auto determine
 _C.eval_interval = 100    # evaluate interval
+_C.augments = CN()
+_C.augments.inters = [cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_LANCZOS4, cv2.INTER_AREA]
+_C.augments.rotation = 5
+_C.augments.max_face = 256
+_C.augments.min_face = 6
+_C.augments.symmetry = [1, 0, 2, 4, 3] # shape symmetry indice for mirror augmentation
 
 # data parameters
 _C.train_label = '/Users/jimmy/Documents/data/WIDER/WIDER_train/label.txt'

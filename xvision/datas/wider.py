@@ -1,5 +1,7 @@
+from sys import maxsize
 import numpy as np
 import cv2
+import random
 from pathlib import Path
 from numbers import Number
 
@@ -139,16 +141,101 @@ class ValTransform(object):
         if 'shape' in item:
             shapes = item['shape'].reshape(-1, 2)
             shapes = shapes @ matrix[:2, :2].T + matrix[:2, 2]
-            ret['shape'] = shapes.reshape(bboxes.shape[0], -1, 2).astype(np.float32)
+            ret['shape'] = shapes.reshape(
+                bboxes.shape[0], -1, 2).astype(np.float32)
             ret['mask'] = item['mask']
         return ret
 
+
 class TrainTransform(ValTransform):
-    def __init__(self, dsize) -> None:
+    # random
+    def __init__(self, dsize, **augments) -> None:
         super().__init__(dsize)
-    
+        # random interpolate choid from below
+        self.inters = augments.get("inters", [cv2.INTER_LINEAR])
+        self.rotation = augments['rotation']  # random rotate
+        self.min_face, self.max_face = augments['min_face'], augments['max_face']
+        self.symmetry = augments['symmetry']
+
+    def _transform(self, item, matrix, inter, mirror):
+        image = item['image']
+        bboxes = item['bbox']
+        image = warp_affine(image, matrix, self.dsize,
+                            flags=inter, borderMode=cv2.BORDER_REPLICATE)
+        bboxes = bbox_affine(bboxes, matrix).astype(np.float32)
+
+        ret = {
+            'image': image,
+            'bbox': bboxes,
+            'label': np.ones(bboxes.shape[0], dtype=np.int64)
+        }
+
+        if 'shape' in item:
+            points = item['shape'].reshape(-1, 2)
+            points = points @ matrix[:2, :2].T + matrix[:2, 2]
+            points = points.reshape(bboxes.shape[0], -1, 2).astype(np.float32)
+            if mirror:
+                points = points[:, self.symmetry, :]
+            ret['shape'] = points
+            ret['mask'] = item['mask']
+        return ret
+
+    def _augment(self, item, dsize):
+        image = item['image']
+        boxes = item['bbox']  # [n, 4]
+        h, w = image.shape[:2]
+        dw, dh = dsize
+        # random choose one face or whole image as interest region,
+        box = random.choice(boxes)
+        size = np.random.choice(np.sqrt(np.prod(boxes[:, 2:] - boxes[:, :2], axis=-1)))
+        max_size = min(size, self.max_face)
+        max_scale = max_size / size
+        min_scale = min(dw / w, dh / h)
+        scale = random.uniform(min_scale, max_scale)
+        ibox = np.array([0, 0, w, h], dtype=np.float32)
+        matrix = matrix2d.scale(scale)
+        tbox = bbox_affine(ibox, matrix)
+        dbox = np.array([0, 0, dw, dh], dtype=np.float32)
+        fbox = bbox_affine(box, matrix)
+
+        # determine translation bound
+        tlow = tbox[:2] - dbox[:2]
+        thigh = tbox[2:] - dbox[2:]
+        flow = fbox[2:] - dbox[2:]
+        fhigh = fbox[:2] - dbox[:2]
+
+        thigh = np.minimum(thigh, fhigh)
+        tlow = np.maximum(tlow, flow)
+
+        high = np.maximum(tlow, thigh)
+        low = np.minimum(tlow, thigh)
+        txty = np.random.uniform(low, high)
+        translate = matrix2d.translate(-txty)
+        matrix = translate @ matrix
+        angle = np.random.uniform(-self.rotation, self.rotation)
+        rotate = matrix2d.center_rotate_scale_cw([dw/2, dh/2], angle, 1.0)
+        matrix = rotate @ matrix
+
+        mirror = random.choice([True, False])
+        if mirror:
+            matrix = matrix2d.hflip(dw) @ matrix
+
+        item = self._transform(
+            item, matrix, random.choice(self.inters), mirror)
+        # remove face exceed image
+        boxes = item['bbox'].copy()
+        area = np.prod(boxes[:, 2:] - boxes[:, :2], axis=-1)
+        boxes[boxes < 0] = 0
+        boxes[:, 2:] = np.minimum(boxes[:, 2:], [[dw, dh]])
+        inner = np.prod(boxes[:, 2:] - boxes[:, :2], axis=-1)
+        ratio = inner / area
+        discard = ratio < 0.4
+        item['label'][discard] = 0
+        return item
+
     def __call__(self, item):
-        return super().__call__(item)
+        item = self._augment(item, self.dsize)
+        return item
 
 
 def wider_collate(items):
@@ -162,6 +249,8 @@ def wider_collate(items):
 if __name__ == '__main__':
     import torch
     import tqdm
+    from collections import defaultdict
+    from matplotlib import pyplot as plt
     from xvision.utils.draw import *
     from torch.utils.data import DataLoader
     from xvision.ops.anchors import BBoxAnchors
@@ -169,21 +258,25 @@ if __name__ == '__main__':
     train = "/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/train/label.txt"
     dir = "/Users/jimmy/Documents/data/WIDER/WIDER_train/images"
 
-    transform = ValTransform((320, 320))
+    transform = TrainTransform((320, 320), **cfg.augments)
     data = WiderFace(train, dir, with_shapes=True,
-                     min_size=10, transform=transform)
+                     min_size=1, transform=transform)
 
-    for item in data:
+    areas = defaultdict(float)
+    count = 0
+    for item in tqdm.tqdm(data):
         image = item['image']
-        shape = item['shape']
-        bbox = item['bbox']
-        draw_bbox(image, bbox)
-        draw_shapes(image, shape)
-        cv2.imshow("v", image)
-        k = cv2.waitKey()
-        if k == ord('q'):
-            break
-
+        boxes = item['bbox']
+        area = np.prod(boxes[:, 2:] - boxes[:, :2], axis=-1)
+        sizes = np.sqrt(area).astype(np.int32)
+        valid = item['label'] > 0
+        area = area[valid]
+        sizes = sizes[valid]
+        for s, a in zip(sizes, area):
+            areas[s] += a
+    
+    plt.bar(areas.keys(), areas.values())
+    plt.show()
     # loader = DataLoader(data, batch_size=128, shuffle=True,
     #                     num_workers=8, collate_fn=wider_collate)
     # anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides,
