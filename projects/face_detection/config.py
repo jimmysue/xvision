@@ -47,10 +47,10 @@ _C.augments.min_face = 6
 _C.augments.symmetry = [1, 0, 2, 4, 3] # shape symmetry indice for mirror augmentation
 
 # data parameters
-_C.train_label = '/Users/jimmy/Documents/data/WIDER/WIDER_train/label.txt'
-_C.train_image = '/Users/jimmy/Documents/data/WIDER/WIDER_train/images'
-_C.val_label = '/Users/jimmy/Documents/data/WIDER/WIDER_val/label.txt'
-_C.val_image = '/Users/jimmy/Documents/data/WIDER/WIDER_val/images'
+_C.train_label = '/dockerdata/train/label.txt'
+_C.train_image = '/dockerdata/WIDER_train/images'
+_C.val_label = '/dockerdata/val/label.txt'
+_C.val_image = '/dockerdata/WIDER_val/images'
 
 # configuration for test
 _C.test = CN(new_allowed=True)
