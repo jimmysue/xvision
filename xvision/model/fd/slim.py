@@ -40,7 +40,7 @@ class Slim(nn.Module):
         super(Slim, self).__init__()
         self.phase = phase
         self.num_classes = 1
-
+        self.bn = nn.BatchNorm2d(3)
         self.conv1 = conv_bn(3, 16, 2)
         self.conv2 = conv_dw(16, 32, 1)
         self.conv3 = conv_dw(32, 32, 2)
@@ -92,7 +92,7 @@ class Slim(nn.Module):
         loc = list()
         conf = list()
         landm = list()
-
+        inputs = self.bn(inputs)
         x1 = self.conv1(inputs)
         x2 = self.conv2(x1)
         x3 = self.conv3(x2)

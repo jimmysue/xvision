@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 import time
 import torch
-import torch.nn as nn
 from torch.optim import SGD
 from torch.optim.lr_scheduler import OneCycleLR
 from torch.utils.data import DataLoader
