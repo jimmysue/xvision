@@ -136,11 +136,13 @@ class BBoxAnchors(nn.Module):
             max_iou_of_anchor[anchor_index] = max_iou_of_bbox[target_index]
             box_indice[anchor_index] = target_index
         # find max iou of each box to determine denominant
+
         denominant = max_iou_of_bbox                    # [n]
-        denominant[denominant < self.iou_threshold] = 1      # [n]
+        denominant[denominant < self.iou_threshold] = self.iou_threshold     # [n]
         denominant = denominant[box_indice]             # [k]
+        max_iou_of_anchor[max_iou_of_anchor < self.iou_threshold / 2] = 0
         scores = max_iou_of_anchor / denominant         # [k]
-        scores[scores < 0.5] = 0
+
         labels = labels[box_indice]
         ignores = labels <= 0
         # set ignore as background score

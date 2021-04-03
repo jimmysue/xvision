@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import DataLoader
 from xvision.utils.draw import *
 from xvision.ops.anchors import BBoxAnchors
-from xvision.data.wider import WiderFace, BasicTransform
+from xvision.data.wider import WiderFace, ValTransform
 from config import cfg
 
 if __name__ == '__main__':
@@ -10,9 +10,9 @@ if __name__ == '__main__':
     val = "/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/train/label.txt"
     dir = "/Users/jimmy/Documents/data/WIDER/WIDER_train/images"
 
-    transform = BasicTransform((320, 320))
+    transform = ValTransform((320, 320))
 
-    data = WiderFace(val, dir, with_points=True,
+    data = WiderFace(val, dir, with_shapes=True,
                      min_size=10, transform=None)
 
     anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides, fsizes=cfg.fsizes, layouts=cfg.layouts)
@@ -22,7 +22,7 @@ if __name__ == '__main__':
             item = transform(v)
             image = item['image']
             bbox = item['bbox']
-            point = item['point']
+            point = item['shape']
             label = item['label']
             masks = item['mask']
             h, w = image.shape[:2]
@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
             for i, score in enumerate(splits):
                 score = score.numpy().squeeze(0)
-                score = cv2.resize(score, (w, h))
+                score = cv2.resize(score, (w, h), interpolation=cv2.INTER_NEAREST)
                 name = f'score={i}'
                 cv2.imshow(name, score)
 

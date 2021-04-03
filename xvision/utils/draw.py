@@ -1,4 +1,5 @@
 import cv2
+import colorsys
 import numpy as np
 
 
@@ -27,18 +28,27 @@ def draw_points(image, points, color=(0, 0, 255), radius=1):
     return image
 
 
-def draw_shape(image, shapes, radius=1, cmap="plasma"):
+def draw_shapes(image, shapes, radius=None):
     """draw point shape, assign different color for each index points
     """
-    import matplotlib.pyplot as plt
     n = shapes.shape[0]
     shapes = shapes.reshape(n, -1, 2)
     num_pts = shapes.shape[1]
-    colors = plt.get_cmap(cmap).colors
-    colors = np.array(colors)
-    interval = colors.shape[0] // num_pts
-    colors = colors[0::interval][:num_pts, :]
-    colors = (colors * 256).astype(np.int32)
+    if radius is None:
+        h, w = image.shape[:2]
+        radius = (h + w) * 0.5 * 0.01
+        radius = max(1, int(radius))
+
+    hue = np.linspace(0, 1, num_pts + 1)[:-1].tolist()
+    value = [0.8] * num_pts
+    saturation = [1.0] * num_pts
+
+    colors = []
+    for h, s, v in zip(hue, saturation, value):
+        bgr = colorsys.hsv_to_rgb(h, s, v)
+        colors.append(bgr)
+    
+    colors = (np.array(colors) * 255).astype(np.int32)
     shapes = np.transpose(shapes, [1, 0, 2])
     for i, pts in enumerate(shapes):
         color = tuple(colors[i].tolist())

@@ -51,6 +51,4 @@ _C.test.image_dir = 'path/to/image/'
 _C.test.result_dir = 'result'
 _C.test.iou_threshold = 0.5
 _C.test.score_threshold = 0.1
-_C.test.model = _C.model.copy()
-_C.test.model.kwargs.phase = 'test' 
 _C.test.short_size = 320    # short size when resize input image

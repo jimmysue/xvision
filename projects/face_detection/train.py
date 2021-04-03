@@ -7,7 +7,7 @@ from torch.optim.lr_scheduler import OneCycleLR
 from torch.utils.data import DataLoader
 from pathlib import Path
 from xvision.utils import get_logger, Saver
-from xvision.data import WiderFace, wider_collate, BasicTransform
+from xvision.data import WiderFace, wider_collate, ValTransform
 from xvision.data.loader import repeat_loader
 from xvision.model import fd as fd_models
 from xvision.model import initialize_model
@@ -68,7 +68,7 @@ def main(args):
     saver = Saver(workdir, keep_num=10)
     
     # prepare dataset
-    train_transform = BasicTransform(dsize=args.dsize)
+    train_transform = ValTransform(dsize=args.dsize)
     trainset = WiderFace(args.train_label, args.train_image, min_size=10, with_points=True, transform=train_transform)
     valset = WiderFace(args.val_label, args.val_image, transform=train_transform)
 
@@ -120,7 +120,7 @@ def main(args):
         batch = batch_to(batch, device)
         image = batch['image']
         box = batch['bbox']
-        point = batch['point']
+        point = batch['shape']
         mask = batch['mask']
         label = batch['label']
 
@@ -138,7 +138,7 @@ def main(args):
 
         train_meter.meters['score'].update(score_loss.item())
         train_meter.meters['box'].update(box_loss.item())
-        train_meter.meters['point'].update(point_loss.item())
+        train_meter.meters['shape'].update(point_loss.item())
         train_meter.meters['total'].update(loss.item())
         train_meter.meters['lr'].update(optimizer.param_groups[0]['lr'])
         

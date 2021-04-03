@@ -13,12 +13,12 @@ from xvision.transforms.boxes import bbox_affine
 
 
 class WiderFace(Dataset):
-    def __init__(self, label_file, image_dir, transform=None, with_points=False, min_size=0) -> None:
+    def __init__(self, label_file, image_dir, transform=None, with_shapes=False, min_size=0) -> None:
         super().__init__()
         if transform:
             assert callable(transform), "transform must be callable"
         self.data = list(WiderFace.parse(
-            label_file, image_dir, with_points, min_size))
+            label_file, image_dir, with_shapes, min_size))
         self.transform = transform
 
     def __len__(self):
@@ -32,9 +32,9 @@ class WiderFace(Dataset):
         return item
 
     @staticmethod
-    def parse(label_file, image_dir, with_points, min_size):
+    def parse(label_file, image_dir, with_shapes, min_size):
         image_dir = Path(image_dir)
-        if not with_points:
+        if not with_shapes:
             def parse_annotation(fd):
                 name, rects = None, []
                 for line in fd:
@@ -103,13 +103,13 @@ class WiderFace(Dataset):
                     yield {
                         "path": image_dir / name,
                         "bbox": bbox,
-                        "point": pts,
+                        "shape": pts,
                         "mask": mask
                     }
                 name = next_name
 
 
-class BasicTransform(object):
+class ValTransform(object):
     def __init__(self, dsize) -> None:
         super().__init__()
         if isinstance(dsize, Number):
@@ -126,17 +126,8 @@ class BasicTransform(object):
         # calc transform matrix
         h, w = image.shape[:2]
         dw, dh = self.dsize
-        scale = max(dw / w, dh / h)
-        ht, wt = h * scale, w * scale
-
-        ph = ht - dh
-        pw = wt - dw
-
-        tx = np.random.uniform(-pw, 0)
-        ty = np.random.uniform(-ph, 0)
-
-        matrix = matrix2d.translate([tx, ty]) @ matrix2d.scale(scale)
-
+        scale = min(dw / w, dh / h)
+        matrix = matrix2d.scale(scale)
         image = warp_affine(image, matrix, self.dsize)
         bboxes = bbox_affine(bboxes, matrix).astype(np.float32)
 
@@ -146,11 +137,10 @@ class BasicTransform(object):
             'label': np.ones(bboxes.shape[0], dtype=np.int64)
         }
 
-        if 'point' in item:
-            points = item['point'].reshape(-1, 2)
-            points = points @ matrix[:2, :2].T + matrix[:2, 2]
-            ret['point'] = points.reshape(
-                bboxes.shape[0], -1, 2).astype(np.float32)
+        if 'shape' in item:
+            shapes = item['shape'].reshape(-1, 2)
+            shapes = shapes @ matrix[:2, :2].T + matrix[:2, 2]
+            ret['shape'] = shapes.reshape(bboxes.shape[0], -1, 2).astype(np.float32)
             ret['mask'] = item['mask']
         return ret
 
@@ -173,37 +163,48 @@ if __name__ == '__main__':
     train = "/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/train/label.txt"
     dir = "/Users/jimmy/Documents/data/WIDER/WIDER_train/images"
 
-    transform = BasicTransform((320, 320))
-    data = WiderFace(train, dir, with_points=True,
+    transform = ValTransform((320, 320))
+    data = WiderFace(train, dir, with_shapes=True,
                      min_size=10, transform=transform)
 
-    loader = DataLoader(data, batch_size=128, shuffle=True,
-                        num_workers=8, collate_fn=wider_collate)
-    anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides,
-                          fsizes=cfg.fsizes, layouts=cfg.layouts)
+    for item in data:
+        image = item['image']
+        shape = item['shape']
+        bbox = item['bbox']
+        draw_bbox(image, bbox)
+        draw_shapes(image, shape)
+        cv2.imshow("v", image)
+        k = cv2.waitKey()
+        if k == ord('q'):
+            break
+
+    # loader = DataLoader(data, batch_size=128, shuffle=True,
+    #                     num_workers=8, collate_fn=wider_collate)
+    # anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides,
+    #                       fsizes=cfg.fsizes, layouts=cfg.layouts)
+
+    # # for batch in tqdm.tqdm(loader):
+    # #     image = batch['image']
+    # #     point = batch['shape']
+    # #     label = batch['label']
+    # #     bbox = batch['bbox']
+    # #     mask = batch['mask']
+    # #     scores, bboxes, shapes = anchors(label, bbox, point, mask)
+
+    # val = "/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/val/label.txt"
+    # dir = "/Users/jimmy/Documents/data/WIDER/WIDER_val/images"
+
+    # transform = BasicTransform((320, 320))
+    # data = WiderFace(val, dir, with_shapes=False,
+    #                  min_size=10, transform=transform)
+
+    # loader = DataLoader(data, batch_size=128, shuffle=True,
+    #                     num_workers=8, collate_fn=wider_collate)
+    # anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides,
+    #                       fsizes=cfg.fsizes, layouts=cfg.layouts)
 
     # for batch in tqdm.tqdm(loader):
     #     image = batch['image']
-    #     point = batch['point']
     #     label = batch['label']
     #     bbox = batch['bbox']
-    #     mask = batch['mask']
-    #     scores, bboxes, points = anchors(label, bbox, point, mask)
-
-    val = "/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/val/label.txt"
-    dir = "/Users/jimmy/Documents/data/WIDER/WIDER_val/images"
-
-    transform = BasicTransform((320, 320))
-    data = WiderFace(val, dir, with_points=False,
-                     min_size=10, transform=transform)
-
-    loader = DataLoader(data, batch_size=128, shuffle=True,
-                        num_workers=8, collate_fn=wider_collate)
-    anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides,
-                          fsizes=cfg.fsizes, layouts=cfg.layouts)
-
-    for batch in tqdm.tqdm(loader):
-        image = batch['image']
-        label = batch['label']
-        bbox = batch['bbox']
-        scores, bboxes = anchors(label, bbox)
+    #     scores, bboxes = anchors(label, bbox)
