@@ -92,7 +92,7 @@ def main(args):
     # optimizer and lr scheduler
     parameters = group_parameters(model, bias_decay=0)
     optimizer = SGD(parameters, lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-    lr_scheduler = OneCycleLR(optimizer, max_lr = args.lr, total_steps = args.total_steps, pct_start=0.1, final_div_factor=100)
+    lr_scheduler = OneCycleLR(optimizer, max_lr = args.lr, div_factor=20.0, total_steps = args.total_steps, pct_start=0.1, final_div_factor=100)
     trainloader = repeat_loader(trainloader)
     
     model.to(device)
