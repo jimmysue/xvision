@@ -7,13 +7,12 @@ from torch.optim.lr_scheduler import OneCycleLR
 from torch.utils.data import DataLoader
 from pathlib import Path
 from xvision.utils import get_logger, Saver
-from xvision.datas import WiderFace, wider_collate, ValTransform
 from xvision.datas.loader import repeat_loader
 from xvision.models import fd as models
 from xvision.ops.anchors import BBoxAnchors
 from xvision.ops.multibox import score_box_point_loss, score_box_loss
 from xvision.utils.meter import MetricLogger, SmoothedValue
-from xvision.datas.wider import WiderFace
+from xvision.datas.wider import *
 from xvision.ops.utils import group_parameters
 
 
@@ -75,9 +74,10 @@ def main(args):
     saver = Saver(workdir, keep_num=10)
     
     # prepare dataset
-    train_transform = ValTransform(dsize=args.dsize)
-    trainset = WiderFace(args.train_label, args.train_image, min_size=1, with_shapes=True, transform=train_transform)
-    valset = WiderFace(args.val_label, args.val_image, transform=train_transform)
+    valtransform = ValTransform(dsize=args.dsize)
+    traintransform = TrainTransform(dsize=args.dsize, **args.augments)
+    trainset = WiderFace(args.train_label, args.train_image, min_size=1, with_shapes=True, transform=traintransform)
+    valset = WiderFace(args.val_label, args.val_image, transform=valtransform, min_size=1)
 
     trainloader = DataLoader(trainset, batch_size=args.batch_size, 
         shuffle=True, num_workers=args.num_workers, pin_memory=True, 
@@ -92,7 +92,7 @@ def main(args):
     # optimizer and lr scheduler
     parameters = group_parameters(model, bias_decay=0)
     optimizer = SGD(parameters, lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-    lr_scheduler = OneCycleLR(optimizer, max_lr = args.lr, div_factor=20.0, total_steps = args.total_steps, pct_start=0.1, final_div_factor=100)
+    lr_scheduler = OneCycleLR(optimizer, max_lr = args.lr, div_factor=20, total_steps = args.total_steps, pct_start=0.1, final_div_factor=100)
     trainloader = repeat_loader(trainloader)
     
     model.to(device)
