@@ -135,7 +135,7 @@ def main(args):
             point_delta = prior.encode_points(target_point)
 
         score_loss, box_loss, point_loss = score_box_point_loss(target_score, box_delta, point_delta, pred_score, pred_box, pred_point, point_mask)
-        loss = score_loss + box_loss + point_loss
+        loss = score_loss + 2.0 * box_loss + point_loss
 
         train_meter.meters['score'].update(score_loss.item())
         train_meter.meters['box'].update(box_loss.item())
