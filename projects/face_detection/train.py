@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import time
 import torch
+from torch.nn import parameter
 from torch.optim import SGD
 from torch.optim.lr_scheduler import OneCycleLR
 from torch.utils.data import DataLoader
@@ -8,16 +9,17 @@ from pathlib import Path
 from xvision.utils import get_logger, Saver
 from xvision.data import WiderFace, wider_collate, ValTransform
 from xvision.data.loader import repeat_loader
-from xvision.model import fd as fd_models
+from xvision.model import fd as models
 from xvision.model import initialize_model
 from xvision.ops.anchors import BBoxAnchors
 from xvision.ops.multibox import score_box_point_loss, score_box_loss
 from xvision.utils.meter import MetricLogger, SmoothedValue
 from xvision.data.wider import WiderFace
+from xvision.ops.utils import group_parameters
 
 
 def batch_to(batch, device):
-    image = batch.pop('image').to(device, non_blocking=True).permute(0, 3, 1, 2).float() / 255
+    image = batch.pop('image').to(device, non_blocking=True).permute(0, 3, 1, 2).float()
     batch = {
         k: [i.to(device, non_blocking=True) for i in v] for k, v in batch.items()
     }
@@ -56,10 +58,17 @@ def evaluate(model, dataloader, prior, device):
 
 def main(args):
     # prepare workspace
+    
     workdir = Path(args.workdir)
     workdir.mkdir(parents=True, exist_ok=True)
     logger = get_logger(workdir / 'log.txt')
     logger.info(f'config: \n{args}')
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    if args.device:
+        logger.info(f'user specify device: {args.device}')
+        device = torch.device(args.device)
+    logger.info(f'use device: {device}')
+
     # dump all configues to later use, such as for testing
     with open(workdir / 'config.yml', 'wt') as f:
         args.dump(stream=f)
@@ -77,20 +86,14 @@ def main(args):
     valloader = DataLoader(valset, batch_size=args.batch_size, 
         shuffle=False, num_workers=args.num_workers, pin_memory=True, collate_fn=wider_collate)
 
-
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    
-    if args.device:
-        logger.info(f'user specify device: {args.device}')
-        device = torch.device(args.device)
-
-    logger.info(f'use device: {device}')
     # model
-    model = initialize_model(fd_models, args.model.name, *args.model.args, **args.model.kwargs)
-    prior = BBoxAnchors(args.dsize, args.strides, args.fsizes, args.layouts, args.iou_threshold, args.encode_mean, args.encode_std)
+    model = models.__dict__[args.model.name](*args.model.args, **args.model.kwargs).to(device)
+    prior = BBoxAnchors(args.dsize, args.strides, args.fsizes, args.layouts, args.iou_threshold, args.encode_mean, args.encode_std).to(device)
+
     # optimizer and lr scheduler
-    optimizer = SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-    lr_scheduler = OneCycleLR(optimizer, max_lr = args.lr, total_steps = args.total_steps, pct_start=0.1, final_div_factor=1000)
+    parameters = group_parameters(model, bias_decay=0)
+    optimizer = SGD(parameters, lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+    lr_scheduler = OneCycleLR(optimizer, max_lr = args.lr, total_steps = args.total_steps, pct_start=0.1, final_div_factor=100)
     trainloader = repeat_loader(trainloader)
     
     model.to(device)
