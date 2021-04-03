@@ -7,14 +7,13 @@ from torch.optim.lr_scheduler import OneCycleLR
 from torch.utils.data import DataLoader
 from pathlib import Path
 from xvision.utils import get_logger, Saver
-from xvision.data import WiderFace, wider_collate, ValTransform
-from xvision.data.loader import repeat_loader
-from xvision.model import fd as models
-from xvision.model import initialize_model
+from xvision.datas import WiderFace, wider_collate, ValTransform
+from xvision.datas.loader import repeat_loader
+from xvision.models import fd as models
 from xvision.ops.anchors import BBoxAnchors
 from xvision.ops.multibox import score_box_point_loss, score_box_loss
 from xvision.utils.meter import MetricLogger, SmoothedValue
-from xvision.data.wider import WiderFace
+from xvision.datas.wider import WiderFace
 from xvision.ops.utils import group_parameters
 
 

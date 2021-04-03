@@ -2,7 +2,6 @@ import numpy as np
 import cv2
 from pathlib import Path
 from numbers import Number
-from matplotlib.pyplot import sca
 
 import torch
 from torch.utils.data import Dataset
@@ -143,6 +142,13 @@ class ValTransform(object):
             ret['shape'] = shapes.reshape(bboxes.shape[0], -1, 2).astype(np.float32)
             ret['mask'] = item['mask']
         return ret
+
+class TrainTransform(ValTransform):
+    def __init__(self, dsize) -> None:
+        super().__init__(dsize)
+    
+    def __call__(self, item):
+        return super().__call__(item)
 
 
 def wider_collate(items):
