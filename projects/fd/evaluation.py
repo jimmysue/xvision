@@ -58,7 +58,6 @@ def get_gt_boxes_from_txt(gt_path, cache_dir):
     lines = f.readlines()
     lines = list(map(lambda x: x.rstrip('\r\n'), lines))
     boxes = {}
-    print(len(lines))
     f.close()
     current_boxes = []
     current_name = None

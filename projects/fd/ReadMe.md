@@ -31,16 +31,33 @@ We use data provided by [biubiu6][2], you can download the annotation file from:
 - [baidu cloud][], with password: ruck
 
 Details about the data please refer to [Face-Detector-1MB-with-landmark][2]
-### Preparation 
 
-- download dataset
-
-We using data provide by [biubiu6]()
-
+### Train 
 
 ```shell
+python projects/fd/train.py --workdir workspace/fd  \  # change the workdir as you want
+                            --model.name  Slim or RFB
+```
+
+### Test
+
+1. predict 
+```shell
+python projects/fd/test.py --workdir workspace/fd \   # training workdir
+                           --model.name Slim          # same with training
+```
+Predict results will be save in `workspace/fd/result`
+
+2. evaluation
+
+Before evaluation, you shold download ground truth from [evaluation code and validation results](http://shuoyang1213.me/WIDERFACE/support/eval_script/eval_tools.zip)
 
 ```
+python projects/fd/evaluation.py -p workspace/fd/result -g path/to/goundtruth/
+```
+
+ps: The evaluation script is a copy from [WiderFace-Evaluation][WiderFace-Evaluation], 
+and I change the box iou  with torchvision implementation, Which will cause slightly performance derease. 
 
 
 ## References
@@ -53,3 +70,4 @@ We using data provide by [biubiu6]()
 [2]: https://github.com/biubug6/Face-Detector-1MB-with-landmark
 [google cloud]: https://drive.google.com/open?id=11UGV3nbVv1x9IC--_tK3Uxf7hA6rlbsS
 [baidu cloud]: https://pan.baidu.com/s/1jIp9t30oYivrAvrgUgIoLQ
+[WiderFace-Evaluation]: https://github.com/wondervictor/WiderFace-Evaluation

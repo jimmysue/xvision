@@ -5,7 +5,7 @@ import numpy as np
 import tqdm
 from pathlib import Path
 from xvision.utils import Saver
-from xvision.models.fd import Slim
+from xvision.models import fd as models
 from xvision.ops.anchors import BBoxAnchors
 from xvision.transforms.warp import warp_affine
 from xvision.transforms import matrix2d
@@ -17,10 +17,10 @@ from xvision.utils.draw import draw_bbox, draw_points
 def main(args):
     workdir = Path(args.workdir)
     workdir.mkdir(parents=True, exist_ok=True)
-    model = Slim(phase='test')  # FIXME:  hard coded
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model = models.__dict__[args.model.name](phase='test').to(device)
     prior = BBoxAnchors(args.dsize, args.strides, args.fsizes, args.layouts,
                         args.iou_threshold, args.encode_mean, args.encode_std)
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     state = Saver.load_best_from_folder(workdir, map_location='cpu')
     model.load_state_dict(state['model'])
     predictor = Predictor(
@@ -71,5 +71,4 @@ if __name__ == '__main__':
 
     cfg.parse_args()
     cfg.freeze()
-
     main(cfg)

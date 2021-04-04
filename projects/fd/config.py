@@ -24,7 +24,7 @@ _C.encode_mean = None
 _C.encode_std = [.1, .1, .2, .2]  # center .1, size: .2
 
 _C.model = CN(recursive=False)
-_C.model.name = "Slim"
+_C.model.name = "RFB"
 _C.model.args = []
 _C.model.kwargs = CN()
 

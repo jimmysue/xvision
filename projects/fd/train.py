@@ -86,7 +86,7 @@ def main(args):
         shuffle=False, num_workers=args.num_workers, pin_memory=True, collate_fn=wider_collate)
 
     # model
-    model = models.__dict__[args.model.name](*args.model.args, **args.model.kwargs).to(device)
+    model = models.__dict__[args.model.name](phase='train').to(device)
     prior = BBoxAnchors(args.dsize, args.strides, args.fsizes, args.layouts, args.iou_threshold, args.encode_mean, args.encode_std).to(device)
 
     # optimizer and lr scheduler
