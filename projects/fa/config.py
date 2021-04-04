@@ -14,7 +14,8 @@ _C.total_steps = 10000   # training steps
 _C.num_workers = 8
 _C.eval_interval = 100    # evaluate interval
 
-
+_C.model = CN(recursive=False)
+_C.model.name = 'mbv2'
 # datasets
 
 _C.wflw = 'path/to/wflw/data'
