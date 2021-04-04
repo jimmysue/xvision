@@ -14,7 +14,7 @@ def draw_bbox(image, bbox, color=(0, 0, 255), thickness=1):
     return image
 
 
-def draw_points(image, points, color=(0, 0, 255), radius=1):
+def draw_points(image, points, color=(0, 0, 255), radius=1, plot_index=False):
     draw_shiftbits = 4
     draw_multiplier = 1 << 4
 
