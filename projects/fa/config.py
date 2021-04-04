@@ -20,6 +20,7 @@ _C.model.name = 'mbv2'
 
 _C.wflw = 'path/to/wflw/data'
 _C.ibug = 'path/to/ibug/data'
+_C.jdlmk = '/Users/jimmy/Documents/data/FA/JD-landmark/'
 
 _C.augments = CN()
 _C.augments.rotate = 15
