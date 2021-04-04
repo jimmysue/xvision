@@ -1,4 +1,4 @@
-# Face Detection
+# Face Detection by Soft Matching
 
 ## Wider Face Performance
  
