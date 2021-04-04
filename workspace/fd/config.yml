@@ -1,4 +1,20 @@
-batch_size: 128
+augments:
+  inters:
+  - 0
+  - 1
+  - 2
+  - 4
+  - 3
+  max_face: 256
+  min_face: 6
+  rotation: 5
+  symmetry:
+  - 1
+  - 0
+  - 2
+  - 4
+  - 3
+batch_size: 256
 device: null
 dsize:
 - 320
@@ -9,7 +25,7 @@ encode_std:
 - 0.1
 - 0.2
 - 0.2
-eval_interval: 10
+eval_interval: 100
 fsizes:
 - - 40
   - 40
@@ -20,7 +36,7 @@ fsizes:
 - - 5
   - 5
 gamma: 0.1
-iou_threshold: 0.3
+iou_threshold: 0.35
 layouts:
 - - 10
   - 16
@@ -32,11 +48,11 @@ layouts:
 - - 128
   - 192
   - 256
-lr: 0.01
+lr: 0.2
 model:
   args: []
   kwargs: {}
-  name: SlimFpn
+  name: Slim
 momentum: 0.9
 num_workers: 8
 start_step: 0
@@ -50,10 +66,11 @@ test:
   iou_threshold: 0.5
   result_dir: result
   score_threshold: 0.1
+  short_size: 320
 total_steps: 10000
-train_image: /home/mist/data/WIDER/WIDER_train/images
-train_label: /home/mist/data/WIDER/train/label.txt
-val_image: /home/mist/data/WIDER/WIDER_val/images
-val_label: /home/mist/data/WIDER/val/label.txt
+train_image: /dockerdata/WIDER_train/images
+train_label: /dockerdata/train/label.txt
+val_image: /dockerdata/WIDER_val/images
+val_label: /dockerdata/val/label.txt
 weight_decay: 0.0005
-workdir: workspace/fd
+workdir: /cfs/cfs-30592a081/venus/xvision/fd
