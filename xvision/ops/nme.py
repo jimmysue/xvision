@@ -26,3 +26,9 @@ def nme(inputs, targets, left, right, reduction='none'):
 
 
 
+if __name__ == '__main__':
+
+    inputs = torch.rand(128, 68, 2)
+    targets = torch.rand(128, 68, 2)
+
+    loss = nme(inputs, targets, [])

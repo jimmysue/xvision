@@ -3,8 +3,8 @@ from xvision.utils.config import CfgNode as CN
 _C = CN()
 cfg = _C
 
+_C.workdir = 'workspace/fa'
 _C.dsize = 128
-
 _C.lr = 0.2
 _C.momentum = 0.9
 _C.weight_decay = 5e-4
