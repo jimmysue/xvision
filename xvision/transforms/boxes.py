@@ -101,3 +101,9 @@ def bbox_affine(bboxes, matrix):
     aboxes = bbox2abox(bboxes)
     aboxes = matrix @ aboxes
     return abox2bbox(aboxes)
+
+
+def bbox2rect(bboxes):
+    # [*, 4]
+    sizes = bboxes[..., 2:] - bboxes[..., :2]
+    return np.concatenate([bboxes[..., :2], sizes], axis=-1)
