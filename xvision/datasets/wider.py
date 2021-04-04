@@ -187,10 +187,11 @@ class TrainTransform(ValTransform):
         # random choose one face as interest region,
         box = random.choice(boxes)
         size = np.random.choice(np.sqrt(np.prod(boxes[:, 2:] - boxes[:, :2], axis=-1)))
-        max_size = min(size, self.max_face)
+        max_size = min(size * np.sqrt(2.0), self.max_face)
         max_scale = max_size / size
         min_scale = min(dw / w, dh / h)
         scale = random.uniform(min_scale, max_scale)
+
         ibox = np.array([0, 0, w, h], dtype=np.float32)
         matrix = matrix2d.scale(scale)
         tbox = bbox_affine(ibox, matrix)
@@ -251,7 +252,7 @@ if __name__ == '__main__':
     from collections import defaultdict
     from matplotlib import pyplot as plt
     from xvision.utils.draw import *
-    from projects.face_detection.config import cfg
+    from projects.fd.config import cfg
     train = "/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/train/label.txt"
     dir = "/Users/jimmy/Documents/data/WIDER/WIDER_train/images"
 
@@ -260,7 +261,7 @@ if __name__ == '__main__':
                      min_face=1, transform=transform)
 
     areas = defaultdict(float)
-    count = 0
+    counts = defaultdict(int)
     for item in tqdm.tqdm(data):
         image = item['image']
         boxes = item['bbox']
@@ -271,7 +272,9 @@ if __name__ == '__main__':
         sizes = sizes[valid]
         for s, a in zip(sizes, area):
             areas[s] += a
-    
+            counts[s] += 1
     plt.bar(areas.keys(), areas.values())
+    plt.figure()
+    plt.bar(counts.keys(), counts.values())
     plt.show()
   

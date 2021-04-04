@@ -42,7 +42,7 @@ _C.eval_interval = 100    # evaluate interval
 _C.augments = CN()
 _C.augments.inters = [cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_LANCZOS4, cv2.INTER_AREA]
 _C.augments.rotation = 5
-_C.augments.max_face = 256
+_C.augments.max_face = 320
 _C.augments.min_face = 6
 _C.augments.symmetry = [1, 0, 2, 4, 3] # shape symmetry indice for mirror augmentation
 
