@@ -54,8 +54,8 @@ _C.val_image = '/dockerdata/WIDER_val/images'
 
 # configuration for test
 _C.test = CN(new_allowed=True)
-_C.test.image_dir = 'path/to/image/'
+_C.test.image_dir = '/Users/jimmy/Documents/data/WIDER/WIDER_val/images'
 _C.test.result_dir = 'result'
 _C.test.iou_threshold = 0.5
 _C.test.score_threshold = 0.1
-_C.test.short_size = 320    # short size when resize input image
+_C.test.long_size = 320    # long size when resize input image
