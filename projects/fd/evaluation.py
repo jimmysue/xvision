@@ -89,7 +89,6 @@ def get_gt_boxes_from_txt(gt_path, cache_dir):
 
 
 def read_pred_file(filepath):
-    print(filepath)
     with open(filepath, 'r') as f:
         lines = f.readlines()
         img_file = lines[0].rstrip('\n\r')
