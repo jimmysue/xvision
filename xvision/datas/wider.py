@@ -1,4 +1,3 @@
-from sys import maxsize
 import numpy as np
 import cv2
 import random
@@ -14,12 +13,12 @@ from xvision.transforms.boxes import bbox_affine
 
 
 class WiderFace(Dataset):
-    def __init__(self, label_file, image_dir, transform=None, with_shapes=False, min_size=0) -> None:
+    def __init__(self, label_file, image_dir, transform=None, with_shapes=False, min_face=0) -> None:
         super().__init__()
         if transform:
             assert callable(transform), "transform must be callable"
         self.data = list(WiderFace.parse(
-            label_file, image_dir, with_shapes, min_size))
+            label_file, image_dir, with_shapes, min_face))
         self.transform = transform
 
     def __len__(self):
@@ -33,7 +32,7 @@ class WiderFace(Dataset):
         return item
 
     @staticmethod
-    def parse(label_file, image_dir, with_shapes, min_size):
+    def parse(label_file, image_dir, with_shapes, min_face):
         image_dir = Path(image_dir)
         if not with_shapes:
             def parse_annotation(fd):
@@ -56,7 +55,7 @@ class WiderFace(Dataset):
                 sizes = np.min(bbox[:, 2:], axis=-1)
                 bbox[:, 2:] += bbox[:, :2]
                 fullpath = image_dir / name
-                keep = sizes > min_size
+                keep = sizes > min_face
                 bbox = bbox[keep, :]
                 if bbox.size > 0:
                     yield {
@@ -94,7 +93,7 @@ class WiderFace(Dataset):
                 valids = scores >= 0
                 mask = np.all(valids, axis=-1)
 
-                keep = sizes > min_size
+                keep = sizes > min_face
 
                 bbox = bbox[keep, :]
                 pts = pts[keep, ...]
@@ -185,7 +184,7 @@ class TrainTransform(ValTransform):
         boxes = item['bbox']  # [n, 4]
         h, w = image.shape[:2]
         dw, dh = dsize
-        # random choose one face or whole image as interest region,
+        # random choose one face as interest region,
         box = random.choice(boxes)
         size = np.random.choice(np.sqrt(np.prod(boxes[:, 2:] - boxes[:, :2], axis=-1)))
         max_size = min(size, self.max_face)
@@ -252,15 +251,13 @@ if __name__ == '__main__':
     from collections import defaultdict
     from matplotlib import pyplot as plt
     from xvision.utils.draw import *
-    from torch.utils.data import DataLoader
-    from xvision.ops.anchors import BBoxAnchors
     from projects.face_detection.config import cfg
     train = "/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/train/label.txt"
     dir = "/Users/jimmy/Documents/data/WIDER/WIDER_train/images"
 
     transform = TrainTransform((320, 320), **cfg.augments)
     data = WiderFace(train, dir, with_shapes=True,
-                     min_size=1, transform=transform)
+                     min_face=1, transform=transform)
 
     areas = defaultdict(float)
     count = 0
@@ -277,33 +274,4 @@ if __name__ == '__main__':
     
     plt.bar(areas.keys(), areas.values())
     plt.show()
-    # loader = DataLoader(data, batch_size=128, shuffle=True,
-    #                     num_workers=8, collate_fn=wider_collate)
-    # anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides,
-    #                       fsizes=cfg.fsizes, layouts=cfg.layouts)
-
-    # # for batch in tqdm.tqdm(loader):
-    # #     image = batch['image']
-    # #     point = batch['shape']
-    # #     label = batch['label']
-    # #     bbox = batch['bbox']
-    # #     mask = batch['mask']
-    # #     scores, bboxes, shapes = anchors(label, bbox, point, mask)
-
-    # val = "/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/val/label.txt"
-    # dir = "/Users/jimmy/Documents/data/WIDER/WIDER_val/images"
-
-    # transform = BasicTransform((320, 320))
-    # data = WiderFace(val, dir, with_shapes=False,
-    #                  min_size=10, transform=transform)
-
-    # loader = DataLoader(data, batch_size=128, shuffle=True,
-    #                     num_workers=8, collate_fn=wider_collate)
-    # anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides,
-    #                       fsizes=cfg.fsizes, layouts=cfg.layouts)
-
-    # for batch in tqdm.tqdm(loader):
-    #     image = batch['image']
-    #     label = batch['label']
-    #     bbox = batch['bbox']
-    #     scores, bboxes = anchors(label, bbox)
+  

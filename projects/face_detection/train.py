@@ -76,8 +76,8 @@ def main(args):
     # prepare dataset
     valtransform = ValTransform(dsize=args.dsize)
     traintransform = TrainTransform(dsize=args.dsize, **args.augments)
-    trainset = WiderFace(args.train_label, args.train_image, min_size=1, with_shapes=True, transform=traintransform)
-    valset = WiderFace(args.val_label, args.val_image, transform=valtransform, min_size=1)
+    trainset = WiderFace(args.train_label, args.train_image, min_face=1, with_shapes=True, transform=traintransform)
+    valset = WiderFace(args.val_label, args.val_image, transform=valtransform, min_face=1)
 
     trainloader = DataLoader(trainset, batch_size=args.batch_size, 
         shuffle=True, num_workers=args.num_workers, pin_memory=True, 
