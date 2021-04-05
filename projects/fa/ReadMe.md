@@ -32,6 +32,20 @@ WFLW 数据集总共标注了10000个人脸, 其中7500作为训练集,2500作�
 
 ## [JDAI-CV/lapa-dataset](https://github.com/JDAI-CV/lapa-dataset)
 
+## LaPa-Dataset for face parsing
+
+- [Home Page](https://github.com/JDAI-CV/lapa-dataset)
+- Dataset: [Google Drive](https://drive.google.com/file/d/1XOBoRGSraP50_pS1YPB8_i8Wmw_5L-NG/view?usp=sharing) | [Baidu Netdisk](https://pan.baidu.com/s/10GDmsmJJ28ugEJzj5Mu9gQ) password: LaPa
+
 数据用于人脸解析比赛, 其中包含了人脸106点标注
 
-## [JD Grand Challenge of 106-p Facial Landmark Localization](https://github.com/facial-landmarks-localization-challenge/facial-landmarks-localization-challenge.github.io/blob/master/Corrected_landmark.zip?raw=true)
+## The 2nd Grand Challenge of Facial Landmark Localization 
+
+- [Home Page](https://fllc-icpr2020.github.io/home/)
+- Dataset:  [Baidu](https://pan.baidu.com/s/10jLmWAXRzZ2tN1oRef7Fug), password: ttlp; [Google Drive](https://drive.google.com/file/d/16fiVoBaTtOevQa4mH34rWggfkNKNEL2A/view?usp=sharing)
+
+## The 1st Grand Challenge of 106-p Facial Landmark Localization
+
+- [Home Page](https://facial-landmarks-localization-challenge.github.io/#index)
+- Dataset: [Baidu](https://pan.baidu.com/s/1Sma_Lv_y-DtrXgDblYTucA); [Google Drive](https://drive.google.com/uc?id=1gD4xcUUKQo6-70KgBUbODSdQtb_tnuvu&export=download)
+- Correct Annotation: [Download](https://github.com/facial-landmarks-localization-challenge/facial-landmarks-localization-challenge.github.io/blob/master/Corrected_landmark.zip?raw=true)
