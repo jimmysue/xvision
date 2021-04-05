@@ -27,11 +27,35 @@ class Transform(object):
         self.padding = padding
         self.augments = augments
 
+    def _augment(self, item, matrix):
+        r = self.augments['rotate']
+        s = self.augments['scale']
+        t = self.augments['translate']
+        symmetry = self.augments['symmetry']
+        scale = np.exp(np.random.uniform(-np.log(1 + s), np.log(1 + s)))
+        translate = np.random.uniform(-t, t) * np.array(self.dsize)
+        angle = np.random.uniform(-r, r)
+        jitter = matrix2d.translate(
+            translate) @ matrix2d.center_rotate_scale_cw(np.array(self.dsize)/2, angle, scale)
+
+        if np.random.choice([True, False]):
+            # mirror
+            jitter = matrix2d.hflip(self.dsize[0]) @ jitter
+            shape = item['shape']
+            shape = shape[..., symmetry, :]
+            item['shape'] = shape
+        return jitter @ matrix
+
     def __call__(self, item) -> dict:
         image = item['image']
         shape = item['shape']
+
         matrix = umeyama(shape, self.ref)
 
+        if self.augments:
+            matrix = self._augment(item, matrix)
+        image = item['image']
+        shape = item['shape']    
         image = warp_affine(image, matrix, self.dsize)
         shape = shape_affine(shape, matrix)
 
@@ -50,19 +74,21 @@ if __name__ == '__main__':
     picture = '/Users/jimmy/Documents/data/FA/JD-landmark/Train/picture'
     data = JDLandmark(landmark, picture)
 
-    transform = Transform((128, 128), 0.2, cfg.meanshape)
+    transform = Transform((128, 128), 0.2, cfg.meanshape, cfg.augments)
 
-    data.transform = transform
+    # data.transform = transform
 
-    for item in data:
-        image = item['image']
-        shape = item['shape']
-        lt = shape.min(axis=0)
-        rb = shape.max(axis=0)
-        size = (rb - lt).max()
-        radius = int(max(2, size * 0.03))
-        draw_shapes(image, shape, radius)
-        cv2.imshow("v", image)
-        k = cv2.waitKey(500)
-        if k == ord('q'):
-            break
+    for v in data:
+        for _ in range(10):
+            item = transform(v.copy())
+            image = item['image']
+            shape = item['shape']
+            lt = shape.min(axis=0)
+            rb = shape.max(axis=0)
+            size = (rb - lt).max()
+            radius = int(max(2, size * 0.03))
+            draw_shapes(image, shape[None, ...], radius)
+            cv2.imshow("v", image)
+            k = cv2.waitKey(500)
+            if k == ord('q'):
+                exit()
