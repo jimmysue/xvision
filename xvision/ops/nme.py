@@ -28,14 +28,14 @@ def nme(inputs, targets, left, right, reduction='none'):
     return loss
 
 
-class NME(nn.Module):
+class IbugScore(nn.Module):
     def __init__(self, left_eye, right_eye):
         super().__init__()
         self.left_eye = left_eye
         self.right_eye = right_eye
 
     def forward(self, preds, targets):
-        return nme(preds, targets, self.left_eye, self.right_eye, 'mean')
+        return nme(preds, targets, self.left_eye, self.right_eye, 'mean') * 100
 
 
 if __name__ == '__main__':

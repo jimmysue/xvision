@@ -14,7 +14,7 @@ from xvision.ops.utils import group_parameters
 from xvision.datasets.jdlmk import JDLandmark
 from xvision.utils.meter import MetricLogger, SmoothedValue
 from xvision.ops.euclidean_loss import euclidean_loss
-from xvision.ops.nme import NME
+from xvision.ops.nme import IbugScore
 
 from transform import Transform
 
@@ -53,7 +53,7 @@ def evaluate(model, loader, score_fn, device):
     model.eval()
     meter = MetricLogger()
     meter.add_meter('loss', SmoothedValue(fmt='{global_avg: .4f}'))
-    meter.add_meter('score', SmoothedValue(fmt='{global_avg: .4f}'))
+    meter.add_meter('score', SmoothedValue(fmt='{global_avg: .2f}'))
     for batch in loader:
         batch = process_batch(batch, device)
         image = batch['image'].permute(0, 3, 1, 2).float()
@@ -89,11 +89,12 @@ def main(args):
 
     # datasets
     datadir = Path(args.jdlmk)
-    transform = Transform(args.dsize, args.padding, args.meanshape)
+    valtransform = Transform(args.dsize, args.padding, args.meanshape)
+    traintransform = Transform(args.dsize, args.padding, args.meanshape, args.augments)
     traindata = JDLandmark(datadir / 'Train/landmark',
-                           datadir / 'Train/picture', transform)
+                           datadir / 'Train/picture', traintransform)
     valdata = JDLandmark(datadir / 'Val/landmark',
-                         datadir / 'Val/picture', transform)
+                         datadir / 'Val/picture', valtransform)
 
     trainloader = DataLoader(traindata, args.batch_size, shuffle=True,
                              drop_last=True, num_workers=args.num_workers, pin_memory=True)
@@ -113,7 +114,7 @@ def main(args):
         'step': 0,
         'loss': best_loss
     }
-    score_fn = NME(args.left_eye, args.right_eye)
+    score_fn = IbugScore(args.left_eye, args.right_eye)
     saver.save(0, state)
     repeatloader = repeat(trainloader)
     start = time.time()
