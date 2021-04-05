@@ -119,6 +119,7 @@ def main(args):
     start = time.time()
     for step in range(0, args.total_steps, args.eval_interval):
         num_steps = min(args.eval_interval, args.total_steps - step)
+        step += num_steps
         trainmeter = train_steps(
             model, repeatloader, optimizer, lr_scheduler, score_fn, device, num_steps)
         evalmeter = evaluate(model, valloader, score_fn, device)
@@ -141,6 +142,7 @@ def main(args):
             saver.save_best(state)
             best_loss = curr_loss
 
+        start = time.time()
 
 if __name__ == '__main__':
     from config import cfg
