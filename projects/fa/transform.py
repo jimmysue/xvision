@@ -1,10 +1,6 @@
 import cv2
 import numpy as np
 from numbers import Number
-from numpy.core.fromnumeric import mean
-from numpy.matrixlib.defmatrix import matrix
-from sklearn.preprocessing import normalize
-from xvision import transforms
 
 from xvision.transforms.umeyama import umeyama
 from xvision.transforms.warp import warp_affine

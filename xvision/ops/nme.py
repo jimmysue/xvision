@@ -1,12 +1,15 @@
 import torch
+import torch.nn as nn
 
 # normalized mean error
+
+
 def nme(inputs, targets, left, right, reduction='none'):
     # inputs: [B, p, 2]
     # targets: [B, p, 2]
     # left: left eye indice
     # right: right eye indice
-    
+
     diff = inputs - targets
     me = torch.norm(diff, p=2, dim=-1).mean(dim=-1)  # [B]
 
@@ -21,9 +24,18 @@ def nme(inputs, targets, left, right, reduction='none'):
         loss = loss.sum()
     elif reduction == 'mean':
         loss = loss.mean()
-    
+
     return loss
 
+
+class NME(nn.Module):
+    def __init__(self, left_eye, right_eye):
+        super().__init__()
+        self.left_eye = left_eye
+        self.right_eye = right_eye
+
+    def forward(self, preds, target):
+        return nme(preds, targets, self.left_eye, self.right_eye, 'mean')
 
 
 if __name__ == '__main__':

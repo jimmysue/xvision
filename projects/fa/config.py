@@ -4,7 +4,8 @@ _C = CN()
 cfg = _C
 
 _C.workdir = 'workspace/fa'
-_C.dsize = 128
+_C.dsize = 8
+_C.padding = 0.2
 _C.lr = 0.2
 _C.momentum = 0.9
 _C.weight_decay = 5e-4
@@ -13,6 +14,8 @@ _C.start_step = 0       # for resume
 _C.total_steps = 10000   # training steps
 _C.num_workers = 8
 _C.eval_interval = 100    # evaluate interval
+_C.left_eye = [66, 70]
+_C.right_eye = [75, 79]
 
 _C.model = CN(recursive=False)
 _C.model.name = 'mbv2'
