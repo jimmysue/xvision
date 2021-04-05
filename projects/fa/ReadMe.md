@@ -30,8 +30,6 @@ unzip bounding_boxes.zip ; mv Bounding\ Boxes Bounding_Boxes
 
 WFLW 数据集总共标注了10000个人脸, 其中7500作为训练集,2500作为测试. 图像来自WIDER FACE 人脸检测数据集
 
-## [JDAI-CV/lapa-dataset](https://github.com/JDAI-CV/lapa-dataset)
-
 ## LaPa-Dataset for face parsing
 
 - [Home Page](https://github.com/JDAI-CV/lapa-dataset)
