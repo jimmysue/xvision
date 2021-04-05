@@ -13,7 +13,7 @@ _C.batch_size = 256
 _C.start_step = 0       # for resume
 _C.total_steps = 10000   # training steps
 _C.num_workers = 8
-_C.eval_interval = 100    # evaluate interval
+_C.eval_interval = 5    # evaluate interval
 _C.left_eye = [66, 70]
 _C.right_eye = [75, 79]
 

@@ -34,7 +34,7 @@ class NME(nn.Module):
         self.left_eye = left_eye
         self.right_eye = right_eye
 
-    def forward(self, preds, target):
+    def forward(self, preds, targets):
         return nme(preds, targets, self.left_eye, self.right_eye, 'mean')
 
 

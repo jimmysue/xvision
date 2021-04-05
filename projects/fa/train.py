@@ -30,13 +30,13 @@ def train_steps(model, loader, optimizer, lr_scheduler, score_fn, device, num_st
     meter = MetricLogger()
     meter.add_meter('lr', SmoothedValue(1, fmt='{value:.6f}'))
     meter.add_meter('loss', SmoothedValue())
-    meter.add_meter('score')
+    meter.add_meter('score', SmoothedValue())
     for _ in range(num_steps):
         batch = next(loader)
         batch = process_batch(batch, device)
         image = batch['image'].permute(0, 3, 1, 2).float()
         shape = batch['shape']
-        pred = model(image)
+        pred = model(image).reshape(shape.shape)
         loss = euclidean_loss(pred, shape, reduction='mean')
         score = score_fn(pred, shape)
         optimizer.zero_grad()
@@ -58,7 +58,7 @@ def evaluate(model, loader, score_fn, device):
         batch = process_batch(batch, device)
         image = batch['image'].permute(0, 3, 1, 2).float()
         shape = batch['shape']
-        preds = model(image)
+        preds = model(image).reshape(shape.shape)
         loss = euclidean_loss(preds, shape, reduction='mean')
         score = score_fn(preds, shape)
         meter.update(loss=loss.item(), score=score.item())

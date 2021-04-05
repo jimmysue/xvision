@@ -37,7 +37,7 @@ class Transform(object):
 
         return {
             'image': image,
-            'shape': shape
+            'shape': shape.astype(np.float32)
         }
 
 
