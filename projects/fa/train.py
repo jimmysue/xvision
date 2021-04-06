@@ -20,12 +20,12 @@ from transform import Transform
 
 
 def process_batch(batch, device):
-    image = batch['image'].to(device, non_blocking=True).permute(0, 3, 1, 2).float() / 255
+    image = batch['image'].to(device, non_blocking=True).permute(
+        0, 3, 1, 2).float() / 255
     shape = batch['shape'].to(device, non_blocking=True)
     w, h = image.size(-1), image.size(-2)
     shape /= shape.new_tensor([w, h])
     return dict(image=image, shape=shape)
-   
 
 
 def train_steps(model, loader, optimizer, lr_scheduler, score_fn, device, num_steps):
@@ -93,7 +93,8 @@ def main(args):
     # datasets
     datadir = Path(args.jdlmk)
     valtransform = Transform(args.dsize, args.padding, args.meanshape)
-    traintransform = Transform(args.dsize, args.padding, args.meanshape, args.augments)
+    traintransform = Transform(
+        args.dsize, args.padding, args.meanshape, args.augments)
     traindata = JDLandmark(datadir / 'landmark',
                            datadir / 'picture', traintransform)
     valdata = JDLandmark(datadir / 'landmark',
@@ -111,9 +112,9 @@ def main(args):
 
     best_loss = 1e-9
     state = {
-        'model': model,
-        'optmizer': optimizer,
-        'lr_scheduler': lr_scheduler,
+        'model': model.state_dict(),
+        'optimizer': optimizer.state_dict(),
+        'lr_scheduler': lr_scheduler.state_dict(),
         'step': 0,
         'loss': best_loss
     }
@@ -134,9 +135,9 @@ def main(args):
             f'step: [{step}/{args.total_steps}] img/s: {img_s:.2f} train: [{trainmeter}] eval: [{evalmeter}]')
 
         state = {
-            'model': model,
-            'optimizer': optimizer,
-            'lr_scheduler': lr_scheduler,
+            'model': model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'lr_scheduler': lr_scheduler.state_dict(),
             'step': step,
             'loss': curr_loss
         }
@@ -147,6 +148,7 @@ def main(args):
             best_loss = curr_loss
 
         start = time.time()
+
 
 if __name__ == '__main__':
     from config import cfg
