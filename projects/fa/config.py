@@ -4,7 +4,7 @@ _C = CN()
 cfg = _C
 
 _C.workdir = 'workspace/fa'
-_C.dsize = 8
+_C.dsize = 128
 _C.padding = 0.2
 _C.lr = 0.2
 _C.momentum = 0.9
