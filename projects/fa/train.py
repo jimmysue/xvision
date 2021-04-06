@@ -20,9 +20,12 @@ from transform import Transform
 
 
 def process_batch(batch, device):
-    return {
-        k: v.to(device, non_blocking=True) for k, v in batch.items()
-    }
+    image = batch['image'].to(device, non_blocking=True).permute(0, 3, 1, 2).float() / 255
+    shape = batch['shape'].to(device, non_blocking=True)
+    w, h = image.size(-1), image.size(-2)
+    shape /= shape.new_tensor([w, h])
+    return dict(image=image, shape=shape)
+   
 
 
 def train_steps(model, loader, optimizer, lr_scheduler, score_fn, device, num_steps):
@@ -34,7 +37,7 @@ def train_steps(model, loader, optimizer, lr_scheduler, score_fn, device, num_st
     for _ in range(num_steps):
         batch = next(loader)
         batch = process_batch(batch, device)
-        image = batch['image'].permute(0, 3, 1, 2).float()
+        image = batch['image']
         shape = batch['shape']
         pred = model(image).reshape(shape.shape)
         loss = euclidean_loss(pred, shape, reduction='mean')
@@ -56,7 +59,7 @@ def evaluate(model, loader, score_fn, device):
     meter.add_meter('score', SmoothedValue(fmt='{global_avg: .2f}'))
     for batch in loader:
         batch = process_batch(batch, device)
-        image = batch['image'].permute(0, 3, 1, 2).float()
+        image = batch['image']
         shape = batch['shape']
         preds = model(image).reshape(shape.shape)
         loss = euclidean_loss(preds, shape, reduction='mean')
@@ -91,10 +94,10 @@ def main(args):
     datadir = Path(args.jdlmk)
     valtransform = Transform(args.dsize, args.padding, args.meanshape)
     traintransform = Transform(args.dsize, args.padding, args.meanshape, args.augments)
-    traindata = JDLandmark(datadir / 'Train/landmark',
-                           datadir / 'Train/picture', traintransform)
-    valdata = JDLandmark(datadir / 'Val/landmark',
-                         datadir / 'Val/picture', valtransform)
+    traindata = JDLandmark(datadir / 'landmark',
+                           datadir / 'picture', traintransform)
+    valdata = JDLandmark(datadir / 'landmark',
+                         datadir / 'picture', valtransform)
 
     trainloader = DataLoader(traindata, args.batch_size, shuffle=True,
                              drop_last=True, num_workers=args.num_workers, pin_memory=True)
