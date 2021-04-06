@@ -50,11 +50,22 @@ class WFLW(Dataset):
 
 if __name__ == '__main__':
     from xvision.utils.draw import draw_points
-
+    from xvision.transforms.shapes import calc_mean_shape
     label = '/Users/jimmy/Documents/Data/WFLW/WFLW_annotations/list_98pt_rect_attr_train_test/list_98pt_rect_attr_train.txt'
     image = '/Users/jimmy/Documents/Data/WFLW/WFLW_images'
     data = WFLW(label, image)
     shapes = data.shapes
+
+    meanshape = calc_mean_shape(shapes)
+    np.set_printoptions(formatter={"float_kind": lambda x: "{:.4f}".format(x)})
+    print(meanshape)
+
+    image = np.ones((720, 720, 3), dtype=np.float32)
+    meanshape = meanshape * 640 + 40
+    draw_points(image, meanshape, radius = 3, plot_index=True)
+    cv2.imshow("v", image)
+    cv2.waitKey()
+
     print(shapes.shape)
     for item in data:
         image = item.pop('image')

@@ -6,12 +6,11 @@ from torch.utils.data import Dataset
 
 
 class JDLandmark(Dataset):
-    __symmetry__ = [32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17,
-                    16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 46, 45,
-                    44, 43, 42, 50, 49, 48, 47, 37, 36, 35, 34, 33, 41, 40, 39, 38, 51, 52,
-                    53, 54, 65, 64, 63, 62, 61, 60, 59, 58, 57, 56, 55, 79, 78, 77, 76, 75,
-                    82, 81, 80, 79, 70, 69, 68, 67, 66, 74, 73, 72, 71, 90, 89, 88, 87, 86,
-                    85, 84, 95, 94, 93, 92, 91, 100, 99, 98, 97, 96, 103, 102, 101, 105, 104]
+    __symmetry__ = [32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9,
+                        8, 7, 6, 5, 4, 3, 2, 1, 0, 46, 45, 44, 43, 42, 50, 49, 48, 47, 37, 36, 35, 34, 33, 41, 40, 39,
+                        38, 51, 52, 53, 54, 65, 64, 63, 62, 61, 60, 59, 58, 57, 56, 55, 79, 78, 77, 76, 75, 82, 81, 80,
+                        83, 70, 69, 68, 67, 66, 73, 72, 71, 74, 90, 89, 88, 87, 86, 85, 84, 95, 94, 93, 92, 91, 100, 99,
+                        98, 97, 96, 103, 102, 101, 105, 104]
     
     def __init__(self, landmark, picture, transform=None) -> None:
         """JingDong Landmark
@@ -49,7 +48,12 @@ class JDLandmark(Dataset):
         picture = Path(picture)
 
         for imgpath in picture.rglob('*.jpg'):
-            annpath = (landmark / imgpath.name).with_suffix('.jpg.txt')
+            annpath = (landmark / imgpath.name).with_suffix('.txt')
+            if not annpath.exists():
+                annpath = (landmark / imgpath.name).with_suffix('.jpg.txt')
+                if not annpath.exists():
+                    raise ValueError("Annotation file not found")
+                    
             with open(annpath, 'rt') as f:
                 num_points = int(f.readline())
                 points = f.readlines()
@@ -64,13 +68,12 @@ class JDLandmark(Dataset):
 
 
 if __name__ == '__main__':
-    from xvision.utils.draw import draw_shapes
+    from xvision.utils.draw import draw_shapes, draw_points
     root = '/Users/jimmy/Documents/data/FA/IBUG'
-    landmark = '/Users/jimmy/Documents/data/FA/JD-landmark/Train/landmark'
-    picture = '/Users/jimmy/Documents/data/FA/JD-landmark/Train/picture'
+    landmark = '/Users/jimmy/Documents/data/FA/FLL2/landmark'
+    picture = '/Users/jimmy/Documents/data/FA/FLL2/picture'
     data = JDLandmark(landmark, picture)
     shapes = data.shapes
-
     mirrors = shapes[:, JDLandmark.__symmetry__, :]
     mirrors[:, :, 0] = -mirrors[:, :, 0]
     shapes = np.concatenate([shapes, mirrors], axis=0)
@@ -78,8 +81,9 @@ if __name__ == '__main__':
     np.set_printoptions(formatter={"float_kind": lambda x: "{:.4f}".format(x)})
     print(meanshape)
 
-    image = np.ones((256, 256, 3), dtype=np.float32)
-    draw_shapes(image, meanshape * 256)
+    image = np.ones((720, 720, 3), dtype=np.float32)
+    meanshape = meanshape * 640 + 40
+    draw_points(image, meanshape, radius = 3, plot_index=True)
     cv2.imshow("v", image)
     cv2.waitKey()
 

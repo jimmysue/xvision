@@ -6,6 +6,7 @@ from xvision.transforms.umeyama import umeyama
 from xvision.transforms.warp import warp_affine
 from xvision.transforms import matrix2d
 from xvision.transforms.shapes import *
+from xvision.utils.draw import draw_points
 
 
 class Transform(object):
@@ -70,11 +71,11 @@ if __name__ == '__main__':
     from xvision.utils.draw import draw_shapes
     from config import cfg
     root = '/Users/jimmy/Documents/data/FA/IBUG'
-    landmark = '/Users/jimmy/Documents/data/FA/JD-landmark/Train/landmark'
-    picture = '/Users/jimmy/Documents/data/FA/JD-landmark/Train/picture'
+    landmark = '/Users/jimmy/Documents/data/FA/FLL2/landmark'
+    picture = '/Users/jimmy/Documents/data/FA/FLL2/picture'
     data = JDLandmark(landmark, picture)
 
-    transform = Transform((128, 128), 0.2, cfg.meanshape, cfg.augments)
+    transform = Transform((512, 512), 0.2, cfg.meanshape, cfg.augments)
 
     # data.transform = transform
 
@@ -87,8 +88,8 @@ if __name__ == '__main__':
             rb = shape.max(axis=0)
             size = (rb - lt).max()
             radius = int(max(2, size * 0.03))
-            draw_shapes(image, shape[None, ...], radius)
+            draw_points(image, shape, plot_index=True)
             cv2.imshow("v", image)
-            k = cv2.waitKey(500)
+            k = cv2.waitKey()
             if k == ord('q'):
                 exit()
