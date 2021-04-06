@@ -1,7 +1,9 @@
 import numpy as np
+import tqdm
 from numbers import Number
 from types import GeneratorType
 from torch.utils.data import Dataset
+from joblib import Parallel, delayed
 
 
 def structured_dtype(value):
@@ -26,30 +28,42 @@ def structured_assign(dst, value):
         for k, v in value.items():
             structured_assign(dst[k], v)
     else:
-        dst = value
+        dst[...] = value
 
 
-def create_mmap_dataset(filename, data, transform):
+def create_mmap_dataset(filename, data, transform, num_workers=1):
     if isinstance(data, GeneratorType):
         data = list(data)
-    item = data[0]
+    item = transform(data[0])
     data_type = structured_dtype(item)
     shape = (len(data),)
-    fp = np.memmap(filename, data_type, 'w+', shape=shape)
-    for i, v in enumerate(data):
+    fp = np.lib.format.open_memmap(
+        filename, mode='w+', dtype=data_type, shape=shape)
+
+    def process(i, v):
         v = transform(v)
         structured_assign(fp[i], v)
-    
+
+    if num_workers > 1:
+        Parallel(n_jobs=num_workers)(delayed(process)(i, v)
+                 for i, v in enumerate(tqdm.tqdm(data, desc=f'memmaping to {filename}')))
+    else:
+        for i, v in enumerate(tqdm.tqdm(data, desc=f'memmaping to {filename}')):
+            v=transform(v)
+            structured_assign(fp[i], v)
+    fp.flush()
+    return np.lib.format.open_memmap(filename, mode='r')
+
 
 class MMap(Dataset):
     def __init__(self, filename, transform=None):
         super().__init__()
         if transform:
             assert callable(transform), 'transform should be callable'
-        self.filename = filename
-        self.transform = transform
-        self.mmap = np.lib.format.open_memmap(filename, mode='r')
+        self.filename=filename
+        self.transform=transform
+        self.mmap=np.lib.format.open_memmap(filename, mode='r')
 
 
 if __name__ == '__main__':
-    fp = np.memmap('filename.npy', dtype='float32', mode='w+', shape=(3, 4))
+    fp=np.memmap('filename.npy', dtype='float32', mode='w+', shape=(3, 4))
