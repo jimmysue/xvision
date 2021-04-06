@@ -20,21 +20,41 @@ def structured_dtype(value):
         raise ValueError(f'Unsupport structured type: {value}')
 
 
-def structured_assign(dst, value):
-    if isinstance(value, tuple):
+def structured_assign(dst, key, value):
+    if isinstance(value, (tuple, list)):
         for i, v in enumerate(value):
-            structured_assign(dst[f'f{i}'], v)
+            structured_assign(dst[key], f'f{i}', v)
     elif isinstance(value, dict):
         for k, v in value.items():
-            structured_assign(dst[k], v)
+            structured_assign(dst[key], k, v)
+    elif isinstance(value, np.ndarray):
+        dst[key][...] = value
     else:
-        dst[...] = value
+        dst[key] = value
+
+
+def _is_tuple_fileds(fileds):
+    for i, key in enumerate(fileds.keys()):
+        if key != f'f{i}':
+            return False
+    return True
+
+
+def structured_unfold(value):
+    dtype = value.dtype
+    if dtype.fields:
+        if _is_tuple_fileds(dtype.fields):
+            return tuple([structured_unfold(value[k]) for k in dtype.fields.keys()])
+        else:
+            return {k: structured_unfold(value[k]) for k in dtype.fields.keys()}
+    else:
+        return value
 
 
 def create_mmap_dataset(filename, data, transform, num_workers=1):
     if isinstance(data, GeneratorType):
         data = list(data)
-    item = transform(data[0])
+    item = transform(data[0].copy())
     data_type = structured_dtype(item)
     shape = (len(data),)
     fp = np.lib.format.open_memmap(
@@ -42,15 +62,15 @@ def create_mmap_dataset(filename, data, transform, num_workers=1):
 
     def process(i, v):
         v = transform(v)
-        structured_assign(fp[i], v)
+        structured_assign(fp, i, v)
 
     if num_workers > 1:
         Parallel(n_jobs=num_workers)(delayed(process)(i, v)
-                 for i, v in enumerate(tqdm.tqdm(data, desc=f'memmaping to {filename}')))
+                                     for i, v in enumerate(tqdm.tqdm(data, desc=f'memmaping to {filename}')))
     else:
         for i, v in enumerate(tqdm.tqdm(data, desc=f'memmaping to {filename}')):
-            v=transform(v)
-            structured_assign(fp[i], v)
+            v = transform(v)
+            structured_assign(fp, i, v)
     fp.flush()
     return np.lib.format.open_memmap(filename, mode='r')
 
@@ -60,10 +80,20 @@ class MMap(Dataset):
         super().__init__()
         if transform:
             assert callable(transform), 'transform should be callable'
-        self.filename=filename
-        self.transform=transform
-        self.mmap=np.lib.format.open_memmap(filename, mode='r')
+        self.filename = filename
+        self.transform = transform
+        self.mmap = np.lib.format.open_memmap(filename, mode='r')
+
+    def __len__(self):
+        return len(self.mmap)
+
+    def __getitem__(self, index):
+        item = self.mmap[index].copy()
+        item = structured_unfold(item)
+        if self.transform:
+            item = self.transform(item)
+        return item
 
 
 if __name__ == '__main__':
-    fp=np.memmap('filename.npy', dtype='float32', mode='w+', shape=(3, 4))
+    fp = np.memmap('filename.npy', dtype='float32', mode='w+', shape=(3, 4))
