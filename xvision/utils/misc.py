@@ -2,6 +2,7 @@ import os
 import math
 import multiprocessing
 
+# copy and edit from https://github.com/conan-io/conan/blob/develop/conans/client/tools/oss.py
 
 class CpuProperties(object):
 
