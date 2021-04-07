@@ -28,3 +28,11 @@
 
 - [ ] Image Aesthetics Assessment
 - [ ] ...
+
+
+
+[1]: Ultra-Light-Fast-Generic-Face-Detector-1MB
+[2]: https://github.com/biubug6/Face-Detector-1MB-with-landmark
+[google cloud]: https://drive.google.com/open?id=11UGV3nbVv1x9IC--_tK3Uxf7hA6rlbsS
+[baidu cloud]: https://pan.baidu.com/s/1jIp9t30oYivrAvrgUgIoLQ
+[WiderFace-Evaluation]: https://github.com/wondervictor/WiderFace-Evaluation
