@@ -144,6 +144,6 @@ _C.data.meanshape = [[0.0000, 0.1501],
 # augments for training
 _C.augments = CN()
 _C.augments.rotate = 15
-_C.augments.scale = 0.2
+_C.augments.scale = 0.15
 _C.augments.translate = 0.1
 _C.augments.symmetry = _C.data.symmetry
