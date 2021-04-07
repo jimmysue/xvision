@@ -107,7 +107,7 @@ def main(args):
             for batch in loader:
                 yield batch
 
-    best_loss = 1e-9
+    best_loss = 1e9
     state = {
         'model': model,
         'optmizer': optimizer,
