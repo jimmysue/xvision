@@ -1,6 +1,7 @@
 import time
 from os import getloadavg
 from pathlib import Path
+from xvision.datasets.mmap import MMap
 
 import torch
 from torch.optim import SGD
@@ -16,7 +17,7 @@ from xvision.utils.meter import MetricLogger, SmoothedValue
 from xvision.ops.euclidean_loss import euclidean_loss
 from xvision.ops.nme import IbugScore
 
-from transform import Transform
+from transform import Transform, CacheTransform
 
 
 def process_batch(batch, device):
@@ -92,13 +93,17 @@ def main(args):
 
     # datasets
     datadir = Path(args.jdlmk)
+    picture = datadir / 'picture'
+    landmark = datadir / 'landmark'
+    gen = JDLandmark.parse(landmark, picture)
+    cacher = CacheTransform(args.dsize, args.padding, args.meanshape)
+    MMap.create('/dockerdata/fll2.npy', gen, cacher, 6)
+
     valtransform = Transform(args.dsize, args.padding, args.meanshape)
     traintransform = Transform(
         args.dsize, args.padding, args.meanshape, args.augments)
-    traindata = JDLandmark(datadir / 'landmark',
-                           datadir / 'picture', traintransform)
-    valdata = JDLandmark(datadir / 'landmark',
-                         datadir / 'picture', valtransform)
+    traindata = MMap('/dockerdata/fll2.npy', traintransform)
+    valdata = MMap('/dockerdata/fll2.npy', valtransform)
 
     trainloader = DataLoader(traindata, args.batch_size, shuffle=True,
                              drop_last=True, num_workers=args.num_workers, pin_memory=True)
