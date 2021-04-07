@@ -26,6 +26,14 @@ class WFLW(Dataset):
     def shapes(self):
         shapes = [v['shape'] for v in self.data]
         return np.stack(shapes, axis=0)
+    
+    @property
+    def meanshape(self):
+        shapes = data.shapes
+        mirrors = shapes[:, self.__symmetry__, :]
+        mirrors[:, :, 0] = -mirrors[:, :, 0]
+        shapes = np.concatenate([shapes, mirrors], axis=0)
+        return calc_mean_shape(shapes)
 
     def __len__(self):
         return len(self.data)
@@ -58,14 +66,31 @@ class WFLW(Dataset):
 
 if __name__ == '__main__':
     from xvision.utils.draw import draw_points
-
+    from xvision.transforms.shapes import calc_mean_shape
     label = '/Users/jimmy/Documents/Data/WFLW/WFLW_annotations/list_98pt_rect_attr_train_test/list_98pt_rect_attr_train.txt'
     image = '/Users/jimmy/Documents/Data/WFLW/WFLW_images'
     data = WFLW(label, image)
 
+    shapes = data.shapes
+    mirrors = shapes[:, WFLW.__symmetry__, :]
+    mirrors[:, :, 0] = -mirrors[:, :, 0]
+    shapes = np.concatenate([shapes, mirrors], axis=0)
+    meanshape = calc_mean_shape(shapes)
+
+    np.set_printoptions(formatter={"float_kind": lambda x: "{:.4f}".format(x)})
+    print(meanshape)
+
+    image = np.ones((1080, 1080, 3), dtype=np.float32)
+    draw_points(image, (meanshape - 0.5) * 900 + 540, radius = 4, plot_index=True)
+    cv2.imshow("v", image)
+    cv2.waitKey()
+
+    # calc mean shape
+
+
+
     # calc meanshape
 
-    shapes = data.shapes
     print(shapes.shape)
     for item in data:
         image = item.pop('image')

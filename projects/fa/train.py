@@ -7,11 +7,11 @@ from torch.optim import SGD
 from torch.optim.lr_scheduler import OneCycleLR
 from torch.utils.data import DataLoader
 
+import xvision.datasets as datasets
+import xvision.models.fa as models
 from xvision.utils.logger import get_logger
 from xvision.utils.saver import Saver
-from xvision.models import fa as models
 from xvision.ops.utils import group_parameters
-from xvision.datasets.jdlmk import JDLandmark
 from xvision.utils.meter import MetricLogger, SmoothedValue
 from xvision.ops.euclidean_loss import euclidean_loss
 from xvision.ops.nme import IbugScore
@@ -78,7 +78,8 @@ def main(args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     logger.info(f'use device: {device}')
 
-    model = models.__dict__[args.model.name]()
+    num_points = len(args.data.symmetry)
+    model = models.__dict__[args.model.name](num_points)
 
     model.to(device)
     parameters = group_parameters(model, bias_decay=0)
@@ -88,13 +89,13 @@ def main(args):
                               total_steps=args.total_steps, pct_start=0.1, final_div_factor=100)
 
     # datasets
-    datadir = Path(args.jdlmk)
-    valtransform = Transform(args.dsize, args.padding, args.meanshape)
-    traintransform = Transform(args.dsize, args.padding, args.meanshape, args.augments)
-    traindata = JDLandmark(datadir / 'Train/landmark',
-                           datadir / 'Train/picture', traintransform)
-    valdata = JDLandmark(datadir / 'Val/landmark',
-                         datadir / 'Val/picture', valtransform)
+    valtransform = Transform(args.dsize, args.padding, args.data.meanshape)
+    traintransform = Transform(args.dsize, args.padding, args.data.meanshape, args.augments)
+    
+    traindata = datasets.__dict__[args.data.name](**args.data.train)
+    valdata = datasets.__dict__[args.data.name](**args.data.val)
+    traindata.transform = traintransform
+    valdata.transform = valtransform
 
     trainloader = DataLoader(traindata, args.batch_size, shuffle=True,
                              drop_last=True, num_workers=args.num_workers, pin_memory=True)
