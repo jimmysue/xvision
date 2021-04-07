@@ -18,12 +18,17 @@ def draw_points(image, points, color=(0, 0, 255), radius=1, plot_index=False):
     draw_shiftbits = 4
     draw_multiplier = 1 << 4
 
-    points = (points * draw_multiplier).reshape(-1, 2).astype(np.int32)
-
-    for pt in points:
+    # points = (points * draw_multiplier).reshape(-1, 2).astype(np.int32)
+    points = points.reshape(-1, 2)
+    for i, p in enumerate(points):
+        pt = (p * draw_multiplier).astype(np.int32)
         pt = tuple(pt.tolist())
         cv2.circle(image, pt, radius, color,
                    thickness=radius, shift=draw_shiftbits)
+        if plot_index:
+            pt =tuple( p.astype(np.int32).tolist() )
+            txt = f'{i}'
+            cv2.putText(image, txt, pt, cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 255, 0))
 
     return image
 
