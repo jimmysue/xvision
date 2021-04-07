@@ -29,10 +29,10 @@ _C.jdlmk = '/Users/jimmy/Documents/data/FA/JD-landmark/'
 # data information
 _C.data = CN()
 _C.data.name = 'WFLW'
-_C.data.train = CN()  # train dataset kwargs
+_C.data.train = CN(recursive=False)  # train dataset kwargs
 _C.data.train.label_file = '/Users/jimmy/Documents/Data/WFLW/WFLW_annotations/list_98pt_rect_attr_train_test/list_98pt_rect_attr_train.txt'
 _C.data.train.image_dir = '/Users/jimmy/Documents/Data/WFLW/WFLW_images'
-_C.data.val = CN()
+_C.data.val = CN(recursive=False)
 _C.data.val.label_file = '/Users/jimmy/Documents/Data/WFLW/WFLW_annotations/list_98pt_rect_attr_train_test/list_98pt_rect_attr_test.txt' # val set kwargs
 _C.data.val.image_dir = '/Users/jimmy/Documents/Data/WFLW/WFLW_images'
 _C.data.symmetry = [32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18,
@@ -146,4 +146,3 @@ _C.augments = CN()
 _C.augments.rotate = 15
 _C.augments.scale = 0.15
 _C.augments.translate = 0.1
-_C.augments.symmetry = _C.data.symmetry
