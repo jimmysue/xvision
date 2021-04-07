@@ -53,4 +53,4 @@ if __name__ == '__main__':
     picture = '/Users/jimmy/Documents/data/FA/JD-landmark/Train/picture'
     data = JDLandmark(landmark, picture)
 
-    meanshape = calc_mean_shape(data.sha)
+    meanshape = calc_mean_shape(data.shape)
