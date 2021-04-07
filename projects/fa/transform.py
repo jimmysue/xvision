@@ -67,29 +67,38 @@ class Transform(object):
 
 
 if __name__ == '__main__':
+    import torch
     from xvision.datasets.jdlmk import JDLandmark
     from xvision.utils.draw import draw_shapes
     from config import cfg
+    from torch.utils.data import DataLoader
+    from xvision.models.fa import resfa, mbv2
     root = '/Users/jimmy/Documents/data/FA/IBUG'
     landmark = '/Users/jimmy/Documents/data/FA/FLL2/landmark'
     picture = '/Users/jimmy/Documents/data/FA/FLL2/picture'
-    data = JDLandmark(landmark, picture)
 
-    transform = Transform((512, 512), 0.2, cfg.meanshape, cfg.augments)
+    transform = Transform(cfg.dsize, cfg.padding, cfg.meanshape, cfg.augments)
+    data = JDLandmark(landmark, picture, transform)
+    loader = DataLoader(data, batch_size=1)
 
-    # data.transform = transform
+    model = mbv2()
 
-    for v in data:
-        for _ in range(10):
-            item = transform(v.copy())
-            image = item['image']
-            shape = item['shape']
-            lt = shape.min(axis=0)
-            rb = shape.max(axis=0)
-            size = (rb - lt).max()
-            radius = int(max(2, size * 0.03))
-            draw_points(image, shape, plot_index=True)
-            cv2.imshow("v", image)
-            k = cv2.waitKey()
-            if k == ord('q'):
-                exit()
+    state = torch.load('/Users/jimmy/Documents/github/xvision/workspace/fa/step-00016600.pth', map_location='cpu')
+    model.load_state_dict(state['model'])
+    model.eval()
+
+    for item in data:
+      
+        image = item['image']
+        shape = item['shape']
+
+        tensor = torch.from_numpy(image).unsqueeze(0).permute(0, 3, 1, 2).float() / 255
+        with torch.no_grad():
+            pred = model(tensor) * 128
+        pred = pred.detach().numpy().reshape(-1, 2)
+        draw_points(image, pred, (0, 0, 255))
+        draw_points(image, shape, (0, 255, 0))
+        cv2.imshow("v", image)
+        k = cv2.waitKey()
+        if k == ord('q'):
+            exit()
