@@ -21,9 +21,9 @@ from pathlib import Path
 import torchvision.datasets as dsets
 import torchvision.models as models
 
-from xvision.data import AVADataset
+from xvision.datasets import AVADataset
 from xvision.ops.functional import emd_loss
-from xvision.model import NIMA
+from xvision.models import NIMA
 from xvision.utils import get_logger, MetricLogger, SmoothedValue
 
 def main(config):
