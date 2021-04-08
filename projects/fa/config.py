@@ -9,16 +9,16 @@ _C.padding = 0.2
 _C.lr = 0.1
 _C.momentum = 0.9
 _C.weight_decay = 5e-4
-_C.batch_size = 512
+_C.batch_size = 2048
 _C.start_step = 0       # for resume
-_C.total_steps = 100000   # training steps
+_C.total_steps = 10000   # training steps
 _C.num_workers = 6
 _C.eval_interval = 100    # evaluate interval
 _C.left_eye = [66, 70]
 _C.right_eye = [75, 79]
 
 _C.model = CN(recursive=False)
-_C.model.name = 'mbv2'
+_C.model.name = 'resfa'
 # datasets
 
 _C.wflw = 'path/to/wflw/data'
@@ -30,11 +30,11 @@ _C.jdlmk = '/dockerdata/train'
 _C.data = CN()
 _C.data.name = 'WFLW'
 _C.data.train = CN(recursive=False)  # train dataset kwargs
-_C.data.train.label_file = '/Users/jimmy/Documents/Data/WFLW/WFLW_annotations/list_98pt_rect_attr_train_test/list_98pt_rect_attr_train.txt'
-_C.data.train.image_dir = '/Users/jimmy/Documents/Data/WFLW/WFLW_images'
+_C.data.train.label_file = '/dockerdata/WFLW_annotations/list_98pt_rect_attr_train_test/list_98pt_rect_attr_train.txt'
+_C.data.train.image_dir = '/dockerdata/WFLW_images'
 _C.data.val = CN(recursive=False)
-_C.data.val.label_file = '/Users/jimmy/Documents/Data/WFLW/WFLW_annotations/list_98pt_rect_attr_train_test/list_98pt_rect_attr_test.txt' # val set kwargs
-_C.data.val.image_dir = '/Users/jimmy/Documents/Data/WFLW/WFLW_images'
+_C.data.val.label_file = '/dockerdata/WFLW_annotations/list_98pt_rect_attr_train_test/list_98pt_rect_attr_test.txt' # val set kwargs
+_C.data.val.image_dir = '/dockerdata/WFLW_images'
 _C.data.symmetry = [32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18,
                     17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
                     0, 46, 45, 44, 43, 42, 50, 49, 48, 47, 37, 36, 35, 34, 33, 41,
