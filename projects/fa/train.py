@@ -1,23 +1,22 @@
 import time
-from os import getloadavg
 from pathlib import Path
-from xvision.datasets.mmap import MMap
+
 
 import torch
 from torch.optim import SGD
 from torch.optim.lr_scheduler import OneCycleLR
 from torch.utils.data import DataLoader
 
+import xvision.datasets as datasets
+import xvision.models.fa as models
 from xvision.utils.logger import get_logger
 from xvision.utils.saver import Saver
-from xvision.models import fa as models
 from xvision.ops.utils import group_parameters
-from xvision.datasets.jdlmk import JDLandmark
 from xvision.utils.meter import MetricLogger, SmoothedValue
 from xvision.ops.euclidean_loss import euclidean_loss
 from xvision.ops.nme import IbugScore
 
-from transform import Transform, CacheTransform
+from transform import Transform
 
 
 def process_batch(batch, device):
@@ -82,7 +81,8 @@ def main(args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     logger.info(f'use device: {device}')
 
-    model = models.__dict__[args.model.name]()
+    num_points = len(args.data.symmetry)
+    model = models.__dict__[args.model.name](num_points)
 
     model.to(device)
     parameters = group_parameters(model, bias_decay=0)
@@ -92,18 +92,13 @@ def main(args):
                               total_steps=args.total_steps, pct_start=0.1, final_div_factor=100)
 
     # datasets
-    datadir = Path(args.jdlmk)
-    picture = datadir / 'picture'
-    landmark = datadir / 'landmark'
-    gen = JDLandmark.parse(landmark, picture)
-    cacher = CacheTransform(args.dsize, args.padding, args.meanshape)
-    MMap.create('/dockerdata/fll2.npy', gen, cacher, 6)
-
-    valtransform = Transform(args.dsize, args.padding, args.meanshape)
-    traintransform = Transform(
-        args.dsize, args.padding, args.meanshape, args.augments)
-    traindata = MMap('/dockerdata/fll2.npy', traintransform)
-    valdata = MMap('/dockerdata/fll2.npy', valtransform)
+    valtransform = Transform(args.dsize, args.padding, args.data.meanshape)
+    traintransform = Transform(args.dsize, args.padding, args.data.meanshape, args.data.symmetry, args.augments)
+    
+    traindata = datasets.__dict__[args.data.name](**args.data.train)
+    valdata = datasets.__dict__[args.data.name](**args.data.val)
+    traindata.transform = traintransform
+    valdata.transform = valtransform
 
     trainloader = DataLoader(traindata, args.batch_size, shuffle=True,
                              drop_last=True, num_workers=args.num_workers, pin_memory=True)
@@ -115,7 +110,7 @@ def main(args):
             for batch in loader:
                 yield batch
 
-    best_loss = 1e-9
+    best_loss = 1e9
     state = {
         'model': model.state_dict(),
         'optimizer': optimizer.state_dict(),

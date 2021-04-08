@@ -46,7 +46,7 @@ class CacheTransform(object):
 
 
 class Transform(object):
-    def __init__(self, dsize, padding, meanshape, augments=None) -> None:
+    def __init__(self, dsize, padding, meanshape, symmetry=None, augments=None) -> None:
         super().__init__()
         dsize = _to_size(dsize)
         meanshape = np.array(meanshape)
@@ -56,19 +56,20 @@ class Transform(object):
         self.dsize = dsize
         self.padding = padding
         self.augments = augments
+        self.symmetry = symmetry
 
     def _augment(self, item, matrix):
         r = self.augments['rotate']
         s = self.augments['scale']
         t = self.augments['translate']
-        symmetry = self.augments['symmetry']
+        symmetry = self.symmetry
         scale = np.exp(np.random.uniform(-np.log(1 + s), np.log(1 + s)))
         translate = np.random.uniform(-t, t) * np.array(self.dsize)
         angle = np.random.uniform(-r, r)
         jitter = matrix2d.translate(
             translate) @ matrix2d.center_rotate_scale_cw(np.array(self.dsize)/2, angle, scale)
 
-        if np.random.choice([True, False]):
+        if self.symmetry and np.random.choice([True, False]):
             # mirror
             jitter = matrix2d.hflip(self.dsize[0]) @ jitter
             shape = item['shape']

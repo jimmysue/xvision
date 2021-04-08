@@ -75,7 +75,7 @@ def create_mmap_dataset(filename, data, transform, num_workers=1):
     return np.lib.format.open_memmap(filename, mode='r')
 
 
-class MMap(Dataset):
+class MemMap(Dataset):
     def __init__(self, filename, transform=None):
         super().__init__()
         if transform:
