@@ -64,7 +64,8 @@ def evaluate(model, loader, score_fn, device):
         preds = model(image).reshape(shape.shape)
         loss = euclidean_loss(preds, shape, reduction='mean')
         score = score_fn(preds, shape)
-        meter.update(loss=loss.item(), score=score.item())
+        meter.update(loss=loss.item())
+        meter.meters['score'].update(score.item(), n=image.size(0))
     return meter
 
 
