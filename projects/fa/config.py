@@ -14,8 +14,8 @@ _C.start_step = 0       # for resume
 _C.total_steps = 10000   # training steps
 _C.num_workers = 6
 _C.eval_interval = 100    # evaluate interval
-_C.left_eye = [66, 70]
-_C.right_eye = [75, 79]
+_C.left_eye = [60]
+_C.right_eye = [72]
 
 _C.model = CN(recursive=False)
 _C.model.name = 'resfa'
@@ -146,3 +146,4 @@ _C.augments = CN()
 _C.augments.rotate = 15
 _C.augments.scale = 0.15
 _C.augments.translate = 0.1
+
