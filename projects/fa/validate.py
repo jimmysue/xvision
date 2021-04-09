@@ -3,17 +3,12 @@ from pathlib import Path
 
 
 import torch
-from torch.optim import SGD
-from torch.optim.lr_scheduler import OneCycleLR
 from torch.utils.data import DataLoader
 
 import xvision.datasets as datasets
 import xvision.models.fa as models
 from xvision.utils.logger import get_logger
 from xvision.utils.saver import Saver
-from xvision.ops.utils import group_parameters
-from xvision.utils.meter import MetricLogger, SmoothedValue
-from xvision.ops.euclidean_loss import euclidean_loss
 from xvision.ops.nme import IbugScore
 
 from transform import Transform
