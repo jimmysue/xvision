@@ -29,7 +29,7 @@ def main(args):
     model.to(device)
    
     # datasets
-    valtransform = Transform(args.dsize, args.padding, args.data.meanshape)
+    valtransform = Transform(args.dsize, args.padding, args.data.meanshape, args.data.meanbbox)
     valdata = datasets.__dict__[args.data.name](**args.data.val)
     valdata.transform = valtransform
     valloader = DataLoader(valdata, args.batch_size, False,
