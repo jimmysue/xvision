@@ -126,7 +126,6 @@ def main(args):
         label = batch['label']
 
         pred_score, pred_box, pred_point = model(image)
-        pred_score = pred_score.squeeze(-1)
         pred_point = pred_point.reshape(pred_point.shape[0], pred_point.shape[1], -1, 2)
         
         with torch.no_grad():

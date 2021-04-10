@@ -26,7 +26,7 @@ def _canonical_anchor(anchor):
 class BBoxAnchors(nn.Module):
     def __init__(self, dsize, strides, fsizes, layouts, num_classes=1, iou_threshold=0.3, encode_mean=None, encode_std=None):
         """Anchor generation and matching
-        
+
         This object generates anchors for given detection structure, and matches anchors to ground truths to determine
         the score of each anchor. And provide interface to encode/decode bboxes and shapes.
 
@@ -154,7 +154,8 @@ class BBoxAnchors(nn.Module):
         # find max iou of each box to determine denominant
 
         denominant = max_iou_of_bbox                    # [n]
-        denominant[denominant < self.iou_threshold] = self.iou_threshold     # [n]
+        denominant[denominant <
+                   self.iou_threshold] = self.iou_threshold     # [n]
         denominant = denominant[box_indice]             # [k]
         max_iou_of_anchor[max_iou_of_anchor < self.iou_threshold / 2] = 0
         scores = max_iou_of_anchor / denominant         # [k]
@@ -162,19 +163,20 @@ class BBoxAnchors(nn.Module):
         labels = labels[box_indice]
         ignores = labels <= 0
         # set ignore as background score
-        scores[ignores] = 0                 # TODO: support ignore scores with negative values, 
-                                            #       and focal loss should take care of this also
+        # TODO: support ignore scores with negative values,
+        #       and sigmoid focal loss should take care of this also
+        scores[ignores] = 0
 
         # scatter to construct confidence tensor
         # scores: [k]
         labels[ignores] = 0
-        conf = scores.new_zeros(scores.size(0), self.num_classes)
+        conf = scores.new_zeros(scores.size(0), self.num_classes + 1)
         # conf: [k, c] # c is the number of classes
         # index: [k, 1]
         labels = labels.unsqueeze(-1)  # [k, 1]
         scores = scores.unsqueeze(-1)  # [k, 1]
         conf.scatter_(dim=1, index=labels, src=scores)
-        return conf, box_indice
+        return conf[..., 1:], box_indice
 
     def forward(self, labels, bboxes, *others):  # we don't encode
         # labels: [B, n]
