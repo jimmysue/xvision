@@ -99,8 +99,8 @@ def main(args):
                               total_steps=args.total_steps, pct_start=0.1, final_div_factor=100)
 
     # datasets
-    valtransform = Transform(args.dsize, args.padding, args.data.meanshape)
-    traintransform = Transform(args.dsize, args.padding, args.data.meanshape, args.data.symmetry, args.augments)
+    valtransform = Transform(args.dsize, args.padding, args.data.meanshape, args.data.meanbbox)
+    traintransform = Transform(args.dsize, args.padding, args.data.meanshape, args.data.meanbbox, args.data.symmetry, args.augments)
     
     traindata = datasets.__dict__[args.data.name](**args.data.train)
     valdata = datasets.__dict__[args.data.name](**args.data.val)
