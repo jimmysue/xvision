@@ -8,3 +8,4 @@ tensorboard
 matplotlib
 PyYAML
 fvcore
+sklearn

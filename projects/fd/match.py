@@ -2,20 +2,20 @@ import torch
 from torch.utils.data import DataLoader
 from xvision.utils.draw import *
 from xvision.ops.anchors import BBoxAnchors
-from xvision.data.wider import WiderFace, ValTransform
+from xvision.datasets.wider import WiderFace, ValTransform
 from config import cfg
 
 if __name__ == '__main__':
 
-    val = "/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/train/label.txt"
+    val = '/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/train/label.txt'
     dir = "/Users/jimmy/Documents/data/WIDER/WIDER_train/images"
 
     transform = ValTransform((320, 320))
 
     data = WiderFace(val, dir, with_shapes=True,
-                     min_size=10, transform=None)
+                     min_face=10, transform=None)
 
-    anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides, fsizes=cfg.fsizes, layouts=cfg.layouts)
+    anchors = BBoxAnchors(cfg.num_classes, dsize=cfg.dsize, strides=cfg.strides, fsizes=cfg.fsizes, layouts=cfg.layouts)
 
     for v in data:
         for i in range(1):

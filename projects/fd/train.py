@@ -38,7 +38,6 @@ def evaluate(model, dataloader, prior, device):
         box = batch['bbox']
         label = batch['label']
         pred_score, pred_box, pred_point = model(image)
-        pred_score = pred_score.squeeze(-1)
         pred_point = pred_point.reshape(pred_point.shape[0], pred_point.shape[1], -1, 2)
         
         with torch.no_grad():
@@ -87,7 +86,7 @@ def main(args):
 
     # model
     model = models.__dict__[args.model.name](phase='train').to(device)
-    prior = BBoxAnchors(args.dsize, args.strides, args.fsizes, args.layouts, args.iou_threshold, args.encode_mean, args.encode_std).to(device)
+    prior = BBoxAnchors(args.num_classes, args.dsize, args.strides, args.fsizes, args.layouts, args.iou_threshold, args.encode_mean, args.encode_std).to(device)
 
     # optimizer and lr scheduler
     parameters = group_parameters(model, bias_decay=0)
@@ -126,7 +125,6 @@ def main(args):
         label = batch['label']
 
         pred_score, pred_box, pred_point = model(image)
-        pred_score = pred_score.squeeze(-1)
         pred_point = pred_point.reshape(pred_point.shape[0], pred_point.shape[1], -1, 2)
         
         with torch.no_grad():

@@ -3,6 +3,10 @@ import numpy as np
 from torch.utils.data import Dataset
 from pathlib import Path
 
+from xvision.transforms.shapes import calc_mean_shape
+from xvision.transforms.boxes import bbox_affine
+from xvision.transforms.umeyama import umeyama
+
 
 class WFLW(Dataset):
     """WFLW dataset
@@ -26,14 +30,26 @@ class WFLW(Dataset):
     def shapes(self):
         shapes = [v['shape'] for v in self.data]
         return np.stack(shapes, axis=0)
-    
+
     @property
     def meanshape(self):
-        shapes = data.shapes
+        shapes = self.shapes
         mirrors = shapes[:, self.__symmetry__, :]
         mirrors[:, :, 0] = -mirrors[:, :, 0]
         shapes = np.concatenate([shapes, mirrors], axis=0)
         return calc_mean_shape(shapes)
+
+    @property
+    def meanbbox(self):
+        meanshape = self.meanshape
+        bboxes = []
+        for item in self.data:
+            shape = item['shape']
+            bbox = item['bbox']  # n, 4
+            matrix = umeyama(shape, meanshape)
+            bbox = bbox_affine(bbox, matrix)
+            bboxes.append(bbox)
+        return np.stack(bboxes, 0).mean(0)
 
     def __len__(self):
         return len(self.data)

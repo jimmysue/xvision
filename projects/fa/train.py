@@ -57,15 +57,21 @@ def evaluate(model, loader, score_fn, device):
     meter = MetricLogger()
     meter.add_meter('loss', SmoothedValue(fmt='{global_avg: .4f}'))
     meter.add_meter('score', SmoothedValue(fmt='{global_avg: .2f}'))
+    gt = []
+    pr = []
     for batch in loader:
         batch = process_batch(batch, device)
         image = batch['image']
         shape = batch['shape']
         preds = model(image).reshape(shape.shape)
         loss = euclidean_loss(preds, shape, reduction='mean')
-        score = score_fn(preds, shape)
+        gt.append(shape)
+        pr.append(preds)
         meter.update(loss=loss.item())
-        meter.meters['score'].update(score.item(), n=image.size(0))
+    gt = torch.cat(gt)
+    pr = torch.cat(pr)
+    score = score_fn(pr, gt)
+    meter.meters['score'].update(score.item())
     return meter
 
 
@@ -93,8 +99,8 @@ def main(args):
                               total_steps=args.total_steps, pct_start=0.1, final_div_factor=100)
 
     # datasets
-    valtransform = Transform(args.dsize, args.padding, args.data.meanshape)
-    traintransform = Transform(args.dsize, args.padding, args.data.meanshape, args.data.symmetry, args.augments)
+    valtransform = Transform(args.dsize, args.padding, args.data.meanshape, args.data.meanbbox)
+    traintransform = Transform(args.dsize, args.padding, args.data.meanshape, args.data.meanbbox, args.data.symmetry, args.augments)
     
     traindata = datasets.__dict__[args.data.name](**args.data.train)
     valdata = datasets.__dict__[args.data.name](**args.data.val)

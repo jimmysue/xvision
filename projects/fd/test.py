@@ -19,7 +19,7 @@ def main(args):
     workdir.mkdir(parents=True, exist_ok=True)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = models.__dict__[args.model.name](phase='test').to(device)
-    prior = BBoxAnchors(args.dsize, args.strides, args.fsizes, args.layouts,
+    prior = BBoxAnchors(args.num_classes, args.dsize, args.strides, args.fsizes, args.layouts,
                         args.iou_threshold, args.encode_mean, args.encode_std)
     state = Saver.load_best_from_folder(workdir, map_location='cpu')
     model.load_state_dict(state['model'])
