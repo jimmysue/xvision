@@ -15,7 +15,7 @@ if __name__ == '__main__':
     data = WiderFace(val, dir, with_shapes=True,
                      min_face=10, transform=None)
 
-    anchors = BBoxAnchors(dsize=cfg.dsize, strides=cfg.strides, fsizes=cfg.fsizes, layouts=cfg.layouts)
+    anchors = BBoxAnchors(cfg.num_classes, dsize=cfg.dsize, strides=cfg.strides, fsizes=cfg.fsizes, layouts=cfg.layouts)
 
     for v in data:
         for i in range(1):

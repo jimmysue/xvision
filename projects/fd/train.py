@@ -87,7 +87,7 @@ def main(args):
 
     # model
     model = models.__dict__[args.model.name](phase='train').to(device)
-    prior = BBoxAnchors(args.dsize, args.strides, args.fsizes, args.layouts, args.iou_threshold, args.encode_mean, args.encode_std).to(device)
+    prior = BBoxAnchors(args.num_classes, args.dsize, args.strides, args.fsizes, args.layouts, args.num_classes, args.iou_threshold, args.encode_mean, args.encode_std).to(device)
 
     # optimizer and lr scheduler
     parameters = group_parameters(model, bias_decay=0)

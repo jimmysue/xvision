@@ -24,18 +24,18 @@ def _canonical_anchor(anchor):
 
 
 class BBoxAnchors(nn.Module):
-    def __init__(self, dsize, strides, fsizes, layouts, num_classes=1, iou_threshold=0.3, encode_mean=None, encode_std=None):
+    def __init__(self, num_classes, dsize, strides, fsizes, layouts, iou_threshold=0.3, encode_mean=None, encode_std=None):
         """Anchor generation and matching
 
         This object generates anchors for given detection structure, and matches anchors to ground truths to determine
         the score of each anchor. And provide interface to encode/decode bboxes and shapes.
 
         Args:
+            num_classes (int): number of positive classes
             dsize (tuple): input size of model
             strides (list): list of strides 
             fsizes (list): list of feature sizes for detection
             layouts (list): anchor layout for each feature level
-            num_classes (int, optional): number of positive classes. Defaults to 1.
             iou_threshold (float, optional): minimal iou to normalize the score of positive anchor. Defaults to 0.3.
             encode_mean ([list, tuple], optional): mean vector of encoded box. Defaults to None.
             encode_std ([list, tuple], optional): std vector of encoded box. Defaults to None.

@@ -9,6 +9,7 @@ _C.workdir = "workspace/fd"
 
 # anchor layouts and model structure
 # data size
+_C.num_classes = 1
 _C.dsize = (320, 320)   # input image size
 _C.strides = [8, 16, 32, 64]    # strides of features
 # feature map size each stride
