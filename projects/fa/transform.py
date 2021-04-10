@@ -2,8 +2,10 @@ import cv2
 import numpy as np
 from numbers import Number
 from typing import Dict
+
 from xvision.transforms.umeyama import umeyama
 from xvision.transforms.warp import warp_affine
+from xvision.transforms.boxes import bbox_affine
 from xvision.transforms import matrix2d
 from xvision.transforms.shapes import *
 from xvision.utils.draw import draw_points
@@ -45,13 +47,29 @@ class CacheTransform(object):
         }
 
 
+def _bbox_to_corner_points(bbox):
+    x1, y1, x2, y2 = bbox.reshape(-1)
+    return np.array([
+        [x1, y1],
+        [x2, y1],
+        [x2, y2],
+        [x1, y2]
+    ])
+
+
 class Transform(object):
-    def __init__(self, dsize, padding, meanshape, symmetry=None, augments=None) -> None:
+    def __init__(self, dsize, padding, meanshape, meanbbox=None, symmetry=None, augments=None) -> None:
         super().__init__()
         dsize = _to_size(dsize)
         meanshape = np.array(meanshape)
         unit = to_unit_shape(meanshape)
-        ref = (unit - 0.5) * (1 - padding) * np.array(dsize).min() + np.array(dsize) / 2
+        ref = (unit - 0.5) * (1 - padding) * \
+            np.array(dsize).min() + np.array(dsize) / 2
+        if meanbbox:
+            meanbbox = np.array(meanbbox)
+            matrix = umeyama(meanshape, ref)
+            meanbbox = bbox_affine(meanbbox, matrix)
+        self.meanbbox = meanbbox
         self.ref = ref
         self.dsize = dsize
         self.padding = padding
@@ -80,8 +98,13 @@ class Transform(object):
     def __call__(self, item) -> dict:
         image = item['image']
         shape = item['shape']
-
-        matrix = umeyama(shape, self.ref)
+        if self.meanbbox is not None:
+            bbox = item['bbox']
+            pts = _bbox_to_corner_points(bbox)
+            ref = _bbox_to_corner_points(self.meanbbox)
+            matrix = umeyama(pts, ref)
+        else:
+            matrix = umeyama(shape, self.ref)
 
         if self.augments:
             matrix = self._augment(item, matrix)

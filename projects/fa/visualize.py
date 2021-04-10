@@ -1,10 +1,29 @@
+from projects.fa.transform import Transform
 from config import cfg
 
 import numpy as np
 import cv2
 
 from xvision.utils.draw import draw_bbox, draw_points
+from transform import *
+from xvision.datasets.wflw import WFLW
 
+
+label = '/Users/jimmy/Documents/data/WFLW/WFLW_annotations/list_98pt_rect_attr_train_test/list_98pt_rect_attr_train.txt'
+image = '/Users/jimmy/Documents/data/WFLW/WFLW_images'
+
+data = WFLW(label, image)
+
+t = Transform(cfg.dsize, cfg.padding, cfg.data.meanshape, cfg.data.meanbbox)
+
+data.transform = t
+
+for item in data:
+    image = item['image']
+    shape = item['shape']
+    draw_points(image, shape)
+    cv2.imshow('v', image)
+    cv2.waitKey()
 
 meanbbox = np.array(cfg.data.meanbbox)
 meanshape = np.array(cfg.data.meanshape)
