@@ -2,7 +2,7 @@
 
 ## 平均脸和平均矩形框的关系
 
-![](docs/assets/meanshape-meanbbox.png)
+![](/docs/assets/meanshape-meanbbox.png)
 
 
 ## 数据集
