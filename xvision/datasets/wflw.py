@@ -4,6 +4,9 @@ from torch.utils.data import Dataset
 from pathlib import Path
 
 from xvision.transforms.shapes import calc_mean_shape
+from xvision.transforms.boxes import bbox_affine
+from xvision.transforms.umeyama import umeyama
+
 
 class WFLW(Dataset):
     """WFLW dataset
@@ -27,7 +30,7 @@ class WFLW(Dataset):
     def shapes(self):
         shapes = [v['shape'] for v in self.data]
         return np.stack(shapes, axis=0)
-    
+
     @property
     def meanshape(self):
         shapes = data.shapes
@@ -35,6 +38,18 @@ class WFLW(Dataset):
         mirrors[:, :, 0] = -mirrors[:, :, 0]
         shapes = np.concatenate([shapes, mirrors], axis=0)
         return calc_mean_shape(shapes)
+
+    @property
+    def meanbbox(self):
+        meanshape = self.meanshape
+        bboxes = []
+        for item in self.data:
+            shape = item['shape']
+            bbox = item['bbox']  # n, 4
+            matrix = umeyama(shape, meanshape)
+            bbox = bbox_affine(bbox, matrix)
+            bboxes.append(bbox)
+        return np.stack(bboxes, 0).mean(0)
 
     def __len__(self):
         return len(self.data)
@@ -63,21 +78,3 @@ class WFLW(Dataset):
                 item['bbox'] = bbox
                 item['path'] = image_dir / items[-1]
                 yield item
-
-
-if __name__ == '__main__':
-    # calc mean bbox
-    from xvision.transforms.umeyama import umeyama
-    label = '/Users/jimmy/Documents/data/WFLW/WFLW_annotations/list_98pt_rect_attr_train_test/list_98pt_rect_attr_train.txt'
-    image = '/Users/jimmy/Documents/data/WFLW/WFLW_images'
-
-    data = WFLW(label, image)
-
-    meanshape = data.shapes
-
-    bboxes = []
-
-    for item in data:
-        shape = item['shape']
-        matrix = umeyama(shape, meanshape)
-        bbox = item['bbox'].reshape(-1, 2)
