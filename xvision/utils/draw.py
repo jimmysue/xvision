@@ -1,12 +1,14 @@
 import cv2
 import colorsys
 import numpy as np
+import random
 
-
-def draw_bbox(image, bbox, color=(0, 0, 255), thickness=1):
+def draw_bbox(image, bbox, color=None, thickness=1):
     bbox = bbox.reshape(-1, 2, 2).astype(np.int32)
-
+    random_color = color is None
     for box in bbox:
+        if random_color:
+            color = tuple([random.randint(0, 255) for _ in range(3)])
         pt1 = tuple(box[0, :].tolist())
         pt2 = tuple(box[1, :].tolist())
         cv2.rectangle(image, pt1, pt2, color, thickness=thickness)
