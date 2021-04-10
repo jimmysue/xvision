@@ -24,13 +24,29 @@ def _canonical_anchor(anchor):
 
 
 class BBoxAnchors(nn.Module):
-    def __init__(self, dsize, strides, fsizes, layouts, iou_threshold=0.3, encode_mean=None, encode_std=None):
+    def __init__(self, dsize, strides, fsizes, layouts, num_classes=1, iou_threshold=0.3, encode_mean=None, encode_std=None):
+        """Anchor generation and matching
+        
+        This object generates anchors for given detection structure, and matches anchors to ground truths to determine
+        the score of each anchor. And provide interface to encode/decode bboxes and shapes.
+
+        Args:
+            dsize (tuple): input size of model
+            strides (list): list of strides 
+            fsizes (list): list of feature sizes for detection
+            layouts (list): anchor layout for each feature level
+            num_classes (int, optional): number of positive classes. Defaults to 1.
+            iou_threshold (float, optional): minimal iou to normalize the score of positive anchor. Defaults to 0.3.
+            encode_mean ([list, tuple], optional): mean vector of encoded box. Defaults to None.
+            encode_std ([list, tuple], optional): std vector of encoded box. Defaults to None.
+        """
         super().__init__()
 
         self.dsize = dsize
         self.strides = strides
         self.fsizes = fsizes
         self.layouts = layouts
+        self.num_classes = num_classes
         self.iou_threshold = iou_threshold
 
         if (encode_mean):
@@ -146,8 +162,19 @@ class BBoxAnchors(nn.Module):
         labels = labels[box_indice]
         ignores = labels <= 0
         # set ignore as background score
-        scores[ignores] = 0
-        return scores, box_indice
+        scores[ignores] = 0                 # TODO: support ignore scores with negative values, 
+                                            #       and focal loss should take care of this also
+
+        # scatter to construct confidence tensor
+        # scores: [k]
+        labels[ignores] = 0
+        conf = scores.new_zeros(scores.size(0), self.num_classes)
+        # conf: [k, c] # c is the number of classes
+        # index: [k, 1]
+        labels = labels.unsqueeze(-1)  # [k, 1]
+        scores = scores.unsqueeze(-1)  # [k, 1]
+        conf.scatter_(dim=1, index=labels, src=scores)
+        return conf, box_indice
 
     def forward(self, labels, bboxes, *others):  # we don't encode
         # labels: [B, n]
@@ -163,7 +190,7 @@ class BBoxAnchors(nn.Module):
             for i, v in enumerate(other):
                 batch_others[i].append(v[indice])
 
-        scores = torch.stack(batch_scores, 0)   # B, k
+        scores = torch.stack(batch_scores, 0)   # B, k, c
         bboxes = torch.stack(batch_bboxes, 0)   # B, k, 4
         res = (scores, bboxes)
         if batch_others:

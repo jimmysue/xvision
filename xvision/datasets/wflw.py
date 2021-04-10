@@ -3,6 +3,7 @@ import numpy as np
 from torch.utils.data import Dataset
 from pathlib import Path
 
+from xvision.transforms.shapes import calc_mean_shape
 
 class WFLW(Dataset):
     """WFLW dataset
@@ -62,3 +63,21 @@ class WFLW(Dataset):
                 item['bbox'] = bbox
                 item['path'] = image_dir / items[-1]
                 yield item
+
+
+if __name__ == '__main__':
+    # calc mean bbox
+    from xvision.transforms.umeyama import umeyama
+    label = '/Users/jimmy/Documents/data/WFLW/WFLW_annotations/list_98pt_rect_attr_train_test/list_98pt_rect_attr_train.txt'
+    image = '/Users/jimmy/Documents/data/WFLW/WFLW_images'
+
+    data = WFLW(label, image)
+
+    meanshape = data.shapes
+
+    bboxes = []
+
+    for item in data:
+        shape = item['shape']
+        matrix = umeyama(shape, meanshape)
+        bbox = item['bbox'].reshape(-1, 2)
