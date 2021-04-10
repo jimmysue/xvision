@@ -33,7 +33,7 @@ class WFLW(Dataset):
 
     @property
     def meanshape(self):
-        shapes = data.shapes
+        shapes = self.shapes
         mirrors = shapes[:, self.__symmetry__, :]
         mirrors[:, :, 0] = -mirrors[:, :, 0]
         shapes = np.concatenate([shapes, mirrors], axis=0)
