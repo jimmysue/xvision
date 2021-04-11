@@ -86,7 +86,7 @@ class BBoxPrior(Prior):
 
         self.register_buffer('anchors', None)
         self.register_buffer('encode_mean', encode_mean)
-        self.register_buffer('encode_std', encode_mean)
+        self.register_buffer('encode_std', encode_std)
 
 
     @property
