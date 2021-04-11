@@ -21,7 +21,7 @@ class Predictor:
 
     @torch.no_grad()
     def predict(self, image):
-        tensor = torch.from_numpy(image).permute(2, 0, 1).unsqueeze(0).float()
+        tensor = torch.from_numpy(image).permute(2, 0, 1).unsqueeze(0).float().to(self.device)
 
         scores, boxes, points, fsizes = self.model(tensor)
 
