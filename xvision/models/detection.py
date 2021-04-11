@@ -77,21 +77,29 @@ class BBoxPrior(Prior):
         else:
             encode_std = torch.ones(4, dtype=torch.float32)
 
-        self.register_buffer('encode_mean', encode_mean)
-        self.register_buffer('encode_std', encode_std)
         if anchor_layouts:
             self.strides, self.bases = self.generate_base_anchors(
                 anchor_layouts)
         else:
             # make layouts default to None, so that we can load from state_dict
             self.strides, self.bases = [], []
-        self.register_buffer('anchors', None)
+        self.encode_mean = encode_mean
+        self.encode_std = encode_std
+        self.anchors = None
 
-    def state_dict(self):
-        return self.__dict__
+    @property
+    def _state_keys(self):
+        return ['num_classes', 'iou_threshold', 'encode_mean','encode_std', 'bases', 'strides', 'anchors']
 
-    def load_state_dict(self, state_dict):
-        self.__dict__.update(state_dict)
+    def _save_to_state_dict(self, destination, prefix, keep_vars):
+        for k in self._state_keys:
+            destination[f'{prefix}{k}'] = self.__dict__[k]
+     
+    
+    def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs):
+        for k in self._state_keys:
+            self.__dict__.update({k: state_dict[f'{prefix}{k}']})
+
 
     @staticmethod
     def generate_base_anchors(layouts):
@@ -279,10 +287,10 @@ class BBoxShapePrior(BBoxPrior):
                                        None, 2:] + self.anchors[..., None, :2]
         return points
 
-    def state_dict(self):
+    def state_dict(self, *args, **kwargs):
         return self.__dict__
 
-    def load_state_dict(self, state_dict):
+    def load_state_dict(self, state_dict, *args, **kwargs):
         return super().load_state_dict(state_dict)
 
     def forward(self, predictions, targets=None):
@@ -326,9 +334,18 @@ class BBoxShapePrior(BBoxPrior):
 
 if __name__ == '__main__':
 
+    from torchvision.models.mobilenet import mobilenet_v2
+
+    backbone = mobilenet_v2()
+
     from projects.retinanet.config import cfg
     prior = BBoxPrior(1, cfg.anchors, 0.35, None, None)
 
+    detector = Detector(prior, backbone)
+
+    state = detector.state_dict()
+    detector.load_state_dict(state)
+    
     torch.save({
         'prior': prior.state_dict(),
     }, 'prior.pt')
