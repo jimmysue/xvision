@@ -20,6 +20,12 @@ _C.layouts = [  # anchor layout
     [64, 96],
     [128, 192, 256]
 ]
+_C.anchors = [
+    {'stride': 8, 'scales': [10/8, 2, 3], 'aspects':[1]},
+    {'stride': 16, 'scales': [2, 3], 'aspects': [1]},
+    {'stride': 32, 'scales': [2, 3], 'aspects': [1]},
+    {'stride': 64, 'scales': [2, 3, 4], 'aspects': [1]}
+]
 _C.iou_threshold = 0.35
 _C.encode_mean = None
 _C.encode_std = [.1, .1, .2, .2]  # center .1, size: .2

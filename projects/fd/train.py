@@ -14,7 +14,7 @@ from xvision.ops.multibox import score_box_point_loss, score_box_loss
 from xvision.utils.meter import MetricLogger, SmoothedValue
 from xvision.datasets.wider import *
 from xvision.ops.utils import group_parameters
-
+from xvision.models.detection import Detector, BBoxShapePrior
 
 def batch_to(batch, device):
     image = batch.pop('image').to(device, non_blocking=True).permute(0, 3, 1, 2).float()
@@ -37,14 +37,7 @@ def evaluate(model, dataloader, prior, device):
         image = batch['image']
         box = batch['bbox']
         label = batch['label']
-        pred_score, pred_box, pred_point = model(image)
-        pred_point = pred_point.reshape(pred_point.shape[0], pred_point.shape[1], -1, 2)
-        
-        with torch.no_grad():
-            target_score, target_box= prior(label, box)
-            box_delta =  prior.encode_bboxes(target_box)
-
-        score_loss, box_loss = score_box_loss(target_score, box_delta, pred_score, pred_box)
+        score_loss, box_loss = model(image, targets=(label, box))
         loss = score_loss + box_loss
         meter.meters['score'].update(score_loss.item())
         meter.meters['box'].update(box_loss.item())
@@ -86,7 +79,9 @@ def main(args):
 
     # model
     model = models.__dict__[args.model.name](phase='train').to(device)
-    prior = BBoxAnchors(args.num_classes, args.dsize, args.strides, args.fsizes, args.layouts, args.iou_threshold, args.encode_mean, args.encode_std).to(device)
+    prior = BBoxShapePrior(args.num_classes, 5, args.anchors, args.iou_threshold, args.encode_mean, args.encode_std)
+    
+    model = Detector(prior, model)
 
     # optimizer and lr scheduler
     parameters = group_parameters(model, bias_decay=0)
@@ -95,8 +90,8 @@ def main(args):
     trainloader = repeat_loader(trainloader)
     
     model.to(device)
-    prior.to(device)
     model.train()
+
     best_loss = 1e9
     state ={
         'model': model.state_dict(),
@@ -124,15 +119,7 @@ def main(args):
         mask = batch['mask']
         label = batch['label']
 
-        pred_score, pred_box, pred_point = model(image)
-        pred_point = pred_point.reshape(pred_point.shape[0], pred_point.shape[1], -1, 2)
-        
-        with torch.no_grad():
-            target_score, target_box, target_point, point_mask = prior(label, box, point, mask)
-            box_delta =  prior.encode_bboxes(target_box)
-            point_delta = prior.encode_points(target_point)
-
-        score_loss, box_loss, point_loss = score_box_point_loss(target_score, box_delta, point_delta, pred_score, pred_box, pred_point, point_mask)
+        score_loss, box_loss, point_loss = model(image, targets=(label, box, point, mask))
         loss = score_loss + 2.0 * box_loss + point_loss
 
         train_meter.meters['score'].update(score_loss.item())
