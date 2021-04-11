@@ -78,11 +78,11 @@ class BBoxPrior(Prior):
             encode_std = torch.ones(4, dtype=torch.float32)
 
         if anchor_layouts:
-            self.strides, self.bases = self.generate_base_anchors(
+            self.strides, self.layouts = self.generate_base_anchors(
                 anchor_layouts)
         else:
             # make layouts default to None, so that we can load from state_dict
-            self.strides, self.bases = [], []
+            self.strides, self.layouts = [], []
 
         self.register_buffer('anchors', None)
         self.register_buffer('encode_mean', encode_mean)
@@ -91,7 +91,7 @@ class BBoxPrior(Prior):
 
     @property
     def _state_keys(self):
-        return ['num_classes', 'iou_threshold', 'encode_mean','encode_std', 'bases', 'strides', 'anchors']
+        return ['num_classes', 'iou_threshold', 'encode_mean','encode_std', 'layouts', 'strides', 'anchors']
 
     def _save_to_state_dict(self, destination, prefix, keep_vars):
         for k in self._state_keys:
@@ -129,11 +129,8 @@ class BBoxPrior(Prior):
         return strides, anchors
 
     @staticmethod
-    def generate_layer_anchors(stride, fsize, layout, device=None):
+    def generate_layer_anchors(stride: int, fsize: tuple, layout: nn.Tensor, device=None):
         device = torch.device('cpu') if device is None else device
-        layout = torch.tensor(layout, dtype=torch.float32,
-                              device=device)  # [k, 5]
-
         # generate offset grid
         fw, fh = fsize
         vx = torch.arange(0.5, fw, dtype=torch.float32, device=device) * stride
@@ -252,13 +249,13 @@ class BBoxPrior(Prior):
         for score, bbox in predictions:
             w, h = score.size(-1), score.size(-2)
             fsizes.append((w, h))
-            score = score.permute(0, 3, 1, 2).reshape(-1, self.num_classes)
-            bbox = bbox.permute(0, 3, 1, 2).reshape(-1, 4)
+            score = score.permute(0, 3, 1, 2).reshape(score.size(0), -1, self.num_classes)
+            bbox = bbox.permute(0, 3, 1, 2).reshape(bbox.size(0), -1, 4)
             logits.append(score)
             pred_deltas.append(bbox)
 
-        logits = torch.cat(logits)
-        pred_deltas = torch.cat(pred_deltas)
+        logits = torch.cat(logits, 1)
+        pred_deltas = torch.cat(pred_deltas, 1)
 
         self.update(fsizes, logits.device)
 
@@ -304,16 +301,16 @@ class BBoxShapePrior(BBoxPrior):
         for logit, delta, shape in predictions:
             w, h = logit.size(-1), logit.size(-2)
             fsizes.append((w, h))
-            logit = logit.permute(0, 3, 1, 2).reshape(-1, self.num_classes)
-            delta = delta.permute(0, 3, 1, 2).reshape(-1, 4)
-            shape = shape.permute(0, 3, 1, 2).reshape(-1, self.num_points, 2)
+            logit = logit.permute(0, 3, 1, 2).reshape(logit.size(0), -1, self.num_classes)
+            delta = delta.permute(0, 3, 1, 2).reshape(delta.size(0), -1, 4)
+            shape = shape.permute(0, 3, 1, 2).reshape(shape.size(0), -1, self.num_points, 2)
             logits.append(logit)
             pred_deltas.append(delta)
             pred_shapes.append(shape)
 
-        logits = torch.cat(logits)
-        pred_deltas = torch.cat(pred_deltas)
-        pred_shapes = torch.cat(pred_shapes)
+        logits = torch.cat(logits, 1)
+        pred_deltas = torch.cat(pred_deltas, 1)
+        pred_shapes = torch.cat(pred_shapes, 1)
 
         self.update(fsizes, logits.device)
 
