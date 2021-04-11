@@ -88,23 +88,20 @@ class BBoxPrior(Prior):
         self.register_buffer('encode_mean', encode_mean)
         self.register_buffer('encode_std', encode_std)
 
-
     @property
     def _state_keys(self):
-        return ['num_classes', 'iou_threshold', 'encode_mean','encode_std', 'layouts', 'strides', 'anchors']
+        return ['num_classes', 'iou_threshold', 'encode_mean', 'encode_std', 'layouts', 'strides', 'anchors']
 
     def _save_to_state_dict(self, destination, prefix, keep_vars):
         for k in self._state_keys:
             try:
                 destination[f'{prefix}{k}'] = self.__getattr__(k)
-            except :
+            except:
                 destination[f'{prefix}{k}'] = self.__dict__[k]
-     
-    
+
     def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs):
         for k in self._state_keys:
             self.__setattr__(k, state_dict[f'{prefix}{k}'])
-
 
     @staticmethod
     def generate_base_anchors(layouts):
@@ -132,6 +129,7 @@ class BBoxPrior(Prior):
     def generate_layer_anchors(stride: int, fsize: tuple, layout: torch.Tensor, device=None):
         device = torch.device('cpu') if device is None else device
         # generate offset grid
+        layout = layout.to(device)
         fw, fh = fsize
         vx = torch.arange(0.5, fw, dtype=torch.float32, device=device) * stride
         vy = torch.arange(0.5, fh, dtype=torch.float32, device=device) * stride
@@ -249,7 +247,8 @@ class BBoxPrior(Prior):
         for score, bbox in predictions:
             w, h = score.size(-1), score.size(-2)
             fsizes.append((w, h))
-            score = score.permute(0, 2, 3, 1).reshape(score.size(0), -1, self.num_classes)
+            score = score.permute(0, 2, 3, 1).reshape(
+                score.size(0), -1, self.num_classes)
             bbox = bbox.permute(0, 2, 3, 1).reshape(bbox.size(0), -1, 4)
             logits.append(score)
             pred_deltas.append(bbox)
@@ -301,9 +300,11 @@ class BBoxShapePrior(BBoxPrior):
         for logit, delta, shape in predictions:
             w, h = logit.size(-1), logit.size(-2)
             fsizes.append((w, h))
-            logit = logit.permute(0, 2, 3, 1).reshape(logit.size(0), -1, self.num_classes)
+            logit = logit.permute(0, 2, 3, 1).reshape(
+                logit.size(0), -1, self.num_classes)
             delta = delta.permute(0, 2, 3, 1).reshape(delta.size(0), -1, 4)
-            shape = shape.permute(0, 2, 3, 1).reshape(shape.size(0), -1, self.num_points, 2)
+            shape = shape.permute(0, 2, 3, 1).reshape(
+                shape.size(0), -1, self.num_points, 2)
             logits.append(logit)
             pred_deltas.append(delta)
             pred_shapes.append(shape)
@@ -347,7 +348,7 @@ if __name__ == '__main__':
     detector = Detector(BBoxShapePrior(), backbone)
     detector.load_state_dict(state)
     detector.cuda()
-    
+
     torch.save({
         'prior': prior.state_dict(),
     }, 'prior.pt')
