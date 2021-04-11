@@ -12,19 +12,20 @@ from xvision.transforms import matrix2d
 from xvision.models.fd.predictor import Predictor
 from xvision.transforms.boxes import bbox2rect, bbox_affine
 from xvision.utils.draw import draw_bbox, draw_points
-
+from xvision.models.detection import Detector, BBoxShapePrior
 
 def main(args):
     workdir = Path(args.workdir)
     workdir.mkdir(parents=True, exist_ok=True)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = models.__dict__[args.model.name](phase='test').to(device)
-    prior = BBoxAnchors(args.num_classes, args.dsize, args.strides, args.fsizes, args.layouts,
-                        args.iou_threshold, args.encode_mean, args.encode_std)
+    model = models.__dict__[args.model.name](phase='train').to(device)
+    prior = BBoxShapePrior(args.num_classes, 5, args.anchors, args.iou_threshold, args.encode_mean, args.encode_std)
+    
+    detector = Detector(prior, model)
+
     state = Saver.load_best_from_folder(workdir, map_location='cpu')
-    model.load_state_dict(state['model'])
-    predictor = Predictor(
-        model, prior, args.test.score_threshold, args.test.iou_threshold, device)
+    detector.load_state_dict(state['model'])
+    predictor = Predictor(detector, args.test.score_threshold, args.test.iou_threshold, device)
     output_dir = workdir / 'result'
     image_dir = Path(args.test.image_dir)
     for imagefile in tqdm.tqdm(image_dir.rglob('*.jpg')):
