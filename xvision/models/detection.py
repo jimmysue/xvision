@@ -83,9 +83,11 @@ class BBoxPrior(Prior):
         else:
             # make layouts default to None, so that we can load from state_dict
             self.strides, self.bases = [], []
-        self.encode_mean = encode_mean
-        self.encode_std = encode_std
-        self.anchors = None
+
+        self.register_buffer('anchors', None)
+        self.register_buffer('encode_mean', encode_mean)
+        self.register_buffer('encode_std', encode_mean)
+
 
     @property
     def _state_keys(self):
@@ -93,12 +95,15 @@ class BBoxPrior(Prior):
 
     def _save_to_state_dict(self, destination, prefix, keep_vars):
         for k in self._state_keys:
-            destination[f'{prefix}{k}'] = self.__dict__[k]
+            try:
+                destination[f'{prefix}{k}'] = self.__getattr__(k)
+            except :
+                destination[f'{prefix}{k}'] = self.__dict__[k]
      
     
     def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs):
         for k in self._state_keys:
-            self.__dict__.update({k: state_dict[f'{prefix}{k}']})
+            self.__setattr__(k, state_dict[f'{prefix}{k}'])
 
 
     @staticmethod
@@ -287,11 +292,9 @@ class BBoxShapePrior(BBoxPrior):
                                        None, 2:] + self.anchors[..., None, :2]
         return points
 
-    def state_dict(self, *args, **kwargs):
-        return self.__dict__
-
-    def load_state_dict(self, state_dict, *args, **kwargs):
-        return super().load_state_dict(state_dict)
+    @property
+    def _state_keys(self):
+        return super()._state_keys + ['num_points']
 
     def forward(self, predictions, targets=None):
         logits = []
@@ -339,12 +342,14 @@ if __name__ == '__main__':
     backbone = mobilenet_v2()
 
     from projects.retinanet.config import cfg
-    prior = BBoxPrior(1, cfg.anchors, 0.35, None, None)
+    prior = BBoxShapePrior(1, 10, cfg.anchors, 0.35, None, None)
 
     detector = Detector(prior, backbone)
 
     state = detector.state_dict()
+    detector = Detector(BBoxShapePrior(), backbone)
     detector.load_state_dict(state)
+    detector.cuda()
     
     torch.save({
         'prior': prior.state_dict(),
