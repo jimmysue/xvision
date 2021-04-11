@@ -129,7 +129,7 @@ class BBoxPrior(Prior):
         return strides, anchors
 
     @staticmethod
-    def generate_layer_anchors(stride: int, fsize: tuple, layout: nn.Tensor, device=None):
+    def generate_layer_anchors(stride: int, fsize: tuple, layout: torch.Tensor, device=None):
         device = torch.device('cpu') if device is None else device
         # generate offset grid
         fw, fh = fsize
@@ -249,8 +249,8 @@ class BBoxPrior(Prior):
         for score, bbox in predictions:
             w, h = score.size(-1), score.size(-2)
             fsizes.append((w, h))
-            score = score.permute(0, 3, 1, 2).reshape(score.size(0), -1, self.num_classes)
-            bbox = bbox.permute(0, 3, 1, 2).reshape(bbox.size(0), -1, 4)
+            score = score.permute(0, 2, 3, 1).reshape(score.size(0), -1, self.num_classes)
+            bbox = bbox.permute(0, 2, 3, 1).reshape(bbox.size(0), -1, 4)
             logits.append(score)
             pred_deltas.append(bbox)
 
@@ -301,9 +301,9 @@ class BBoxShapePrior(BBoxPrior):
         for logit, delta, shape in predictions:
             w, h = logit.size(-1), logit.size(-2)
             fsizes.append((w, h))
-            logit = logit.permute(0, 3, 1, 2).reshape(logit.size(0), -1, self.num_classes)
-            delta = delta.permute(0, 3, 1, 2).reshape(delta.size(0), -1, 4)
-            shape = shape.permute(0, 3, 1, 2).reshape(shape.size(0), -1, self.num_points, 2)
+            logit = logit.permute(0, 2, 3, 1).reshape(logit.size(0), -1, self.num_classes)
+            delta = delta.permute(0, 2, 3, 1).reshape(delta.size(0), -1, 4)
+            shape = shape.permute(0, 2, 3, 1).reshape(shape.size(0), -1, self.num_points, 2)
             logits.append(logit)
             pred_deltas.append(delta)
             pred_shapes.append(shape)
