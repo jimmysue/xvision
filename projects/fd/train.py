@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import time
 import torch
+import torch.nn as nn
 from torch.nn import parameter
 from torch.optim import SGD
 from torch.optim.lr_scheduler import OneCycleLR
@@ -16,8 +17,10 @@ from xvision.datasets.wider import *
 from xvision.ops.utils import group_parameters
 from xvision.models.detection import Detector, BBoxShapePrior
 
+
 def batch_to(batch, device):
-    image = batch.pop('image').to(device, non_blocking=True).permute(0, 3, 1, 2).float()
+    image = batch.pop('image').to(
+        device, non_blocking=True).permute(0, 3, 1, 2).float()
     batch = {
         k: [i.to(device, non_blocking=True) for i in v] for k, v in batch.items()
     }
@@ -46,9 +49,10 @@ def evaluate(model, dataloader, prior, device):
     model.train()
     return meter
 
+
 def main(args):
     # prepare workspace
-    
+
     workdir = Path(args.workdir)
     workdir.mkdir(parents=True, exist_ok=True)
     logger = get_logger(workdir / 'log.txt')
@@ -64,36 +68,46 @@ def main(args):
         args.dump(stream=f)
 
     saver = Saver(workdir, keep_num=10)
-    
+
     # prepare dataset
     valtransform = ValTransform(dsize=args.dsize)
     traintransform = TrainTransform(dsize=args.dsize, **args.augments)
-    trainset = WiderFace(args.train_label, args.train_image, min_face=1, with_shapes=True, transform=traintransform)
-    valset = WiderFace(args.val_label, args.val_image, transform=valtransform, min_face=1)
+    trainset = WiderFace(args.train_label, args.train_image,
+                         min_face=1, with_shapes=True, transform=traintransform)
+    valset = WiderFace(args.val_label, args.val_image,
+                       transform=valtransform, min_face=1)
 
-    trainloader = DataLoader(trainset, batch_size=args.batch_size, 
-        shuffle=True, num_workers=args.num_workers, pin_memory=True, 
-        collate_fn=wider_collate, drop_last=True)
-    valloader = DataLoader(valset, batch_size=args.batch_size, 
-        shuffle=False, num_workers=args.num_workers, pin_memory=True, collate_fn=wider_collate)
+    trainloader = DataLoader(trainset, batch_size=args.batch_size,
+                             shuffle=True, num_workers=args.num_workers, pin_memory=True,
+                             collate_fn=wider_collate, drop_last=True)
+    valloader = DataLoader(valset, batch_size=args.batch_size,
+                           shuffle=False, num_workers=args.num_workers, pin_memory=True, collate_fn=wider_collate)
 
     # model
-    model = models.__dict__[args.model.name](phase='train').to(device)
-    prior = BBoxShapePrior(args.num_classes, 5, args.anchors, args.iou_threshold, args.encode_mean, args.encode_std)
-    
-    model = Detector(prior, model)
+    model = models.__dict__[args.model.name]().to(device)
+    prior = BBoxShapePrior(args.num_classes, 5, args.anchors,
+                           args.iou_threshold, args.encode_mean, args.encode_std)
 
-    # optimizer and lr scheduler
-    parameters = group_parameters(model, bias_decay=0)
-    optimizer = SGD(parameters, lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-    lr_scheduler = OneCycleLR(optimizer, max_lr = args.lr, div_factor=20, total_steps = args.total_steps, pct_start=0.1, final_div_factor=100)
-    trainloader = repeat_loader(trainloader)
-    
+    model = Detector(prior, model)
     model.to(device)
     model.train()
 
+    if torch.cuda.device_count() > 1:
+        model_dp = model
+        model_dp.backbone = nn.DataParallel(model_dp.backbone)
+    else:
+        model_dp = model
+
+    # optimizer and lr scheduler
+    parameters = group_parameters(model, bias_decay=0)
+    optimizer = SGD(parameters, lr=args.lr,
+                    momentum=args.momentum, weight_decay=args.weight_decay)
+    lr_scheduler = OneCycleLR(optimizer, max_lr=args.lr, div_factor=20,
+                              total_steps=args.total_steps, pct_start=0.1, final_div_factor=100)
+    trainloader = repeat_loader(trainloader)
+
     best_loss = 1e9
-    state ={
+    state = {
         'model': model.state_dict(),
         'lr_scheduler': lr_scheduler.state_dict(),
         'optimizer': optimizer.state_dict(),
@@ -102,12 +116,11 @@ def main(args):
     }
     saver.save(0, state)
 
-    
     def reset_meter():
         meter = MetricLogger()
         meter.add_meter('lr', SmoothedValue(1, fmt='{value:.5f}'))
         return meter
-    
+
     train_meter = reset_meter()
     start = time.time()
     for step in range(args.start_step, args.total_steps):
@@ -119,7 +132,8 @@ def main(args):
         mask = batch['mask']
         label = batch['label']
 
-        score_loss, box_loss, point_loss = model(image, targets=(label, box, point, mask))
+        score_loss, box_loss, point_loss = model_dp(
+            image, targets=(label, box, point, mask))
         loss = score_loss + 2.0 * box_loss + point_loss
 
         train_meter.meters['score'].update(score_loss.item())
@@ -127,22 +141,23 @@ def main(args):
         train_meter.meters['shape'].update(point_loss.item())
         train_meter.meters['total'].update(loss.item())
         train_meter.meters['lr'].update(optimizer.param_groups[0]['lr'])
-        
+
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
         lr_scheduler.step()
-        
+
         if (step + 1) % args.eval_interval == 0:
             duration = time.time() - start
             img_s = args.eval_interval * args.batch_size / duration
-            eval_meter = evaluate(model, valloader, prior, device)
+            eval_meter = evaluate(model_dp, valloader, prior, device)
 
-            logger.info(f'Step [{step + 1}/{args.total_steps}] img/s: {img_s:.2f} train: [{train_meter}] eval: [{eval_meter}]')
+            logger.info(
+                f'Step [{step + 1}/{args.total_steps}] img/s: {img_s:.2f} train: [{train_meter}] eval: [{eval_meter}]')
             train_meter = reset_meter()
             start = time.time()
             curr_loss = eval_meter.meters['total'].global_avg
-            state ={
+            state = {
                 'model': model.state_dict(),
                 'lr_scheduler': lr_scheduler.state_dict(),
                 'optimizer': optimizer.state_dict(),
@@ -150,14 +165,10 @@ def main(args):
 
             }
             saver.save(step + 1, state)
-            
+
             if (curr_loss < best_loss):
                 best_loss = curr_loss
                 saver.save_best(state)
-
-
-                
-
 
 
 if __name__ == '__main__':

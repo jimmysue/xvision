@@ -10,28 +10,19 @@ _C.workdir = "workspace/fd"
 # anchor layouts and model structure
 # data size
 _C.num_classes = 1
-_C.dsize = (320, 320)   # input image size
-_C.strides = [8, 16, 32, 64]    # strides of features
-# feature map size each stride
-_C.fsizes = [(40, 40), (20, 20), (10, 10), (5, 5)]
-_C.layouts = [  # anchor layout
-    [10, 16, 24],
-    [32, 48],
-    [64, 96],
-    [128, 192, 256]
-]
+_C.dsize = (840, 840)   # input image size
+
 _C.anchors = [
-    {'stride': 8, 'scales': [10/8, 2, 3], 'aspects':[1]},
-    {'stride': 16, 'scales': [2, 3], 'aspects': [1]},
-    {'stride': 32, 'scales': [2, 3], 'aspects': [1]},
-    {'stride': 64, 'scales': [2, 3, 4], 'aspects': [1]}
+    {'stride': 8, 'scales':  [2, 3], 'aspects':[1]},
+    {'stride': 16, 'scales': [4, 8], 'aspects': [1]},
+    {'stride': 32, 'scales': [8, 16], 'aspects': [1]},
 ]
 _C.iou_threshold = 0.35
 _C.encode_mean = None
 _C.encode_std = [.1, .1, .2, .2]  # center .1, size: .2
 
 _C.model = CN(recursive=False)
-_C.model.name = "RFB"
+_C.model.name = "retinaface_res50fpn"
 _C.model.args = []
 _C.model.kwargs = CN()
 
@@ -49,15 +40,15 @@ _C.eval_interval = 100    # evaluate interval
 _C.augments = CN()
 _C.augments.inters = [cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_LANCZOS4, cv2.INTER_AREA]
 _C.augments.rotation = 5
-_C.augments.max_face = 256
+_C.augments.max_face = 512
 _C.augments.min_face = 6
 _C.augments.symmetry = [1, 0, 2, 4, 3] # shape symmetry indice for mirror augmentation
 
 # data parameters
-_C.train_label = '/dockerdata/train/label.txt'
-_C.train_image = '/dockerdata/WIDER_train/images'
-_C.val_label = '/dockerdata/val/label.txt'
-_C.val_image = '/dockerdata/WIDER_val/images'
+_C.train_label = '/dockerdata/WIDER_face/train/label.txt'
+_C.train_image = '/dockerdata/WIDER_face/train/images'
+_C.val_label = '/dockerdata/WIDER_face/val/label.txt'
+_C.val_image = '/dockerdata/WIDER_face/val/images'
 
 # configuration for test
 _C.test = CN(new_allowed=True)
