@@ -142,3 +142,6 @@ cython_debug/
 runs/
 workspace/
 .DS_store
+
+# ignore sphinx build directory
+docs/build
