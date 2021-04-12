@@ -170,10 +170,7 @@ class RFB(nn.Module):
         return nn.ModuleList(loc_layers), nn.ModuleList(conf_layers), nn.ModuleList(landm_layers)
 
     def forward(self, inputs):
-        detections = list()
-        loc = list()
-        conf = list()
-        landm = list()
+        detections = []
         inputs = self.bn(inputs)
         x1 = self.conv1(inputs)
         x2 = self.conv2(x1)
@@ -196,36 +193,7 @@ class RFB(nn.Module):
 
         x14 = self.conv14(x13)
         detections.append(x14)
-        fsizes = []
+        predictions = []
         for (x, l, c, lam) in zip(detections, self.loc, self.conf, self.landm):
-            loc.append(l(x).permute(0, 2, 3, 1).contiguous())
-            conf.append(c(x).permute(0, 2, 3, 1).contiguous())
-            landm.append(lam(x).permute(0, 2, 3, 1).contiguous())
-            fsizes.append(
-                (x.size(-1), x.size(-2))
-            )
-        bbox_regressions = torch.cat(
-            [o.view(o.size(0), -1, 4) for o in loc], 1)
-        classifications = torch.cat(
-            [o.view(o.size(0), -1, self.num_classes) for o in conf], 1)
-        ldm_regressions = torch.cat(
-            [o.view(o.size(0), -1, 10) for o in landm], 1)
-
-        if self.phase == 'train':
-            output = (classifications, bbox_regressions, ldm_regressions)
-        else:
-            output = (torch.sigmoid(classifications),
-                      bbox_regressions, ldm_regressions, fsizes)
-        return output
-
-
-
-
-if __name__ == '__main__':
-    model = RFB()
-    input = torch.rand(1, 3, 320, 320)
-
-    score, box, points = model(input)
-    print(score.shape)
-    print(box.shape)
-    print(points.shape)
+            predictions.append((c(x), l(x), lam(x)))
+        return predictions
