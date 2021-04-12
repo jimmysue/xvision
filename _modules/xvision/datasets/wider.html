@@ -1,0 +1,473 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>xvision.datasets.wider &mdash; xvision  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> xvision
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">xvision</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>xvision.datasets.wider</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for xvision.datasets.wider</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span>
+
+<span class="kn">from</span> <span class="nn">xvision.transforms</span> <span class="kn">import</span> <span class="n">matrix2d</span>
+<span class="kn">from</span> <span class="nn">xvision.transforms.warp</span> <span class="kn">import</span> <span class="n">warp_affine</span>
+<span class="kn">from</span> <span class="nn">xvision.transforms.boxes</span> <span class="kn">import</span> <span class="n">bbox_affine</span>
+
+
+<div class="viewcode-block" id="WiderFace"><a class="viewcode-back" href="../../../xvision.datasets.html#xvision.datasets.wider.WiderFace">[docs]</a><span class="k">class</span> <span class="nc">WiderFace</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label_file</span><span class="p">,</span> <span class="n">image_dir</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_shapes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_face</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">transform</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">transform</span><span class="p">),</span> <span class="s2">&quot;transform must be callable&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">WiderFace</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span>
+            <span class="n">label_file</span><span class="p">,</span> <span class="n">image_dir</span><span class="p">,</span> <span class="n">with_shapes</span><span class="p">,</span> <span class="n">min_face</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">item</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_COLOR</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">item</span>
+
+<div class="viewcode-block" id="WiderFace.parse"><a class="viewcode-back" href="../../../xvision.datasets.html#xvision.datasets.wider.WiderFace.parse">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">label_file</span><span class="p">,</span> <span class="n">image_dir</span><span class="p">,</span> <span class="n">with_shapes</span><span class="p">,</span> <span class="n">min_face</span><span class="p">):</span>
+        <span class="n">image_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">image_dir</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">with_shapes</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">parse_annotation</span><span class="p">(</span><span class="n">fd</span><span class="p">):</span>
+                <span class="n">name</span><span class="p">,</span> <span class="n">rects</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fd</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">::]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">items</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                        <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
+                        <span class="n">rects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">items</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="n">rects</span>
+            <span class="n">fd</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">label_file</span><span class="p">)</span>
+            <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">parse_annotation</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+
+            <span class="k">while</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">next_name</span><span class="p">,</span> <span class="n">rects</span> <span class="o">=</span> <span class="n">parse_annotation</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+                <span class="n">bbox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rects</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>  <span class="c1"># n x 4</span>
+                <span class="n">sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">bbox</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">bbox</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">+=</span> <span class="n">bbox</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">fullpath</span> <span class="o">=</span> <span class="n">image_dir</span> <span class="o">/</span> <span class="n">name</span>
+                <span class="n">keep</span> <span class="o">=</span> <span class="n">sizes</span> <span class="o">&gt;</span> <span class="n">min_face</span>
+                <span class="n">bbox</span> <span class="o">=</span> <span class="n">bbox</span><span class="p">[</span><span class="n">keep</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="k">if</span> <span class="n">bbox</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="p">{</span>
+                        <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">fullpath</span><span class="p">,</span>
+                        <span class="s2">&quot;bbox&quot;</span><span class="p">:</span> <span class="n">bbox</span>
+                    <span class="p">}</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">next_name</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">def</span> <span class="nf">parse_bbox_lmk</span><span class="p">(</span><span class="n">fd</span><span class="p">):</span>
+                <span class="n">name</span><span class="p">,</span> <span class="n">rects</span><span class="p">,</span> <span class="n">pts</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fd</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)):</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">items</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                        <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
+                        <span class="n">rect</span> <span class="o">=</span> <span class="n">items</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
+                        <span class="n">lmk</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">rects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
+                        <span class="n">pts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lmk</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="n">rects</span><span class="p">,</span> <span class="n">pts</span>
+            <span class="n">fd</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">label_file</span><span class="p">)</span>
+            <span class="n">name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">parse_bbox_lmk</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">next_name</span><span class="p">,</span> <span class="n">rects</span><span class="p">,</span> <span class="n">pts</span> <span class="o">=</span> <span class="n">parse_bbox_lmk</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+                <span class="n">bbox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rects</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="n">sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">bbox</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">bbox</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">+=</span> <span class="n">bbox</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+
+                <span class="n">pts_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="n">scores</span> <span class="o">=</span> <span class="n">pts_score</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span>
+                <span class="n">pts</span> <span class="o">=</span> <span class="n">pts_score</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">valids</span> <span class="o">=</span> <span class="n">scores</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">valids</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="n">keep</span> <span class="o">=</span> <span class="n">sizes</span> <span class="o">&gt;</span> <span class="n">min_face</span>
+
+                <span class="n">bbox</span> <span class="o">=</span> <span class="n">bbox</span><span class="p">[</span><span class="n">keep</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="n">pts</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[</span><span class="n">keep</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">bbox</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="p">{</span>
+                        <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">image_dir</span> <span class="o">/</span> <span class="n">name</span><span class="p">,</span>
+                        <span class="s2">&quot;bbox&quot;</span><span class="p">:</span> <span class="n">bbox</span><span class="p">,</span>
+                        <span class="s2">&quot;shape&quot;</span><span class="p">:</span> <span class="n">pts</span><span class="p">,</span>
+                        <span class="s2">&quot;mask&quot;</span><span class="p">:</span> <span class="n">mask</span>
+                    <span class="p">}</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">next_name</span></div></div>
+
+
+<div class="viewcode-block" id="ValTransform"><a class="viewcode-back" href="../../../xvision.datasets.html#xvision.datasets.wider.ValTransform">[docs]</a><span class="k">class</span> <span class="nc">ValTransform</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsize</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dsize</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dsize</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">dsize</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dsize</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">dsize</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">dsize</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dsize</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid dsize: </span><span class="si">{</span><span class="n">dsize</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span>
+        <span class="n">bboxes</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="c1"># calc transform matrix</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">dw</span><span class="p">,</span> <span class="n">dh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsize</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dw</span> <span class="o">/</span> <span class="n">w</span><span class="p">,</span> <span class="n">dh</span> <span class="o">/</span> <span class="n">h</span><span class="p">)</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix2d</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">warp_affine</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsize</span><span class="p">)</span>
+        <span class="n">bboxes</span> <span class="o">=</span> <span class="n">bbox_affine</span><span class="p">(</span><span class="n">bboxes</span><span class="p">,</span> <span class="n">matrix</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;image&#39;</span><span class="p">:</span> <span class="n">image</span><span class="p">,</span>
+            <span class="s1">&#39;bbox&#39;</span><span class="p">:</span> <span class="n">bboxes</span><span class="p">,</span>
+            <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">bboxes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="s1">&#39;shape&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+            <span class="n">shapes</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">shapes</span> <span class="o">=</span> <span class="n">shapes</span> <span class="o">@</span> <span class="n">matrix</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">matrix</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shapes</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                <span class="n">bboxes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="TrainTransform"><a class="viewcode-back" href="../../../xvision.datasets.html#xvision.datasets.wider.TrainTransform">[docs]</a><span class="k">class</span> <span class="nc">TrainTransform</span><span class="p">(</span><span class="n">ValTransform</span><span class="p">):</span>
+    <span class="c1"># random</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsize</span><span class="p">,</span> <span class="o">**</span><span class="n">augments</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dsize</span><span class="p">)</span>
+        <span class="c1"># random interpolate choid from below</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inters</span> <span class="o">=</span> <span class="n">augments</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;inters&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_LINEAR</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="n">augments</span><span class="p">[</span><span class="s1">&#39;rotation&#39;</span><span class="p">]</span>  <span class="c1"># random rotate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_face</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_face</span> <span class="o">=</span> <span class="n">augments</span><span class="p">[</span><span class="s1">&#39;min_face&#39;</span><span class="p">],</span> <span class="n">augments</span><span class="p">[</span><span class="s1">&#39;max_face&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">symmetry</span> <span class="o">=</span> <span class="n">augments</span><span class="p">[</span><span class="s1">&#39;symmetry&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">inter</span><span class="p">,</span> <span class="n">mirror</span><span class="p">):</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span>
+        <span class="n">bboxes</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">]</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">warp_affine</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsize</span><span class="p">,</span>
+                            <span class="n">flags</span><span class="o">=</span><span class="n">inter</span><span class="p">,</span> <span class="n">borderMode</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">BORDER_REPLICATE</span><span class="p">)</span>
+        <span class="n">bboxes</span> <span class="o">=</span> <span class="n">bbox_affine</span><span class="p">(</span><span class="n">bboxes</span><span class="p">,</span> <span class="n">matrix</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;image&#39;</span><span class="p">:</span> <span class="n">image</span><span class="p">,</span>
+            <span class="s1">&#39;bbox&#39;</span><span class="p">:</span> <span class="n">bboxes</span><span class="p">,</span>
+            <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">bboxes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="s1">&#39;shape&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="n">points</span> <span class="o">@</span> <span class="n">matrix</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">matrix</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">bboxes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mirror</span><span class="p">:</span>
+                <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">symmetry</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">points</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="k">def</span> <span class="nf">_augment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">dsize</span><span class="p">):</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span>
+        <span class="n">boxes</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">]</span>  <span class="c1"># [n, 4]</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">dw</span><span class="p">,</span> <span class="n">dh</span> <span class="o">=</span> <span class="n">dsize</span>
+        <span class="c1"># random choose one face as interest region,</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">boxes</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">boxes</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="n">boxes</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)))</span>
+        <span class="n">max_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_face</span><span class="p">)</span>
+        <span class="n">max_scale</span> <span class="o">=</span> <span class="n">max_size</span> <span class="o">/</span> <span class="n">size</span>
+        <span class="n">min_scale</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dw</span> <span class="o">/</span> <span class="n">w</span><span class="p">,</span> <span class="n">dh</span> <span class="o">/</span> <span class="n">h</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">min_scale</span><span class="p">,</span> <span class="n">max_scale</span><span class="p">)</span>
+        <span class="n">ibox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix2d</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+        <span class="n">tbox</span> <span class="o">=</span> <span class="n">bbox_affine</span><span class="p">(</span><span class="n">ibox</span><span class="p">,</span> <span class="n">matrix</span><span class="p">)</span>
+        <span class="n">dbox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dw</span><span class="p">,</span> <span class="n">dh</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">fbox</span> <span class="o">=</span> <span class="n">bbox_affine</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">matrix</span><span class="p">)</span>
+
+        <span class="c1"># determine translation bound</span>
+        <span class="n">tlow</span> <span class="o">=</span> <span class="n">tbox</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">dbox</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">thigh</span> <span class="o">=</span> <span class="n">tbox</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="n">dbox</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="n">flow</span> <span class="o">=</span> <span class="n">fbox</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="n">dbox</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="n">fhigh</span> <span class="o">=</span> <span class="n">fbox</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">dbox</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">thigh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">thigh</span><span class="p">,</span> <span class="n">fhigh</span><span class="p">)</span>
+        <span class="n">tlow</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">tlow</span><span class="p">,</span> <span class="n">flow</span><span class="p">)</span>
+
+        <span class="n">high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">tlow</span><span class="p">,</span> <span class="n">thigh</span><span class="p">)</span>
+        <span class="n">low</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">tlow</span><span class="p">,</span> <span class="n">thigh</span><span class="p">)</span>
+        <span class="n">txty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
+        <span class="n">translate</span> <span class="o">=</span> <span class="n">matrix2d</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="n">txty</span><span class="p">)</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">translate</span> <span class="o">@</span> <span class="n">matrix</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">rotation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span><span class="p">)</span>
+        <span class="n">rotate</span> <span class="o">=</span> <span class="n">matrix2d</span><span class="o">.</span><span class="n">center_rotate_scale_cw</span><span class="p">([</span><span class="n">dw</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">dh</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span> <span class="n">angle</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">rotate</span> <span class="o">@</span> <span class="n">matrix</span>
+
+        <span class="n">mirror</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">mirror</span><span class="p">:</span>
+            <span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix2d</span><span class="o">.</span><span class="n">hflip</span><span class="p">(</span><span class="n">dw</span><span class="p">)</span> <span class="o">@</span> <span class="n">matrix</span>
+
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span>
+            <span class="n">item</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inters</span><span class="p">),</span> <span class="n">mirror</span><span class="p">)</span>
+        <span class="c1"># remove face exceed image</span>
+        <span class="n">boxes</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">boxes</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="n">boxes</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">boxes</span><span class="p">[</span><span class="n">boxes</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">boxes</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">boxes</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:],</span> <span class="p">[[</span><span class="n">dw</span><span class="p">,</span> <span class="n">dh</span><span class="p">]])</span>
+        <span class="n">inner</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">boxes</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="n">boxes</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ratio</span> <span class="o">=</span> <span class="n">inner</span> <span class="o">/</span> <span class="n">area</span>
+        <span class="n">discard</span> <span class="o">=</span> <span class="n">ratio</span> <span class="o">&lt;</span> <span class="mf">0.4</span>
+        <span class="n">item</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">][</span><span class="n">discard</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">item</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_augment</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsize</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">item</span></div>
+
+
+<div class="viewcode-block" id="wider_collate"><a class="viewcode-back" href="../../../xvision.datasets.html#xvision.datasets.wider.wider_collate">[docs]</a><span class="k">def</span> <span class="nf">wider_collate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">k</span><span class="p">:</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="n">items</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">items</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">torch</span>
+    <span class="kn">import</span> <span class="nn">tqdm</span>
+    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+    <span class="kn">from</span> <span class="nn">xvision.utils.draw</span> <span class="kn">import</span> <span class="o">*</span>
+    <span class="kn">from</span> <span class="nn">projects.face_detection.config</span> <span class="kn">import</span> <span class="n">cfg</span>
+    <span class="n">train</span> <span class="o">=</span> <span class="s2">&quot;/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/train/label.txt&quot;</span>
+    <span class="nb">dir</span> <span class="o">=</span> <span class="s2">&quot;/Users/jimmy/Documents/data/WIDER/WIDER_train/images&quot;</span>
+
+    <span class="n">transform</span> <span class="o">=</span> <span class="n">TrainTransform</span><span class="p">((</span><span class="mi">320</span><span class="p">,</span> <span class="mi">320</span><span class="p">),</span> <span class="o">**</span><span class="n">cfg</span><span class="o">.</span><span class="n">augments</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">WiderFace</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="nb">dir</span><span class="p">,</span> <span class="n">with_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">min_face</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">)</span>
+
+    <span class="n">areas</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span>
+        <span class="n">boxes</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">]</span>
+        <span class="n">area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">boxes</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="n">boxes</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">area</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="n">area</span> <span class="o">=</span> <span class="n">area</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span>
+        <span class="n">sizes</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sizes</span><span class="p">,</span> <span class="n">area</span><span class="p">):</span>
+            <span class="n">areas</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">+=</span> <span class="n">a</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">areas</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">areas</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+  
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Jimmy.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

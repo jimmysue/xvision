@@ -1,0 +1,420 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>xvision.datasets package &mdash; xvision  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> xvision
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">xvision.datasets package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-xvision.datasets.ava">xvision.datasets.ava module</a></li>
+<li><a class="reference internal" href="#module-xvision.datasets.coco">xvision.datasets.coco module</a></li>
+<li><a class="reference internal" href="#module-xvision.datasets.ibug">xvision.datasets.ibug module</a></li>
+<li><a class="reference internal" href="#module-xvision.datasets.jdlmk">xvision.datasets.jdlmk module</a></li>
+<li><a class="reference internal" href="#module-xvision.datasets.loader">xvision.datasets.loader module</a></li>
+<li><a class="reference internal" href="#module-xvision.datasets.memmap">xvision.datasets.memmap module</a></li>
+<li><a class="reference internal" href="#module-xvision.datasets.voc">xvision.datasets.voc module</a></li>
+<li><a class="reference internal" href="#module-xvision.datasets.wflw">xvision.datasets.wflw module</a></li>
+<li><a class="reference internal" href="#module-xvision.datasets.wider">xvision.datasets.wider module</a></li>
+<li><a class="reference internal" href="#module-xvision.datasets">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">xvision</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>xvision.datasets package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/xvision.datasets.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="xvision-datasets-package">
+<h1>xvision.datasets package<a class="headerlink" href="#xvision-datasets-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-xvision.datasets.ava">
+<span id="xvision-datasets-ava-module"></span><h2>xvision.datasets.ava module<a class="headerlink" href="#module-xvision.datasets.ava" title="Permalink to this headline">¶</a></h2>
+<p>file - dataset.py
+Customized dataset class to loop through the AVA dataset and apply needed image augmentations for training.</p>
+<p>Copyright (C) Yunxiao Shi 2017 - 2020
+NIMA is released under the MIT license. See LICENSE for the fill license text.</p>
+<dl class="py class">
+<dt id="xvision.datasets.ava.AVADataset">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.datasets.ava.</span></code><code class="sig-name descname"><span class="pre">AVADataset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/ava.html#AVADataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.ava.AVADataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.utils.data.dataset.T_co</span></code>]</p>
+<p>AVA dataset</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csv_file</strong> – a 11-column csv_file, column one contains the names of image files, column 2-11 contains the empiricial distributions of ratings</p></li>
+<li><p><strong>root_dir</strong> – directory to the images</p></li>
+<li><p><strong>transform</strong> – preprocessing and augmentation of the training images</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="xvision.datasets.ava.AVADataset.parse">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">parse</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/ava.html#AVADataset.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.ava.AVADataset.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-xvision.datasets.coco">
+<span id="xvision-datasets-coco-module"></span><h2>xvision.datasets.coco module<a class="headerlink" href="#module-xvision.datasets.coco" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="xvision.datasets.coco.CocoDetection">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.datasets.coco.</span></code><code class="sig-name descname"><span class="pre">CocoDetection</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annFile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transforms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/coco.html#CocoDetection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.coco.CocoDetection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.utils.data.dataset.T_co</span></code>]</p>
+<dl class="py method">
+<dt id="xvision.datasets.coco.CocoDetection.cat2label">
+<code class="sig-name descname"><span class="pre">cat2label</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/coco.html#CocoDetection.cat2label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.coco.CocoDetection.cat2label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.datasets.coco.CocoDetection.label2cat">
+<code class="sig-name descname"><span class="pre">label2cat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/coco.html#CocoDetection.label2cat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.coco.CocoDetection.label2cat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-xvision.datasets.ibug">
+<span id="xvision-datasets-ibug-module"></span><h2>xvision.datasets.ibug module<a class="headerlink" href="#module-xvision.datasets.ibug" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="xvision.datasets.ibug.IBUG">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.datasets.ibug.</span></code><code class="sig-name descname"><span class="pre">IBUG</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/ibug.html#IBUG"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.ibug.IBUG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.utils.data.dataset.T_co</span></code>]</p>
+<dl class="py attribute">
+<dt id="xvision.datasets.ibug.IBUG.EXTS">
+<code class="sig-name descname"><span class="pre">EXTS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['.jpg',</span> <span class="pre">'.png']</span></em><a class="headerlink" href="#xvision.datasets.ibug.IBUG.EXTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="xvision.datasets.ibug.IBUG.TEST_DIRS">
+<code class="sig-name descname"><span class="pre">TEST_DIRS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['ibug',</span> <span class="pre">'halen/testset',</span> <span class="pre">'lpfw/testset']</span></em><a class="headerlink" href="#xvision.datasets.ibug.IBUG.TEST_DIRS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="xvision.datasets.ibug.IBUG.TRAIN_DIRS">
+<code class="sig-name descname"><span class="pre">TRAIN_DIRS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['afw',</span> <span class="pre">'halen/trainset',</span> <span class="pre">'lfpw/trainset']</span></em><a class="headerlink" href="#xvision.datasets.ibug.IBUG.TRAIN_DIRS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.datasets.ibug.IBUG.parse">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">parse</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dirs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/ibug.html#IBUG.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.ibug.IBUG.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.datasets.ibug.IBUG.shapes">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">shapes</span></code><a class="headerlink" href="#xvision.datasets.ibug.IBUG.shapes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-xvision.datasets.jdlmk">
+<span id="xvision-datasets-jdlmk-module"></span><h2>xvision.datasets.jdlmk module<a class="headerlink" href="#module-xvision.datasets.jdlmk" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="xvision.datasets.jdlmk.JDLandmark">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.datasets.jdlmk.</span></code><code class="sig-name descname"><span class="pre">JDLandmark</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">landmark</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picture</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/jdlmk.html#JDLandmark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.jdlmk.JDLandmark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.utils.data.dataset.T_co</span></code>]</p>
+<dl class="py method">
+<dt id="xvision.datasets.jdlmk.JDLandmark.parse">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">parse</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">landmark</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picture</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/jdlmk.html#JDLandmark.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.jdlmk.JDLandmark.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.datasets.jdlmk.JDLandmark.shapes">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">shapes</span></code><a class="headerlink" href="#xvision.datasets.jdlmk.JDLandmark.shapes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-xvision.datasets.loader">
+<span id="xvision-datasets-loader-module"></span><h2>xvision.datasets.loader module<a class="headerlink" href="#module-xvision.datasets.loader" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="xvision.datasets.loader.repeat_loader">
+<code class="sig-prename descclassname"><span class="pre">xvision.datasets.loader.</span></code><code class="sig-name descname"><span class="pre">repeat_loader</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/loader.html#repeat_loader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.loader.repeat_loader" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-xvision.datasets.memmap">
+<span id="xvision-datasets-memmap-module"></span><h2>xvision.datasets.memmap module<a class="headerlink" href="#module-xvision.datasets.memmap" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="xvision.datasets.memmap.MemMap">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.datasets.memmap.</span></code><code class="sig-name descname"><span class="pre">MemMap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/memmap.html#MemMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.memmap.MemMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.utils.data.dataset.T_co</span></code>]</p>
+<dl class="py method">
+<dt id="xvision.datasets.memmap.MemMap.create">
+<code class="sig-name descname"><span class="pre">create</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xvision.datasets.memmap.MemMap.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="xvision.datasets.memmap.create_mmap_dataset">
+<code class="sig-prename descclassname"><span class="pre">xvision.datasets.memmap.</span></code><code class="sig-name descname"><span class="pre">create_mmap_dataset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/memmap.html#create_mmap_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.memmap.create_mmap_dataset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-xvision.datasets.voc">
+<span id="xvision-datasets-voc-module"></span><h2>xvision.datasets.voc module<a class="headerlink" href="#module-xvision.datasets.voc" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="xvision.datasets.voc.VOCDetection">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.datasets.voc.</span></code><code class="sig-name descname"><span class="pre">VOCDetection</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/voc.html#VOCDetection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.voc.VOCDetection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.utils.data.dataset.T_co</span></code>]</p>
+<p>VOC detection dataset that using cv2 backend</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-xvision.datasets.wflw">
+<span id="xvision-datasets-wflw-module"></span><h2>xvision.datasets.wflw module<a class="headerlink" href="#module-xvision.datasets.wflw" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="xvision.datasets.wflw.WFLW">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.datasets.wflw.</span></code><code class="sig-name descname"><span class="pre">WFLW</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/wflw.html#WFLW"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.wflw.WFLW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.utils.data.dataset.T_co</span></code>]</p>
+<p>WFLW dataset</p>
+<dl class="py method">
+<dt id="xvision.datasets.wflw.WFLW.meanbbox">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">meanbbox</span></code><a class="headerlink" href="#xvision.datasets.wflw.WFLW.meanbbox" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.datasets.wflw.WFLW.meanshape">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">meanshape</span></code><a class="headerlink" href="#xvision.datasets.wflw.WFLW.meanshape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.datasets.wflw.WFLW.parse">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">parse</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/wflw.html#WFLW.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.wflw.WFLW.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.datasets.wflw.WFLW.shapes">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">shapes</span></code><a class="headerlink" href="#xvision.datasets.wflw.WFLW.shapes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-xvision.datasets.wider">
+<span id="xvision-datasets-wider-module"></span><h2>xvision.datasets.wider module<a class="headerlink" href="#module-xvision.datasets.wider" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="xvision.datasets.wider.TrainTransform">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.datasets.wider.</span></code><code class="sig-name descname"><span class="pre">TrainTransform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsize</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">augments</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/wider.html#TrainTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.wider.TrainTransform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xvision.datasets.wider.ValTransform" title="xvision.datasets.wider.ValTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">xvision.datasets.wider.ValTransform</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="xvision.datasets.wider.ValTransform">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.datasets.wider.</span></code><code class="sig-name descname"><span class="pre">ValTransform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsize</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/wider.html#ValTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.wider.ValTransform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="xvision.datasets.wider.WiderFace">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.datasets.wider.</span></code><code class="sig-name descname"><span class="pre">WiderFace</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_shapes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/wider.html#WiderFace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.wider.WiderFace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.utils.data.dataset.T_co</span></code>]</p>
+<dl class="py method">
+<dt id="xvision.datasets.wider.WiderFace.parse">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">parse</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_shapes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_face</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/wider.html#WiderFace.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.wider.WiderFace.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="xvision.datasets.wider.wider_collate">
+<code class="sig-prename descclassname"><span class="pre">xvision.datasets.wider.</span></code><code class="sig-name descname"><span class="pre">wider_collate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/datasets/wider.html#wider_collate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.datasets.wider.wider_collate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-xvision.datasets">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-xvision.datasets" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Jimmy.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

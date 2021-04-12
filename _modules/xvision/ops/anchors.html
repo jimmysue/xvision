@@ -1,0 +1,422 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>xvision.ops.anchors &mdash; xvision  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> xvision
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">xvision</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>xvision.ops.anchors</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for xvision.ops.anchors</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+
+<span class="kn">from</span> <span class="nn">xvision.ops.boxes</span> <span class="kn">import</span> <span class="n">bbox2cbox</span><span class="p">,</span> <span class="n">cbox2bbox</span><span class="p">,</span> <span class="n">box_iou_pairwise</span>
+
+
+<span class="k">def</span> <span class="nf">_canonical_anchor</span><span class="p">(</span><span class="n">anchor</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">anchor</span><span class="p">,</span> <span class="n">anchor</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">anchor</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">h</span> <span class="o">=</span> <span class="n">anchor</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">anchor</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">anchor</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">anchor</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">anchor</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">anchor</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">anchor</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">anchor</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid anchor setting with value: </span><span class="si">{</span><span class="n">anchor</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="BBoxAnchors"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.anchors.BBoxAnchors">[docs]</a><span class="k">class</span> <span class="nc">BBoxAnchors</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">dsize</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">fsizes</span><span class="p">,</span> <span class="n">layouts</span><span class="p">,</span> <span class="n">iou_threshold</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">encode_mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encode_std</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Anchor generation and matching</span>
+
+<span class="sd">        This object generates anchors for given detection structure, and matches anchors to ground truths to determine</span>
+<span class="sd">        the score of each anchor. And provide interface to encode/decode bboxes and shapes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_classes (int): number of positive classes</span>
+<span class="sd">            dsize (tuple): input size of model</span>
+<span class="sd">            strides (list): list of strides </span>
+<span class="sd">            fsizes (list): list of feature sizes for detection</span>
+<span class="sd">            layouts (list): anchor layout for each feature level</span>
+<span class="sd">            iou_threshold (float, optional): minimal iou to normalize the score of positive anchor. Defaults to 0.3.</span>
+<span class="sd">            encode_mean ([list, tuple], optional): mean vector of encoded box. Defaults to None.</span>
+<span class="sd">            encode_std ([list, tuple], optional): std vector of encoded box. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dsize</span> <span class="o">=</span> <span class="n">dsize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strides</span> <span class="o">=</span> <span class="n">strides</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fsizes</span> <span class="o">=</span> <span class="n">fsizes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layouts</span> <span class="o">=</span> <span class="n">layouts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="n">num_classes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">=</span> <span class="n">iou_threshold</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">encode_mean</span><span class="p">):</span>
+            <span class="n">encode_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                <span class="n">encode_mean</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">encode_mean</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">==</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;encode_mean should be of 4-element&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">encode_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">encode_std</span><span class="p">):</span>
+            <span class="n">encode_std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                <span class="n">encode_std</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">encode_std</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">==</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;encode_std should be of 4-element&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">encode_std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s1">&#39;encode_mean&#39;</span><span class="p">,</span> <span class="n">encode_mean</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s1">&#39;encode_std&#39;</span><span class="p">,</span> <span class="n">encode_std</span><span class="p">)</span>
+        <span class="n">anchors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_anchors</span><span class="p">(</span><span class="n">strides</span><span class="p">,</span> <span class="n">fsizes</span><span class="p">,</span> <span class="n">layouts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s1">&#39;anchors&#39;</span><span class="p">,</span> <span class="n">anchors</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BBoxAnchors.generate_layer_anchors"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.anchors.BBoxAnchors.generate_layer_anchors">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">generate_layer_anchors</span><span class="p">(</span><span class="n">stride</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">device</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="p">[</span><span class="n">_canonical_anchor</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">layout</span><span class="p">]</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+            <span class="n">layout</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>  <span class="c1"># [k, 5]</span>
+
+        <span class="c1"># generate offset grid</span>
+        <span class="n">fw</span><span class="p">,</span> <span class="n">fh</span> <span class="o">=</span> <span class="n">fsize</span>
+        <span class="n">vx</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">fw</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="o">*</span> <span class="n">stride</span>
+        <span class="n">vy</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">fh</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span> <span class="o">*</span> <span class="n">stride</span>
+        <span class="n">vy</span><span class="p">,</span> <span class="n">vx</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">vy</span><span class="p">,</span> <span class="n">vx</span><span class="p">)</span>
+        <span class="n">offsets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [fh, fw, 2]</span>
+
+        <span class="n">anchors</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">fw</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># [fh, fw, k, 5]</span>
+        <span class="n">anchors</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">offsets</span><span class="p">[:,</span> <span class="p">:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># [fh, fw, k, 5]</span>
+        <span class="k">return</span> <span class="n">anchors</span></div>
+
+<div class="viewcode-block" id="BBoxAnchors.generate_anchors"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.anchors.BBoxAnchors.generate_anchors">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">generate_anchors</span><span class="p">(</span><span class="n">strides</span><span class="p">,</span> <span class="n">fsizes</span><span class="p">,</span> <span class="n">layouts</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">anchors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">stride</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">layout</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">strides</span><span class="p">,</span> <span class="n">fsizes</span><span class="p">,</span> <span class="n">layouts</span><span class="p">):</span>
+            <span class="n">layer_anchors</span> <span class="o">=</span> <span class="n">BBoxAnchors</span><span class="o">.</span><span class="n">generate_layer_anchors</span><span class="p">(</span>
+                <span class="n">stride</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+            <span class="n">layer_anchors</span> <span class="o">=</span> <span class="n">layer_anchors</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">anchors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer_anchors</span><span class="p">)</span>
+        <span class="n">anchors</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">anchors</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">anchors</span></div>
+
+<div class="viewcode-block" id="BBoxAnchors.update"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.anchors.BBoxAnchors.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fsizes</span><span class="p">):</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="o">.</span><span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_anchors</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">strides</span><span class="p">,</span> <span class="n">fsizes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layouts</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BBoxAnchors.encode_bboxes"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.anchors.BBoxAnchors.encode_bboxes">[docs]</a>    <span class="k">def</span> <span class="nf">encode_bboxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">):</span>
+        <span class="c1"># bboxes: [*, k, 4]</span>
+        <span class="c1"># self.anchors: [k, 4]</span>
+        <span class="n">cboxes</span> <span class="o">=</span> <span class="n">bbox2cbox</span><span class="p">(</span><span class="n">bboxes</span><span class="p">)</span>
+        <span class="n">centers</span> <span class="o">=</span> <span class="p">(</span><span class="n">cboxes</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:]</span>  <span class="c1"># [*, k, 2]</span>
+        <span class="n">sizes</span> <span class="o">=</span> <span class="n">cboxes</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:]</span>
+        <span class="n">sizes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span>    <span class="c1"># [*, k, 2]</span>
+        <span class="n">deltas</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">centers</span><span class="p">,</span> <span class="n">sizes</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">deltas</span> <span class="o">=</span> <span class="p">(</span><span class="n">deltas</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_mean</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_std</span>
+        <span class="k">return</span> <span class="n">deltas</span></div>
+
+<div class="viewcode-block" id="BBoxAnchors.decode_bboxes"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.anchors.BBoxAnchors.decode_bboxes">[docs]</a>    <span class="k">def</span> <span class="nf">decode_bboxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deltas</span><span class="p">):</span>
+        <span class="n">deltas</span> <span class="o">=</span> <span class="p">(</span><span class="n">deltas</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_std</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_mean</span>
+        <span class="n">sizes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">deltas</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:]</span>
+        <span class="n">centers</span> <span class="o">=</span> <span class="n">deltas</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">cboxes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">centers</span><span class="p">,</span> <span class="n">sizes</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cbox2bbox</span><span class="p">(</span><span class="n">cboxes</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BBoxAnchors.encode_points"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.anchors.BBoxAnchors.encode_points">[docs]</a>    <span class="k">def</span> <span class="nf">encode_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="c1"># points: [*, k, p, 2]</span>
+        <span class="n">deltas</span> <span class="o">=</span> <span class="p">(</span><span class="n">points</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+                  <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">:]</span>
+        <span class="n">deltas</span> <span class="o">=</span> <span class="p">(</span><span class="n">deltas</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_mean</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_std</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">deltas</span></div>
+
+<div class="viewcode-block" id="BBoxAnchors.decode_points"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.anchors.BBoxAnchors.decode_points">[docs]</a>    <span class="k">def</span> <span class="nf">decode_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deltas</span><span class="p">):</span>
+        <span class="c1"># deltas: [*, k, p, 2]</span>
+        <span class="n">deltas</span> <span class="o">=</span> <span class="p">(</span><span class="n">deltas</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_std</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_mean</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">deltas</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="p">[</span><span class="o">...</span><span class="p">,</span>
+                                       <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">points</span></div>
+
+<div class="viewcode-block" id="BBoxAnchors.match"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.anchors.BBoxAnchors.match">[docs]</a>    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">):</span>
+        <span class="c1"># labels: [n]</span>
+        <span class="c1"># bboxes: [n, 4]</span>
+        <span class="c1"># points: [n, p, 2] (p is number of points)</span>
+        <span class="c1"># iou_threshold: threshold to determine positive anchor</span>
+        <span class="n">banchors</span> <span class="o">=</span> <span class="n">cbox2bbox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="p">)</span>
+        <span class="c1"># [k, n] where k is number of anchors</span>
+        <span class="n">iou</span> <span class="o">=</span> <span class="n">box_iou_pairwise</span><span class="p">(</span><span class="n">banchors</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">)</span>
+        <span class="c1"># find max iou of anchor to determine gt index</span>
+        <span class="n">max_iou_of_anchor</span><span class="p">,</span> <span class="n">box_indice</span> <span class="o">=</span> <span class="n">iou</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [k]</span>
+        <span class="n">max_iou_of_bbox</span><span class="p">,</span> <span class="n">anchor_indice</span> <span class="o">=</span> <span class="n">iou</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># [n]</span>
+
+        <span class="c1"># make sure each target assigend an anchor</span>
+        <span class="k">for</span> <span class="n">target_index</span><span class="p">,</span> <span class="n">anchor_index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">anchor_indice</span><span class="p">):</span>
+            <span class="n">max_iou_of_anchor</span><span class="p">[</span><span class="n">anchor_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_iou_of_bbox</span><span class="p">[</span><span class="n">target_index</span><span class="p">]</span>
+            <span class="n">box_indice</span><span class="p">[</span><span class="n">anchor_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_index</span>
+        <span class="c1"># find max iou of each box to determine denominant</span>
+
+        <span class="n">denominant</span> <span class="o">=</span> <span class="n">max_iou_of_bbox</span>                    <span class="c1"># [n]</span>
+        <span class="n">denominant</span><span class="p">[</span><span class="n">denominant</span> <span class="o">&lt;</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span>     <span class="c1"># [n]</span>
+        <span class="n">denominant</span> <span class="o">=</span> <span class="n">denominant</span><span class="p">[</span><span class="n">box_indice</span><span class="p">]</span>             <span class="c1"># [k]</span>
+        <span class="n">max_iou_of_anchor</span><span class="p">[</span><span class="n">max_iou_of_anchor</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">max_iou_of_anchor</span> <span class="o">/</span> <span class="n">denominant</span>         <span class="c1"># [k]</span>
+
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">box_indice</span><span class="p">]</span>
+        <span class="n">ignores</span> <span class="o">=</span> <span class="n">labels</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+        <span class="c1"># set ignore as background score</span>
+        <span class="c1"># TODO: support ignore scores with negative values,</span>
+        <span class="c1">#       and sigmoid focal loss should take care of this also</span>
+        <span class="n">scores</span><span class="p">[</span><span class="n">ignores</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># scatter to construct confidence tensor</span>
+        <span class="c1"># scores: [k]</span>
+        <span class="n">labels</span><span class="p">[</span><span class="n">ignores</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">conf</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">new_zeros</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># conf: [k, c] # c is the number of classes</span>
+        <span class="c1"># index: [k, 1]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [k, 1]</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [k, 1]</span>
+        <span class="n">conf</span><span class="o">.</span><span class="n">scatter_</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">src</span><span class="o">=</span><span class="n">scores</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">conf</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">box_indice</span></div>
+
+<div class="viewcode-block" id="BBoxAnchors.forward"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.anchors.BBoxAnchors.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>  <span class="c1"># we don&#39;t encode</span>
+        <span class="c1"># labels: [B, n]</span>
+        <span class="c1"># bboxes: [B, n, 4]</span>
+        <span class="c1"># points: [B, n, p, 2]</span>
+        <span class="n">batch_scores</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">batch_bboxes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">batch_others</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">others</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+            <span class="n">score</span><span class="p">,</span> <span class="n">indice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
+            <span class="n">batch_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+            <span class="n">batch_bboxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="n">indice</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+                <span class="n">batch_others</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">indice</span><span class="p">])</span>
+
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">batch_scores</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>   <span class="c1"># B, k, c</span>
+        <span class="n">bboxes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">batch_bboxes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>   <span class="c1"># B, k, 4</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">batch_others</span><span class="p">:</span>
+            <span class="n">batch_others</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">batch_others</span><span class="p">]</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">res</span><span class="p">,</span> <span class="o">*</span><span class="n">batch_others</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="BBoxAnchors.split"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.anchors.BBoxAnchors.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scores</span><span class="p">):</span>
+        <span class="c1"># [B, k, +]</span>
+        <span class="c1"># return [ [B, h1, w1, +], [B, h2, w2, +], [B, h3, w3, +]] where h*, w* is feature size of each level anchor</span>
+        <span class="c1"># h, w, k, 1</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nums</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sizes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fsizes</span><span class="p">):</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layouts</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">last</span><span class="p">,</span> <span class="n">last</span> <span class="o">+</span> <span class="n">w</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">k</span><span class="p">,</span>  <span class="n">k</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">last</span> <span class="o">=</span> <span class="n">last</span> <span class="o">+</span> <span class="n">w</span> <span class="o">*</span> <span class="n">h</span> <span class="o">*</span> <span class="n">k</span>
+            <span class="n">sizes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span> <span class="n">sizes</span><span class="p">):</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[:,</span> <span class="n">s</span><span class="p">:</span><span class="n">l</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">res</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Jimmy.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
