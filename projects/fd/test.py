@@ -3,6 +3,7 @@ import torch
 import cv2
 import numpy as np
 import tqdm
+from copy import copy
 from pathlib import Path
 from xvision.utils import Saver
 from xvision.models import fd as models
@@ -18,13 +19,22 @@ def main(args):
     workdir = Path(args.workdir)
     workdir.mkdir(parents=True, exist_ok=True)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = models.__dict__[args.model.name](phase='train').to(device)
+    model = models.__dict__[args.model.name]()
     prior = BBoxShapePrior(args.num_classes, 5, args.anchors, args.iou_threshold, args.encode_mean, args.encode_std)
     
     detector = Detector(prior, model)
 
     state = Saver.load_best_from_folder(workdir, map_location='cpu')
-    detector.load_state_dict(state['model'])
+
+    # TODO: fix model saving when trained with nn.DataParallel
+    #       remove below lines, when train.py save model properly
+    model_state = {}
+    for k, v in state['model'].items():
+        if k.startswith('backbone.module'):
+            k = k.replace('backbone.module', 'backbone')
+        model_state[k] = v
+    detector.load_state_dict(model_state)
+
     predictor = Predictor(detector, args.test.score_threshold, args.test.iou_threshold, device)
     output_dir = workdir / 'result'
     image_dir = Path(args.test.image_dir)
@@ -33,25 +43,26 @@ def main(args):
         outpath = output_dir / relpath
         outpath.parent.mkdir(parents=True, exist_ok=True)
         image = cv2.imread(str(imagefile), cv2.IMREAD_COLOR)
-        scale = (args.test.long_size / np.array(image.shape[:2])).min()
-        w, h = (np.array(image.shape[:2]) * scale).astype(np.int32)[::-1]
+        if args.test.long_size > 0:
+            scale = (args.test.long_size / np.array(image.shape[:2])).min()
+            w, h = (np.array(image.shape[:2]) * scale).astype(np.int32)[::-1]
 
-        matrix = matrix2d.scale(scale)
-        warped = warp_affine(image, matrix, (w, h))
-        score, boxes, points = predictor.predict(warped)
-
+            matrix = matrix2d.scale(scale)
+            warped = warp_affine(image, matrix, (w, h))
+            score, boxes, points = predictor.predict(warped)
+            n = score.size
+            if n > 0:
+                matrix = np.linalg.inv(matrix)
+                boxes = bbox_affine(boxes, matrix)
+                # k, p, 2
+                points = points.reshape(-1, 2) @ matrix[:2, :2].T + matrix[:2, 2]
+                points = points.reshape(score.size, -1, 2)
+        else:
+            score, boxes, points = predictor.predict(image)
         n = score.size
         if n > 0:
-            matrix = np.linalg.inv(matrix)
-            boxes = bbox_affine(boxes, matrix)
-            # k, p, 2
-            points = points.reshape(-1, 2) @ matrix[:2, :2].T + matrix[:2, 2]
-            points = points.reshape(score.size, -1, 2)
-
-            # draw result
             draw_bbox(image, boxes)
             draw_points(image, points)
-
         cv2.imwrite(str(outpath), image)
 
         # write output txt

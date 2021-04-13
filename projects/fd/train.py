@@ -2,6 +2,7 @@
 import time
 import torch
 import torch.nn as nn
+from copy import copy as shallow_copy
 from torch.nn import parameter
 from torch.optim import SGD
 from torch.optim.lr_scheduler import OneCycleLR
@@ -83,8 +84,10 @@ def main(args):
     valloader = DataLoader(valset, batch_size=args.batch_size,
                            shuffle=False, num_workers=args.num_workers, pin_memory=True, collate_fn=wider_collate)
 
+    total_steps = len(trainset) * args.num_epochs // args.batch_size
+
     # model
-    model = models.__dict__[args.model.name]().to(device)
+    model = models.__dict__[args.model.name](*args.model.args, **args.model.kwargs).to(device)
     prior = BBoxShapePrior(args.num_classes, 5, args.anchors,
                            args.iou_threshold, args.encode_mean, args.encode_std)
 
@@ -93,7 +96,7 @@ def main(args):
     model.train()
 
     if torch.cuda.device_count() > 1:
-        model_dp = model
+        model_dp = shallow_copy(model)
         model_dp.backbone = nn.DataParallel(model_dp.backbone)
     else:
         model_dp = model
@@ -103,7 +106,7 @@ def main(args):
     optimizer = SGD(parameters, lr=args.lr,
                     momentum=args.momentum, weight_decay=args.weight_decay)
     lr_scheduler = OneCycleLR(optimizer, max_lr=args.lr, div_factor=20,
-                              total_steps=args.total_steps, pct_start=0.1, final_div_factor=100)
+                              total_steps=total_steps, pct_start=0.1, final_div_factor=100)
     trainloader = repeat_loader(trainloader)
 
     best_loss = 1e9
@@ -123,7 +126,7 @@ def main(args):
 
     train_meter = reset_meter()
     start = time.time()
-    for step in range(args.start_step, args.total_steps):
+    for step in range(args.start_step, total_steps):
         batch = next(trainloader)
         batch = batch_to(batch, device)
         image = batch['image']
@@ -147,13 +150,13 @@ def main(args):
         optimizer.step()
         lr_scheduler.step()
 
-        if (step + 1) % args.eval_interval == 0:
+        if (step + 1) % args.eval_interval == 0 or (step + 1) == total_steps:
             duration = time.time() - start
             img_s = args.eval_interval * args.batch_size / duration
             eval_meter = evaluate(model_dp, valloader, prior, device)
 
             logger.info(
-                f'Step [{step + 1}/{args.total_steps}] img/s: {img_s:.2f} train: [{train_meter}] eval: [{eval_meter}]')
+                f'Step [{step + 1}/{total_steps}] img/s: {img_s:.2f} train: [{train_meter}] eval: [{eval_meter}]')
             train_meter = reset_meter()
             start = time.time()
             curr_loss = eval_meter.meters['total'].global_avg

@@ -1,3 +1,4 @@
+import logging
 import torch
 import torch.nn as nn
 import torchvision.models._utils as _utils
@@ -65,6 +66,9 @@ class RetinaFace(nn.Module):
         elif cfg['name'] == 'Resnet50':
             import torchvision.models as models
             backbone = models.resnet50(pretrained=cfg['pretrain'])
+            if 'pretrained_path' in cfg:
+                logging.info('Load pretrained from path: {}'.format(cfg['pretrained_path']))
+                backbone.load_state_dict(torch.load(cfg['pretrained_path']))
 
         self.body = _utils.IntermediateLayerGetter(
             backbone, cfg['return_layers'])
@@ -128,7 +132,7 @@ class RetinaFace(nn.Module):
         return predictions
 
 
-def retinaface_res50fpn(pretrained=False):
+def retinaface_res50fpn(pretrained=False, pretrained_path=None):
     cfg = {
         'name': 'Resnet50',
         'min_sizes': [[16, 32], [64, 128], [256, 512]],
@@ -149,6 +153,7 @@ def retinaface_res50fpn(pretrained=False):
         'out_channel': 256
     }
     cfg['pretrain'] = pretrained
+    cfg['pretrained_path'] = pretrained_path
     return RetinaFace(cfg)
 
 
