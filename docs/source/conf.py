@@ -16,8 +16,12 @@ sys.path.insert(0, os.path.abspath('../..'))
 autodoc_mock_imports = [
     "numpy",
     'torch',
-    'cv2'
-    ]
+    'cv2',
+    'tqdm',
+    'torchvision',
+    'fvcore',
+    'yaml',
+]
 
 # -- Project information -----------------------------------------------------
 
