@@ -32,6 +32,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -86,14 +87,14 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">xvision.utils package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-xvision.utils.config">xvision.utils.config module</a></li>
-<li><a class="reference internal" href="#module-xvision.utils.draw">xvision.utils.draw module</a></li>
+<li><a class="reference internal" href="#xvision-utils-config-module">xvision.utils.config module</a></li>
+<li><a class="reference internal" href="#xvision-utils-draw-module">xvision.utils.draw module</a></li>
 <li><a class="reference internal" href="#module-xvision.utils.logger">xvision.utils.logger module</a></li>
-<li><a class="reference internal" href="#module-xvision.utils.meter">xvision.utils.meter module</a></li>
-<li><a class="reference internal" href="#module-xvision.utils.misc">xvision.utils.misc module</a></li>
-<li><a class="reference internal" href="#module-xvision.utils.registry">xvision.utils.registry module</a></li>
-<li><a class="reference internal" href="#module-xvision.utils.saver">xvision.utils.saver module</a></li>
-<li><a class="reference internal" href="#module-xvision.utils">Module contents</a></li>
+<li><a class="reference internal" href="#xvision-utils-meter-module">xvision.utils.meter module</a></li>
+<li><a class="reference internal" href="#xvision-utils-misc-module">xvision.utils.misc module</a></li>
+<li><a class="reference internal" href="#xvision-utils-registry-module">xvision.utils.registry module</a></li>
+<li><a class="reference internal" href="#xvision-utils-saver-module">xvision.utils.saver module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -168,496 +169,34 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.utils.config">
-<span id="xvision-utils-config-module"></span><h2>xvision.utils.config module<a class="headerlink" href="#module-xvision.utils.config" title="Permalink to this headline">¶</a></h2>
-<p>YACS – Yet Another Configuration System is designed to be a simple
-configuration management system for academic and industrial research
-projects.</p>
-<p>See README.md for usage and examples.</p>
-<dl class="py class">
-<dt id="xvision.utils.config.CfgNode">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.utils.config.</span></code><code class="sig-name descname"><span class="pre">CfgNode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_allowed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
-<p>CfgNode represents an internal node in the configuration tree. It’s a simple
-dict-like container that allows for attribute-based access to keys.</p>
-<dl class="py attribute">
-<dt id="xvision.utils.config.CfgNode.DEPRECATED_KEYS">
-<code class="sig-name descname"><span class="pre">DEPRECATED_KEYS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'__deprecated_keys__'</span></em><a class="headerlink" href="#xvision.utils.config.CfgNode.DEPRECATED_KEYS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="xvision.utils.config.CfgNode.IMMUTABLE">
-<code class="sig-name descname"><span class="pre">IMMUTABLE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'__immutable__'</span></em><a class="headerlink" href="#xvision.utils.config.CfgNode.IMMUTABLE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="xvision.utils.config.CfgNode.NEW_ALLOWED">
-<code class="sig-name descname"><span class="pre">NEW_ALLOWED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'__new_allowed__'</span></em><a class="headerlink" href="#xvision.utils.config.CfgNode.NEW_ALLOWED" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="xvision.utils.config.CfgNode.RECURSIVE">
-<code class="sig-name descname"><span class="pre">RECURSIVE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'__recursive__'</span></em><a class="headerlink" href="#xvision.utils.config.CfgNode.RECURSIVE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="xvision.utils.config.CfgNode.RENAMED_KEYS">
-<code class="sig-name descname"><span class="pre">RENAMED_KEYS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'__renamed_keys__'</span></em><a class="headerlink" href="#xvision.utils.config.CfgNode.RENAMED_KEYS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.clone">
-<code class="sig-name descname"><span class="pre">clone</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.clone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.clone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Recursively copy this CfgNode.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.defrost">
-<code class="sig-name descname"><span class="pre">defrost</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.defrost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.defrost" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make this CfgNode and all of its children mutable.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.dump">
-<code class="sig-name descname"><span class="pre">dump</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.dump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.dump" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dump to a string.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.freeze">
-<code class="sig-name descname"><span class="pre">freeze</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.freeze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.freeze" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make this CfgNode and all of its children immutable.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.is_frozen">
-<code class="sig-name descname"><span class="pre">is_frozen</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.is_frozen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.is_frozen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return mutability.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.is_new_allowed">
-<code class="sig-name descname"><span class="pre">is_new_allowed</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.is_new_allowed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.is_new_allowed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.key_is_deprecated">
-<code class="sig-name descname"><span class="pre">key_is_deprecated</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.key_is_deprecated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.key_is_deprecated" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test if a key is deprecated.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.key_is_renamed">
-<code class="sig-name descname"><span class="pre">key_is_renamed</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.key_is_renamed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.key_is_renamed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test if a key is renamed.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.load_cfg">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">load_cfg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg_file_obj_or_str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.load_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.load_cfg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load a cfg.
-:param cfg_file_obj_or_str: Supports loading from:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>A file object backed by a YAML file</p></li>
-<li><p>A file object backed by a Python source file that exports an attribute
-“cfg” that is either a dict or a CfgNode</p></li>
-<li><p>A string that can be parsed as valid YAML</p></li>
-</ul>
-</div></blockquote>
-<dl class="field-list simple">
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.merge_from_file">
-<code class="sig-name descname"><span class="pre">merge_from_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg_filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.merge_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.merge_from_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load a yaml config file and merge it this CfgNode.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.merge_from_list">
-<code class="sig-name descname"><span class="pre">merge_from_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.merge_from_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.merge_from_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Merge config (keys, values) in a list (e.g., from command line) into
-this CfgNode. For example, <cite>cfg_list = [‘FOO.BAR’, 0.5]</cite>.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.merge_from_other_cfg">
-<code class="sig-name descname"><span class="pre">merge_from_other_cfg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg_other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.merge_from_other_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.merge_from_other_cfg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Merge <cite>cfg_other</cite> into this CfgNode.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.parse_args">
-<code class="sig-name descname"><span class="pre">parse_args</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.parse_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.parse_args" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.raise_key_rename_error">
-<code class="sig-name descname"><span class="pre">raise_key_rename_error</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.raise_key_rename_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.raise_key_rename_error" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.register_deprecated_key">
-<code class="sig-name descname"><span class="pre">register_deprecated_key</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.register_deprecated_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.register_deprecated_key" title="Permalink to this definition">¶</a></dt>
-<dd><p>Register key (e.g. <cite>FOO.BAR</cite>) a deprecated option. When merging deprecated
-keys a warning is generated and the key is ignored.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.register_renamed_key">
-<code class="sig-name descname"><span class="pre">register_renamed_key</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.register_renamed_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.register_renamed_key" title="Permalink to this definition">¶</a></dt>
-<dd><p>Register a key as having been renamed from <cite>old_name</cite> to <cite>new_name</cite>.
-When merging a renamed key, an exception is thrown alerting to user to
-the fact that the key has been renamed.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.config.CfgNode.set_new_allowed">
-<code class="sig-name descname"><span class="pre">set_new_allowed</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_new_allowed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.set_new_allowed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.set_new_allowed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set this config (and recursively its subconfigs) to allow merging
-new keys from other configs.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.config.load_cfg">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.config.</span></code><code class="sig-name descname"><span class="pre">load_cfg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg_file_obj_or_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xvision.utils.config.load_cfg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load a cfg.
-:param cfg_file_obj_or_str: Supports loading from:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>A file object backed by a YAML file</p></li>
-<li><p>A file object backed by a Python source file that exports an attribute
-“cfg” that is either a dict or a CfgNode</p></li>
-<li><p>A string that can be parsed as valid YAML</p></li>
-</ul>
-</div></blockquote>
-<dl class="field-list simple">
-</dl>
-</dd></dl>
-
+<div class="section" id="xvision-utils-config-module">
+<h2>xvision.utils.config module<a class="headerlink" href="#xvision-utils-config-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.utils.draw">
-<span id="xvision-utils-draw-module"></span><h2>xvision.utils.draw module<a class="headerlink" href="#module-xvision.utils.draw" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="xvision.utils.draw.draw_bbox">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.draw.</span></code><code class="sig-name descname"><span class="pre">draw_bbox</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thickness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/draw.html#draw_bbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.draw.draw_bbox" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.draw.draw_points">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.draw.</span></code><code class="sig-name descname"><span class="pre">draw_points</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">255)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/draw.html#draw_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.draw.draw_points" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.draw.draw_shapes">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.draw.</span></code><code class="sig-name descname"><span class="pre">draw_shapes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shapes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/draw.html#draw_shapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.draw.draw_shapes" title="Permalink to this definition">¶</a></dt>
-<dd><p>draw point shape, assign different color for each index points</p>
-</dd></dl>
-
+<div class="section" id="xvision-utils-draw-module">
+<h2>xvision.utils.draw module<a class="headerlink" href="#xvision-utils-draw-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-xvision.utils.logger">
 <span id="xvision-utils-logger-module"></span><h2>xvision.utils.logger module<a class="headerlink" href="#module-xvision.utils.logger" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
+<dl class="function">
 <dt id="xvision.utils.logger.get_logger">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.logger.</span></code><code class="sig-name descname"><span class="pre">get_logger</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fullpath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/logger.html#get_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.logger.get_logger" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">xvision.utils.logger.</code><code class="sig-name descname">get_logger</code><span class="sig-paren">(</span><em class="sig-param">fullpath=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/logger.html#get_logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#xvision.utils.logger.get_logger" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
-<div class="section" id="module-xvision.utils.meter">
-<span id="xvision-utils-meter-module"></span><h2>xvision.utils.meter module<a class="headerlink" href="#module-xvision.utils.meter" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="xvision.utils.meter.MetricLogger">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">MetricLogger</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\t'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#MetricLogger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.MetricLogger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt id="xvision.utils.meter.MetricLogger.add_meter">
-<code class="sig-name descname"><span class="pre">add_meter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#MetricLogger.add_meter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.MetricLogger.add_meter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.meter.MetricLogger.log_every">
-<code class="sig-name descname"><span class="pre">log_every</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_freq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#MetricLogger.log_every"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.MetricLogger.log_every" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.meter.MetricLogger.synchronize_between_processes">
-<code class="sig-name descname"><span class="pre">synchronize_between_processes</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#MetricLogger.synchronize_between_processes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.MetricLogger.synchronize_between_processes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.meter.MetricLogger.update">
-<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#MetricLogger.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.MetricLogger.update" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="xvision.utils.meter.SmoothedValue">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">SmoothedValue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#SmoothedValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.SmoothedValue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Track a series of values and provide access to smoothed values over a
-window or the global series average.</p>
-<dl class="py method">
-<dt id="xvision.utils.meter.SmoothedValue.avg">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">avg</span></code><a class="headerlink" href="#xvision.utils.meter.SmoothedValue.avg" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.meter.SmoothedValue.global_avg">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">global_avg</span></code><a class="headerlink" href="#xvision.utils.meter.SmoothedValue.global_avg" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.meter.SmoothedValue.max">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">max</span></code><a class="headerlink" href="#xvision.utils.meter.SmoothedValue.max" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.meter.SmoothedValue.median">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">median</span></code><a class="headerlink" href="#xvision.utils.meter.SmoothedValue.median" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.meter.SmoothedValue.synchronize_between_processes">
-<code class="sig-name descname"><span class="pre">synchronize_between_processes</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#SmoothedValue.synchronize_between_processes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.SmoothedValue.synchronize_between_processes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Warning: does not synchronize the deque!</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.meter.SmoothedValue.update">
-<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#SmoothedValue.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.SmoothedValue.update" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.meter.SmoothedValue.value">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">value</span></code><a class="headerlink" href="#xvision.utils.meter.SmoothedValue.value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.meter.accuracy">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">accuracy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#accuracy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.accuracy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the accuracy over the k top predictions for the specified values of k</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.meter.average_checkpoints">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">average_checkpoints</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#average_checkpoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.average_checkpoints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads checkpoints from inputs and returns a model with averaged weights. Original implementation taken from:
-<a class="reference external" href="https://github.com/pytorch/fairseq/blob/a48f235636557b8d3bc4922a6fa90f3a0fa57955/scripts/average_checkpoints.py#L16">https://github.com/pytorch/fairseq/blob/a48f235636557b8d3bc4922a6fa90f3a0fa57955/scripts/average_checkpoints.py#L16</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>inputs</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – An iterable of string paths of checkpoints to load from.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A dict of string keys mapping to various values. The ‘model’ key
-from the returned dict should correspond to an OrderedDict mapping
-string parameter names to torch Tensors.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.meter.get_rank">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">get_rank</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#get_rank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.get_rank" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.meter.get_world_size">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">get_world_size</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#get_world_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.get_world_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.meter.init_distributed_mode">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">init_distributed_mode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#init_distributed_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.init_distributed_mode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.meter.is_dist_axvisionl_and_initialized">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">is_dist_axvisionl_and_initialized</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#is_dist_axvisionl_and_initialized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.is_dist_axvisionl_and_initialized" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.meter.is_main_process">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">is_main_process</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#is_main_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.is_main_process" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.meter.mkdir">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">mkdir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#mkdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.mkdir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.meter.save_on_master">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">save_on_master</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#save_on_master"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.save_on_master" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.meter.setup_for_distributed">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">setup_for_distributed</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_master</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#setup_for_distributed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.setup_for_distributed" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function disables printing when not in master process</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.meter.store_model_weights">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.meter.</span></code><code class="sig-name descname"><span class="pre">store_model_weights</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'model'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/meter.html#store_model_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.meter.store_model_weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method can be used to prepare weights files for new models. It receives as
-input a model architecture and a checkpoint from the training script and produces
-a file with the weights ready for release.</p>
-<p class="rubric">Examples</p>
-<p>from torchvision import models as M</p>
-<p># Classification
-model = M.mobilenet_v3_large(pretrained=False)
-print(store_model_weights(model, ‘./class.pth’))</p>
-<p># Quantized Classification
-model = M.quantization.mobilenet_v3_large(pretrained=False, quantize=False)
-model.fuse_model()
-model.qconfig = torch.quantization.get_default_qat_qconfig(‘qnnpack’)
-_ = torch.quantization.prepare_qat(model, inplace=True)
-print(store_model_weights(model, ‘./qat.pth’))</p>
-<p># Object Detection
-model = M.detection.fasterrcnn_mobilenet_v3_large_fpn(pretrained=False, pretrained_backbone=False)
-print(store_model_weights(model, ‘./obj.pth’))</p>
-<p># Segmentation
-model = M.segmentation.deeplabv3_mobilenet_v3_large(pretrained=False, pretrained_backbone=False, aux_loss=True)
-print(store_model_weights(model, ‘./segm.pth’, strict=False))</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>pytorch.nn.Module</em>) – The model on which the weights will be loaded for validation purposes.</p></li>
-<li><p><strong>checkpoint_path</strong> (<em>str</em>) – The path of the checkpoint we will load.</p></li>
-<li><p><strong>checkpoint_key</strong> (<em>str</em><em>, </em><em>optional</em>) – The key of the checkpoint where the model weights are stored.
-Default: “model”.</p></li>
-<li><p><strong>strict</strong> (<em>bool</em>) – whether to strictly enforce that the keys
-in <code class="xref py py-attr docutils literal notranslate"><span class="pre">state_dict</span></code> match the keys returned by this module’s
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">state_dict()</span></code> function. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The location where the weights are saved.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>output_path (str)</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="xvision-utils-meter-module">
+<h2>xvision.utils.meter module<a class="headerlink" href="#xvision-utils-meter-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.utils.misc">
-<span id="xvision-utils-misc-module"></span><h2>xvision.utils.misc module<a class="headerlink" href="#module-xvision.utils.misc" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="xvision.utils.misc.CpuProperties">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.utils.misc.</span></code><code class="sig-name descname"><span class="pre">CpuProperties</span></code><a class="reference internal" href="_modules/xvision/utils/misc.html#CpuProperties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.misc.CpuProperties" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt id="xvision.utils.misc.CpuProperties.get_cpu_period">
-<code class="sig-name descname"><span class="pre">get_cpu_period</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/misc.html#CpuProperties.get_cpu_period"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.misc.CpuProperties.get_cpu_period" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.misc.CpuProperties.get_cpu_quota">
-<code class="sig-name descname"><span class="pre">get_cpu_quota</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/misc.html#CpuProperties.get_cpu_quota"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.misc.CpuProperties.get_cpu_quota" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.misc.CpuProperties.get_cpus">
-<code class="sig-name descname"><span class="pre">get_cpus</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/misc.html#CpuProperties.get_cpus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.misc.CpuProperties.get_cpus" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt id="xvision.utils.misc.cpu_count">
-<code class="sig-prename descclassname"><span class="pre">xvision.utils.misc.</span></code><code class="sig-name descname"><span class="pre">cpu_count</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/misc.html#cpu_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.misc.cpu_count" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="xvision-utils-misc-module">
+<h2>xvision.utils.misc module<a class="headerlink" href="#xvision-utils-misc-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.utils.registry">
-<span id="xvision-utils-registry-module"></span><h2>xvision.utils.registry module<a class="headerlink" href="#module-xvision.utils.registry" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="xvision.utils.registry.Registry">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.utils.registry.</span></code><code class="sig-name descname"><span class="pre">Registry</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/registry.html#Registry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.registry.Registry" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
-<p>A helper class for managing registering modules, it extends a dictionary
-and provides a register functions.
-Eg. creating a registry:</p>
-<blockquote>
-<div><p>some_registry = Registry({“default”: default_module})</p>
-</div></blockquote>
-<p>There’re two ways of registering new modules:
-1): normal way is just calling register function:</p>
-<blockquote>
-<div><dl class="simple">
-<dt>def foo():</dt><dd><p>…</p>
-</dd>
-</dl>
-<p>some_registry.register(“foo_module”, foo)</p>
-</div></blockquote>
-<dl>
-<dt>2): used as decorator when declaring the module:</dt><dd><p>&#64;some_registry.register(“foo_module”)
-&#64;some_registry.register(“foo_module_nickname”)
-def foo():</p>
-<blockquote>
-<div><p>…</p>
-</div></blockquote>
-</dd>
-<dt>Access of module is just like using a dictionary, eg:</dt><dd><p>f = some_registry[“foo_module”]</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="xvision.utils.registry.Registry.register">
-<code class="sig-name descname"><span class="pre">register</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/registry.html#Registry.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.registry.Registry.register" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="xvision-utils-registry-module">
+<h2>xvision.utils.registry module<a class="headerlink" href="#xvision-utils-registry-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.utils.saver">
-<span id="xvision-utils-saver-module"></span><h2>xvision.utils.saver module<a class="headerlink" href="#module-xvision.utils.saver" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="xvision.utils.saver.Saver">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.utils.saver.</span></code><code class="sig-name descname"><span class="pre">Saver</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/saver.html#Saver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.saver.Saver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py attribute">
-<dt id="xvision.utils.saver.Saver.BEST">
-<code class="sig-name descname"><span class="pre">BEST</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'best.pth'</span></em><a class="headerlink" href="#xvision.utils.saver.Saver.BEST" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="xvision.utils.saver.Saver.STEP">
-<code class="sig-name descname"><span class="pre">STEP</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'step-{:08d}.pth'</span></em><a class="headerlink" href="#xvision.utils.saver.Saver.STEP" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.saver.Saver.load_best_from_folder">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">load_best_from_folder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/saver.html#Saver.load_best_from_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.saver.Saver.load_best_from_folder" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.saver.Saver.load_from_folder">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">load_from_folder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/saver.html#Saver.load_from_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.saver.Saver.load_from_folder" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.saver.Saver.save">
-<code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/saver.html#Saver.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.saver.Saver.save" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.utils.saver.Saver.save_best">
-<code class="sig-name descname"><span class="pre">save_best</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/saver.html#Saver.save_best"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.saver.Saver.save_best" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="xvision-utils-saver-module">
+<h2>xvision.utils.saver module<a class="headerlink" href="#xvision-utils-saver-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.utils">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-xvision.utils" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

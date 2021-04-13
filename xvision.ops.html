@@ -32,6 +32,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -86,16 +87,16 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">xvision.ops package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-xvision.ops.anchors">xvision.ops.anchors module</a></li>
-<li><a class="reference internal" href="#module-xvision.ops.boxes">xvision.ops.boxes module</a></li>
-<li><a class="reference internal" href="#module-xvision.ops.emd_loss">xvision.ops.emd_loss module</a></li>
-<li><a class="reference internal" href="#module-xvision.ops.euclidean_loss">xvision.ops.euclidean_loss module</a></li>
-<li><a class="reference internal" href="#module-xvision.ops.extract_glimpse">xvision.ops.extract_glimpse module</a></li>
-<li><a class="reference internal" href="#module-xvision.ops.functional">xvision.ops.functional module</a></li>
-<li><a class="reference internal" href="#module-xvision.ops.multibox">xvision.ops.multibox module</a></li>
-<li><a class="reference internal" href="#module-xvision.ops.nme">xvision.ops.nme module</a></li>
-<li><a class="reference internal" href="#module-xvision.ops.utils">xvision.ops.utils module</a></li>
-<li><a class="reference internal" href="#module-xvision.ops">Module contents</a></li>
+<li><a class="reference internal" href="#xvision-ops-anchors-module">xvision.ops.anchors module</a></li>
+<li><a class="reference internal" href="#xvision-ops-boxes-module">xvision.ops.boxes module</a></li>
+<li><a class="reference internal" href="#xvision-ops-emd-loss-module">xvision.ops.emd_loss module</a></li>
+<li><a class="reference internal" href="#xvision-ops-euclidean-loss-module">xvision.ops.euclidean_loss module</a></li>
+<li><a class="reference internal" href="#xvision-ops-extract-glimpse-module">xvision.ops.extract_glimpse module</a></li>
+<li><a class="reference internal" href="#xvision-ops-functional-module">xvision.ops.functional module</a></li>
+<li><a class="reference internal" href="#xvision-ops-multibox-module">xvision.ops.multibox module</a></li>
+<li><a class="reference internal" href="#xvision-ops-nme-module">xvision.ops.nme module</a></li>
+<li><a class="reference internal" href="#xvision-ops-utils-module">xvision.ops.utils module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -170,200 +171,35 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.ops.anchors">
-<span id="xvision-ops-anchors-module"></span><h2>xvision.ops.anchors module<a class="headerlink" href="#module-xvision.ops.anchors" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="xvision.ops.anchors.BBoxAnchors">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.ops.anchors.</span></code><code class="sig-name descname"><span class="pre">BBoxAnchors</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layouts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iou_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encode_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encode_std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/anchors.html#BBoxAnchors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.anchors.BBoxAnchors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<dl class="py method">
-<dt id="xvision.ops.anchors.BBoxAnchors.decode_bboxes">
-<code class="sig-name descname"><span class="pre">decode_bboxes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deltas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/anchors.html#BBoxAnchors.decode_bboxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.anchors.BBoxAnchors.decode_bboxes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.ops.anchors.BBoxAnchors.decode_points">
-<code class="sig-name descname"><span class="pre">decode_points</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deltas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/anchors.html#BBoxAnchors.decode_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.anchors.BBoxAnchors.decode_points" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.ops.anchors.BBoxAnchors.encode_bboxes">
-<code class="sig-name descname"><span class="pre">encode_bboxes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bboxes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/anchors.html#BBoxAnchors.encode_bboxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.anchors.BBoxAnchors.encode_bboxes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.ops.anchors.BBoxAnchors.encode_points">
-<code class="sig-name descname"><span class="pre">encode_points</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/anchors.html#BBoxAnchors.encode_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.anchors.BBoxAnchors.encode_points" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.ops.anchors.BBoxAnchors.forward">
-<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bboxes</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/anchors.html#BBoxAnchors.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.anchors.BBoxAnchors.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
+<div class="section" id="xvision-ops-anchors-module">
+<h2>xvision.ops.anchors module<a class="headerlink" href="#xvision-ops-anchors-module" title="Permalink to this headline">¶</a></h2>
 </div>
-</dd></dl>
-
-<dl class="py method">
-<dt id="xvision.ops.anchors.BBoxAnchors.generate_anchors">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">generate_anchors</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layouts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/anchors.html#BBoxAnchors.generate_anchors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.anchors.BBoxAnchors.generate_anchors" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.ops.anchors.BBoxAnchors.generate_layer_anchors">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">generate_layer_anchors</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stride</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/anchors.html#BBoxAnchors.generate_layer_anchors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.anchors.BBoxAnchors.generate_layer_anchors" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.ops.anchors.BBoxAnchors.match">
-<code class="sig-name descname"><span class="pre">match</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bboxes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/anchors.html#BBoxAnchors.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.anchors.BBoxAnchors.match" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.ops.anchors.BBoxAnchors.split">
-<code class="sig-name descname"><span class="pre">split</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scores</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/anchors.html#BBoxAnchors.split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.anchors.BBoxAnchors.split" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="xvision.ops.anchors.BBoxAnchors.training">
-<code class="sig-name descname"><span class="pre">training</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#xvision.ops.anchors.BBoxAnchors.training" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="xvision.ops.anchors.BBoxAnchors.update">
-<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fsizes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/anchors.html#BBoxAnchors.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.anchors.BBoxAnchors.update" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="xvision-ops-boxes-module">
+<h2>xvision.ops.boxes module<a class="headerlink" href="#xvision-ops-boxes-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.ops.boxes">
-<span id="xvision-ops-boxes-module"></span><h2>xvision.ops.boxes module<a class="headerlink" href="#module-xvision.ops.boxes" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="xvision.ops.boxes.bbox2cbox">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.boxes.</span></code><code class="sig-name descname"><span class="pre">bbox2cbox</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bboxes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/boxes.html#bbox2cbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.boxes.bbox2cbox" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.ops.boxes.box_diou_itemwise">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.boxes.</span></code><code class="sig-name descname"><span class="pre">box_diou_itemwise</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bboxes1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bboxes2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/boxes.html#box_diou_itemwise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.boxes.box_diou_itemwise" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.ops.boxes.box_diou_pairwise">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.boxes.</span></code><code class="sig-name descname"><span class="pre">box_diou_pairwise</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bboxes1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bboxes2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/boxes.html#box_diou_pairwise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.boxes.box_diou_pairwise" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.ops.boxes.box_iou_itemwise">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.boxes.</span></code><code class="sig-name descname"><span class="pre">box_iou_itemwise</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bboxes1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bboxes2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/boxes.html#box_iou_itemwise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.boxes.box_iou_itemwise" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.ops.boxes.cbox2bbox">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.boxes.</span></code><code class="sig-name descname"><span class="pre">cbox2bbox</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cboxes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/boxes.html#cbox2bbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.boxes.cbox2bbox" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="xvision-ops-emd-loss-module">
+<h2>xvision.ops.emd_loss module<a class="headerlink" href="#xvision-ops-emd-loss-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.ops.emd_loss">
-<span id="xvision-ops-emd-loss-module"></span><h2>xvision.ops.emd_loss module<a class="headerlink" href="#module-xvision.ops.emd_loss" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="xvision.ops.emd_loss.emd_loss">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.emd_loss.</span></code><code class="sig-name descname"><span class="pre">emd_loss</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/emd_loss.html#emd_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.emd_loss.emd_loss" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="xvision-ops-euclidean-loss-module">
+<h2>xvision.ops.euclidean_loss module<a class="headerlink" href="#xvision-ops-euclidean-loss-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.ops.euclidean_loss">
-<span id="xvision-ops-euclidean-loss-module"></span><h2>xvision.ops.euclidean_loss module<a class="headerlink" href="#module-xvision.ops.euclidean_loss" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="xvision.ops.euclidean_loss.euclidean_loss">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.euclidean_loss.</span></code><code class="sig-name descname"><span class="pre">euclidean_loss</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/euclidean_loss.html#euclidean_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.euclidean_loss.euclidean_loss" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="xvision-ops-extract-glimpse-module">
+<h2>xvision.ops.extract_glimpse module<a class="headerlink" href="#xvision-ops-extract-glimpse-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.ops.extract_glimpse">
-<span id="xvision-ops-extract-glimpse-module"></span><h2>xvision.ops.extract_glimpse module<a class="headerlink" href="#module-xvision.ops.extract_glimpse" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="xvision.ops.extract_glimpse.extract_glimpse">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.extract_glimpse.</span></code><code class="sig-name descname"><span class="pre">extract_glimpse</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centered</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bilinear'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/extract_glimpse.html#extract_glimpse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.extract_glimpse.extract_glimpse" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.ops.extract_glimpse.extract_multiple_glimpse">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.extract_glimpse.</span></code><code class="sig-name descname"><span class="pre">extract_multiple_glimpse</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centered</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalized</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bilinear'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/extract_glimpse.html#extract_multiple_glimpse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.extract_glimpse.extract_multiple_glimpse" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="xvision-ops-functional-module">
+<h2>xvision.ops.functional module<a class="headerlink" href="#xvision-ops-functional-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.ops.functional">
-<span id="xvision-ops-functional-module"></span><h2>xvision.ops.functional module<a class="headerlink" href="#module-xvision.ops.functional" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="xvision-ops-multibox-module">
+<h2>xvision.ops.multibox module<a class="headerlink" href="#xvision-ops-multibox-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.ops.multibox">
-<span id="xvision-ops-multibox-module"></span><h2>xvision.ops.multibox module<a class="headerlink" href="#module-xvision.ops.multibox" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="xvision.ops.multibox.score_box_loss">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.multibox.</span></code><code class="sig-name descname"><span class="pre">score_box_loss</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_deltas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_logits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_deltas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/multibox.html#score_box_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.multibox.score_box_loss" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.ops.multibox.score_box_point_loss">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.multibox.</span></code><code class="sig-name descname"><span class="pre">score_box_point_loss</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_box_deltas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_point_deltas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_logits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_box_deltas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred_point_deltas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_mask</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/multibox.html#score_box_point_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.multibox.score_box_point_loss" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="xvision-ops-nme-module">
+<h2>xvision.ops.nme module<a class="headerlink" href="#xvision-ops-nme-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-xvision.ops.nme">
-<span id="xvision-ops-nme-module"></span><h2>xvision.ops.nme module<a class="headerlink" href="#module-xvision.ops.nme" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="xvision.ops.nme.IbugScore">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.ops.nme.</span></code><code class="sig-name descname"><span class="pre">IbugScore</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_eye</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_eye</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/nme.html#IbugScore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.nme.IbugScore" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<dl class="py method">
-<dt id="xvision.ops.nme.IbugScore.forward">
-<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/nme.html#IbugScore.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.nme.IbugScore.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
+<div class="section" id="xvision-ops-utils-module">
+<h2>xvision.ops.utils module<a class="headerlink" href="#xvision-ops-utils-module" title="Permalink to this headline">¶</a></h2>
 </div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="xvision.ops.nme.IbugScore.training">
-<code class="sig-name descname"><span class="pre">training</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#xvision.ops.nme.IbugScore.training" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt id="xvision.ops.nme.nme">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.nme.</span></code><code class="sig-name descname"><span class="pre">nme</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/nme.html#nme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.nme.nme" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="module-xvision.ops.utils">
-<span id="xvision-ops-utils-module"></span><h2>xvision.ops.utils module<a class="headerlink" href="#module-xvision.ops.utils" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="xvision.ops.utils.fuse_model">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.utils.</span></code><code class="sig-name descname"><span class="pre">fuse_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.nn.modules.module.Module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/utils.html#fuse_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.utils.fuse_model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="xvision.ops.utils.group_parameters">
-<code class="sig-prename descclassname"><span class="pre">xvision.ops.utils.</span></code><code class="sig-name descname"><span class="pre">group_parameters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.nn.modules.module.Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_decay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/utils.html#group_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.utils.group_parameters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="module-xvision.ops">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-xvision.ops" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
