@@ -60,7 +60,9 @@ class WiderFace(Dataset):
                 if bbox.size > 0:
                     yield {
                         "path": fullpath,
-                        "bbox": bbox
+                        "bbox": bbox,
+                        'label': np.ones(bbox.shape[0], np.int64)
+
                     }
                 name = next_name
         else:
@@ -104,7 +106,9 @@ class WiderFace(Dataset):
                         "path": image_dir / name,
                         "bbox": bbox,
                         "shape": pts,
-                        "mask": mask
+                        "mask": mask,
+                        'label': np.ones(bbox.shape[0], np.bool)
+
                     }
                 name = next_name
 

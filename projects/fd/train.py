@@ -18,18 +18,25 @@ from xvision.datasets.wider import *
 from xvision.ops.utils import group_parameters
 from xvision.models.detection import Detector, BBoxShapePrior
 
+from transform import Buibug6Transform
 
-def batch_to(batch, device):
-    image = batch.pop('image').to(
-        device, non_blocking=True).permute(0, 3, 1, 2).float()
-    batch = {
-        k: [i.to(device, non_blocking=True) for i in v] for k, v in batch.items()
-    }
-    batch['image'] = image
-    return batch
+class BatchProcessor(object):
+    def __init__(self, device, mean, std) -> None:
+        super().__init__()
+        self.device = device
+        self.mean = torch.tensor(mean, dtype=torch.float32, device=device)
+        self.std = torch.tensor(std, dtype=torch.float32, device=device)
+    
+    def __call__(self, batch):
+        image = batch.pop('image').to(self.device, non_blocking=True).float()  # N H W C
+        image = (image - self.mean) / self.std
+        image = image.permute(0, 3, 1, 2)
+        batch = {k: [i.to(self.device, non_blocking=True) for i in v] for k, v in batch.items() }
+        batch['image'] = image
+        return batch
 
 
-def evaluate(model, dataloader, prior, device):
+def evaluate(model, dataloader, batch_process):
     model.eval()
     meter = MetricLogger()
     meter.add_meter('total', SmoothedValue(fmt='{global_avg:.4f}'))
@@ -37,7 +44,7 @@ def evaluate(model, dataloader, prior, device):
     meter.add_meter('box', SmoothedValue(fmt='{global_avg:.4f}'))
 
     for batch in dataloader:
-        batch = batch_to(batch, device)
+        batch = batch_process(batch)
         image = batch['image']
         box = batch['bbox']
         label = batch['label']
@@ -72,9 +79,9 @@ def main(args):
 
     # prepare dataset
     valtransform = ValTransform(dsize=args.dsize)
-    traintransform = TrainTransform(dsize=args.dsize, **args.augments)
+    traintransform = Buibug6Transform(dsize=args.dsize)
     trainset = WiderFace(args.train_label, args.train_image,
-                         min_face=1, with_shapes=True, transform=traintransform)
+                         min_face=0, with_shapes=True, transform=traintransform)
     valset = WiderFace(args.val_label, args.val_image,
                        transform=valtransform, min_face=1)
 
@@ -103,10 +110,11 @@ def main(args):
 
     # optimizer and lr scheduler
     parameters = group_parameters(model, bias_decay=0)
-    optimizer = SGD(parameters, lr=args.lr,
-                    momentum=args.momentum, weight_decay=args.weight_decay)
-    lr_scheduler = OneCycleLR(optimizer, max_lr=args.lr, div_factor=20,
-                              total_steps=total_steps, pct_start=0.1, final_div_factor=100)
+    div_factor = args.lr / args.warmup_lr
+    final_factor = args.warmup_lr / args.final_lr
+    optimizer = SGD(parameters, lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+    lr_scheduler = OneCycleLR(optimizer, max_lr=args.lr, div_factor=div_factor,
+                              total_steps=total_steps, pct_start=args.warmup_pct, final_div_factor=final_factor)
     trainloader = repeat_loader(trainloader)
 
     best_loss = 1e9
@@ -123,12 +131,12 @@ def main(args):
         meter = MetricLogger()
         meter.add_meter('lr', SmoothedValue(1, fmt='{value:.5f}'))
         return meter
-
+    batch_process = BatchProcessor(device, args.image_mean, args.image_std)
     train_meter = reset_meter()
     start = time.time()
     for step in range(args.start_step, total_steps):
         batch = next(trainloader)
-        batch = batch_to(batch, device)
+        batch = batch_process(batch)
         image = batch['image']
         box = batch['bbox']
         point = batch['shape']
@@ -153,7 +161,7 @@ def main(args):
         if (step + 1) % args.eval_interval == 0 or (step + 1) == total_steps:
             duration = time.time() - start
             img_s = args.eval_interval * args.batch_size / duration
-            eval_meter = evaluate(model_dp, valloader, prior, device)
+            eval_meter = evaluate(model_dp, valloader, batch_process)
 
             logger.info(
                 f'Step [{step + 1}/{total_steps}] img/s: {img_s:.2f} train: [{train_meter}] eval: [{eval_meter}]')

@@ -83,7 +83,7 @@ def _crop(image, boxes, labels, landm, img_dim):
         if boxes_t.shape[0] == 0:
             continue
 
-        pad_image_flag = False        
+        pad_image_flag = False
         return image_t, boxes_t, labels_t, landms_t, pad_image_flag
     return image, boxes, labels, landm, pad_image_flag
 
@@ -238,12 +238,12 @@ class preproc(object):
 
         height, width, _ = image_t.shape
         image_t = _resize_subtract_mean(image_t, self.img_dim, self.rgb_means)
-        
-        boxes_t[:, 0::2] /= width /image_t.shape[1] 
-        boxes_t[:, 1::2] /= height/image_t.shape[0] 
 
-        landm_t[:, 0::2] /= width /image_t.shape[1] 
-        landm_t[:, 1::2] /= height/image_t.shape[0] 
+        boxes_t[:, 0::2] /= width / image_t.shape[1]
+        boxes_t[:, 1::2] /= height/image_t.shape[0]
+
+        landm_t[:, 0::2] /= width / image_t.shape[1]
+        landm_t[:, 1::2] /= height/image_t.shape[0]
 
         labels_t = np.expand_dims(labels_t, 1)
         targets_t = np.hstack((boxes_t, landm_t, labels_t))
@@ -254,7 +254,7 @@ class preproc(object):
 class Buibug6Transform(object):
     def __init__(self, dsize) -> None:
         super().__init__()
-        self.preproc = preproc(dsize, [0,0,0])
+        self.preproc = preproc(dsize[0], [0, 0, 0])
 
     def __call__(self, item):
         # dict to image, targets tuple
@@ -271,11 +271,11 @@ class Buibug6Transform(object):
         landm = targets[:, 4:-1].reshape(-1, 5, 2)
         mask = (labels > 0).reshape(-1)
         labels = (labels != 0).reshape(-1)
-        
+
         return {
             'image': image,
             'bbox': boxes.astype(np.float32),
             'shape': landm.astype(np.float32),
             'label': labels.astype(np.int64),
-            'mask': mask.astype(np.int64)
+            'mask': mask.astype(np.bool)
         }

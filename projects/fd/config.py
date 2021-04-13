@@ -19,32 +19,36 @@ _C.anchors = [
 ]
 _C.iou_threshold = 0.35
 _C.encode_mean = None
-_C.encode_std = [.1, .1, .2, .2]  # center .1, size: .2
-_C.image_mean = [104, 117, 123] # bgr order
+_C.encode_std = [.1, .1, .2, .2]    # center .1, size: .2
+_C.image_mean = [104, 117, 123]     # bgr order
+_C.image_std = [1, 1, 1]            # bgr order
 _C.model = CN(recursive=False)
 _C.model.name = "retinaface_res50fpn"
 _C.model.args = []
 _C.model.kwargs = CN()
-_C.model.kwargs.pretrained_path = 'workspace/resnet50-19c8e357.pth'
+_C.model.kwargs.pretrained = 'workspace/resnet50-19c8e357.pth'  # bool or set the path to pretrained model
 
 # training parameters
-_C.lr = 0.2
+_C.lr = 0.001
+_C.warmup_lr = 0.0001
+_C.final_lr = 0.00001
+_C.warmup_pct = 0.01         # warmup percent of steps
 _C.momentum = 0.9
 _C.weight_decay = 5e-4
-_C.gamma = 0.1
-_C.batch_size = 256
-_C.start_step = 0       # for resume
-# _C.total_steps = 10000   # training steps
+_C.batch_size = 24
+_C.start_step = 0           # for resume
 _C.num_workers = 8
-_C.num_epochs = 100      #
-_C.device = None        # auto determine
-_C.eval_interval = 100    # evaluate interval
+_C.num_epochs = 100         # training script will calc total iters by number of epochs
+_C.device = None            # auto determine
+_C.eval_interval = 100      # evaluate interval
 _C.augments = CN()
-_C.augments.inters = [cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_LANCZOS4, cv2.INTER_AREA]
+_C.augments.inters = [cv2.INTER_NEAREST, cv2.INTER_LINEAR,
+                      cv2.INTER_CUBIC, cv2.INTER_LANCZOS4, cv2.INTER_AREA]
 _C.augments.rotation = 5
 _C.augments.max_face = 512
-_C.augments.min_face = 6
-_C.augments.symmetry = [1, 0, 2, 4, 3] # shape symmetry indice for mirror augmentation
+_C.augments.min_face = 6 # current not used!
+# shape symmetry indice for mirror augmentation
+_C.augments.symmetry = [1, 0, 2, 4, 3]
 
 # data parameters
 _C.train_label = '/dockerdata/WIDER_face/train/label.txt'
