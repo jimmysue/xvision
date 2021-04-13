@@ -153,20 +153,52 @@
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">tf.image.extract_glimpse(</span>
-<span class="sd">    input, size, offsets, centered=True, normalized=True, noise=&#39;uniform&#39;,</span>
-<span class="sd">    name=None</span>
-<span class="sd">)</span>
-<span class="sd">&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="extract_glimpse"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.extract_glimpse.extract_glimpse">[docs]</a><span class="k">def</span> <span class="nf">extract_glimpse</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">offsets</span><span class="p">,</span> <span class="n">centered</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">,</span> <span class="n">padding_mode</span><span class="o">=</span><span class="s1">&#39;zeros&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Returns a set of windows called glimpses extracted at location offsets </span>
+<span class="sd">    from the input tensor. If the windows only partially overlaps the inputs, </span>
+<span class="sd">    the non-overlapping areas are handled as defined by :attr:`padding_mode`.</span>
+<span class="sd">    Options of :attr:`padding_mode` refers to `torch.grid_sample`&#39;s document.</span>
 
-<div class="viewcode-block" id="extract_glimpse"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.extract_glimpse.extract_glimpse">[docs]</a><span class="k">def</span> <span class="nf">extract_glimpse</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">offsets</span><span class="p">,</span> <span class="n">centered</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">):</span>
-    <span class="c1"># similar usage with ft.image.extract_glimpse:</span>
-    <span class="c1">#   https://www.tensorflow.org/api_docs/python/tf/image/extract_glimpse</span>
-    <span class="c1"># input: [B, C, H, W]</span>
-    <span class="c1"># size:  [int, int]  specified the size of glimpse, height comes first</span>
-    <span class="c1"># offsets: [B, 2]</span>
+<span class="sd">    The result is a 4-D tensor of shape [N, C, h, w].  The channels and batch </span>
+<span class="sd">    dimensions are the same as that of the input tensor.  The height and width </span>
+<span class="sd">    of the output windows are specified in the size parameter.</span>
+
+<span class="sd">    The argument normalized and centered controls how the windows are built:</span>
+
+<span class="sd">        * If the coordinates are normalized but not centered, 0.0 and 1.0 correspond </span>
+<span class="sd">          to the minimum and maximum of each height and width dimension.</span>
+<span class="sd">        * If the coordinates are both normalized and centered, they range from </span>
+<span class="sd">          -1.0 to 1.0. The coordinates (-1.0, -1.0) correspond to the upper left </span>
+<span class="sd">          corner, the lower right corner is located at (1.0, 1.0) and the center</span>
+<span class="sd">          is at (0, 0).</span>
+<span class="sd">        * If the coordinates are not normalized they are interpreted as numbers </span>
+<span class="sd">          of pixels.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input (Tensor): A Tensor of type float32. A 4-D float tensor of shape </span>
+<span class="sd">            [N, C, H, W]. size (tuple): 2-element integer tuple specified the </span>
+<span class="sd">            output glimpses&#39; size. The glimpse height must be specified first, </span>
+<span class="sd">            following by the glimpse width.</span>
+<span class="sd">        offsets (Tensor): A Tensor of type float32. A 2-D integer tensor of     </span>
+<span class="sd">            shape [batch_size, 2]  containing the x, y locations of the center</span>
+<span class="sd">            of each window.</span>
+<span class="sd">        centered (bool, optional): An optional bool. Defaults to True. indicates</span>
+<span class="sd">            if the offset coordinates are centered relative to the image, in </span>
+<span class="sd">            which case the (0, 0) offset is relative to the center of the input</span>
+<span class="sd">            images. If false, the (0,0) offset corresponds to the upper left </span>
+<span class="sd">            corner of the input images.</span>
+<span class="sd">        normalized (bool, optional): An optional bool. Defaults to True. indicates </span>
+<span class="sd">            if the offset coordinates are normalized.</span>
+<span class="sd">        mode (str, optional): Interpolation mode to calculate output values. </span>
+<span class="sd">            Defaults to &#39;bilinear&#39;.</span>
+<span class="sd">        padding_mode (str, optional): padding mode for values outside the input.</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: When normlised set False but centered set True</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        output (Tensor): A Tensor of same type with input.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">W</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nb">input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">normalized</span> <span class="ow">and</span> <span class="n">centered</span><span class="p">:</span>
@@ -193,7 +225,7 @@
         <span class="n">offsets_grid</span> <span class="o">-</span> <span class="n">offsets_grid</span><span class="o">.</span><span class="n">new_tensor</span><span class="p">([</span><span class="n">W</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">H</span><span class="o">/</span><span class="mi">2</span><span class="p">]))</span> <span class="o">/</span> <span class="n">offsets_grid</span><span class="o">.</span><span class="n">new_tensor</span><span class="p">([</span><span class="n">W</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">H</span><span class="o">/</span><span class="mi">2</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">grid_sample</span><span class="p">(</span>
-        <span class="nb">input</span><span class="p">,</span> <span class="n">offsets_grid</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">align_corners</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="nb">input</span><span class="p">,</span> <span class="n">offsets_grid</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">align_corners</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">padding_mode</span><span class="o">=</span><span class="n">padding_mode</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="extract_multiple_glimpse"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.extract_glimpse.extract_multiple_glimpse">[docs]</a><span class="k">def</span> <span class="nf">extract_multiple_glimpse</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">offsets</span><span class="p">,</span> <span class="n">centered</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">):</span>

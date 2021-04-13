@@ -88,9 +88,9 @@
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#xvision-models-detection-module">xvision.models.detection module</a></li>
-<li><a class="reference internal" href="#xvision-models-nima-module">xvision.models.nima module</a></li>
-<li><a class="reference internal" href="#xvision-models-rexnetv1-module">xvision.models.rexnetv1 module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-xvision.models.nima">xvision.models.nima module</a></li>
+<li><a class="reference internal" href="#module-xvision.models.rexnetv1">xvision.models.rexnetv1 module</a></li>
+<li><a class="reference internal" href="#module-xvision.models">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -176,13 +176,13 @@
 <li class="toctree-l1"><a class="reference internal" href="xvision.models.fd.html">xvision.models.fd package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="xvision.models.fd.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xvision.models.fd.html#xvision-models-fd-predictor-module">xvision.models.fd.predictor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xvision.models.fd.html#xvision-models-fd-rfb-module">xvision.models.fd.rfb module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xvision.models.fd.html#xvision-models-fd-slim-module">xvision.models.fd.slim module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xvision.models.fd.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xvision.models.fd.html#module-xvision.models.fd.rfb">xvision.models.fd.rfb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xvision.models.fd.html#module-xvision.models.fd.slim">xvision.models.fd.slim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xvision.models.fd.html#module-xvision.models.fd">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="xvision.models.od.html">xvision.models.od package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="xvision.models.od.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xvision.models.od.html#module-xvision.models.od">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -194,14 +194,133 @@
 <div class="section" id="xvision-models-detection-module">
 <h2>xvision.models.detection module<a class="headerlink" href="#xvision-models-detection-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="xvision-models-nima-module">
-<h2>xvision.models.nima module<a class="headerlink" href="#xvision-models-nima-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-xvision.models.nima">
+<span id="xvision-models-nima-module"></span><h2>xvision.models.nima module<a class="headerlink" href="#module-xvision.models.nima" title="Permalink to this headline">¶</a></h2>
+<p>file - model.py
+Implements the aesthemic model and emd loss used in paper.</p>
+<p>Copyright (C) Yunxiao Shi 2017 - 2020
+NIMA is released under the MIT license. See LICENSE for the fill license text.</p>
+<dl class="py class">
+<dt id="xvision.models.nima.NIMA">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.models.nima.</span></code><code class="sig-name descname"><span class="pre">NIMA</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/nima.html#NIMA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.nima.NIMA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.</span></code></p>
+<p>Neural IMage Assessment model by Google</p>
+<dl class="py method">
+<dt id="xvision.models.nima.NIMA.forward">
+<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/nima.html#NIMA.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.nima.NIMA.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="xvision.models.nima.single_emd_loss">
+<code class="sig-prename descclassname"><span class="pre">xvision.models.nima.</span></code><code class="sig-name descname"><span class="pre">single_emd_loss</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/nima.html#single_emd_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.nima.single_emd_loss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Earth Mover’s Distance of one sample</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – true distribution of shape num_classes × 1</p></li>
+<li><p><strong>q</strong> – estimated distribution of shape num_classes × 1</p></li>
+<li><p><strong>r</strong> – norm parameter</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
-<div class="section" id="xvision-models-rexnetv1-module">
-<h2>xvision.models.rexnetv1 module<a class="headerlink" href="#xvision-models-rexnetv1-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-xvision.models.rexnetv1">
+<span id="xvision-models-rexnetv1-module"></span><h2>xvision.models.rexnetv1 module<a class="headerlink" href="#module-xvision.models.rexnetv1" title="Permalink to this headline">¶</a></h2>
+<p>ReXNet
+Copyright (c) 2020-present NAVER Corp.
+MIT license</p>
+<dl class="py function">
+<dt id="xvision.models.rexnetv1.ConvBNAct">
+<code class="sig-prename descclassname"><span class="pre">xvision.models.rexnetv1.</span></code><code class="sig-name descname"><span class="pre">ConvBNAct</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relu6</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#ConvBNAct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.ConvBNAct" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="xvision.models.rexnetv1.ConvBNSwish">
+<code class="sig-prename descclassname"><span class="pre">xvision.models.rexnetv1.</span></code><code class="sig-name descname"><span class="pre">ConvBNSwish</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#ConvBNSwish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.ConvBNSwish" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt id="xvision.models.rexnetv1.LinearBottleneck">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.models.rexnetv1.</span></code><code class="sig-name descname"><span class="pre">LinearBottleneck</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#LinearBottleneck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.LinearBottleneck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.</span></code></p>
+<dl class="py method">
+<dt id="xvision.models.rexnetv1.LinearBottleneck.forward">
+<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#LinearBottleneck.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.LinearBottleneck.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="xvision.models.rexnetv1.ReXNetV1">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.models.rexnetv1.</span></code><code class="sig-name descname"><span class="pre">ReXNetV1</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#ReXNetV1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.ReXNetV1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.</span></code></p>
+<dl class="py method">
+<dt id="xvision.models.rexnetv1.ReXNetV1.forward">
+<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#ReXNetV1.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.ReXNetV1.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="xvision.models.rexnetv1.SE">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.models.rexnetv1.</span></code><code class="sig-name descname"><span class="pre">SE</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#SE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.SE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.</span></code></p>
+<dl class="py method">
+<dt id="xvision.models.rexnetv1.SE.forward">
+<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#SE.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.SE.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="xvision.models.rexnetv1.Swish">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.models.rexnetv1.</span></code><code class="sig-name descname"><span class="pre">Swish</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#Swish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.Swish" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.</span></code></p>
+<dl class="py method">
+<dt id="xvision.models.rexnetv1.Swish.forward">
+<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#Swish.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.Swish.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="xvision.models.rexnetv1.SwishJitImplementation">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.models.rexnetv1.</span></code><code class="sig-name descname"><span class="pre">SwishJitImplementation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#SwishJitImplementation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.SwishJitImplementation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.autograd.</span></code></p>
+<dl class="py method">
+<dt id="xvision.models.rexnetv1.SwishJitImplementation.backward">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">backward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#SwishJitImplementation.backward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.SwishJitImplementation.backward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.models.rexnetv1.SwishJitImplementation.forward">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#SwishJitImplementation.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.SwishJitImplementation.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.models.rexnetv1.SwishJitImplementation.symbolic">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">symbolic</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#SwishJitImplementation.symbolic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.SwishJitImplementation.symbolic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="xvision.models.rexnetv1.swish">
+<code class="sig-prename descclassname"><span class="pre">xvision.models.rexnetv1.</span></code><code class="sig-name descname"><span class="pre">swish</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models/rexnetv1.html#swish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.rexnetv1.swish" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-xvision.models">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-xvision.models" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="xvision.models.initialize_model">
+<code class="sig-prename descclassname"><span class="pre">xvision.models.</span></code><code class="sig-name descname"><span class="pre">initialize_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/models.html#initialize_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.models.initialize_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 

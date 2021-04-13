@@ -86,10 +86,10 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">xvision.api package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#xvision-api-detector-module">xvision.api.detector module</a></li>
-<li><a class="reference internal" href="#xvision-api-face-alignmentor-module">xvision.api.face_alignmentor module</a></li>
-<li><a class="reference internal" href="#xvision-api-face-detector-module">xvision.api.face_detector module</a></li>
-<li><a class="reference internal" href="#xvision-api-face-tracker-module">xvision.api.face_tracker module</a></li>
+<li><a class="reference internal" href="#module-xvision.api.detector">xvision.api.detector module</a></li>
+<li><a class="reference internal" href="#module-xvision.api.face_alignmentor">xvision.api.face_alignmentor module</a></li>
+<li><a class="reference internal" href="#module-xvision.api.face_detector">xvision.api.face_detector module</a></li>
+<li><a class="reference internal" href="#module-xvision.api.face_tracker">xvision.api.face_tracker module</a></li>
 <li><a class="reference internal" href="#module-xvision.api">Module contents</a></li>
 </ul>
 </li>
@@ -165,17 +165,46 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="xvision-api-detector-module">
-<h2>xvision.api.detector module<a class="headerlink" href="#xvision-api-detector-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-xvision.api.detector">
+<span id="xvision-api-detector-module"></span><h2>xvision.api.detector module<a class="headerlink" href="#module-xvision.api.detector" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="xvision.api.detector.Detector">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.api.detector.</span></code><code class="sig-name descname"><span class="pre">Detector</span></code><a class="reference internal" href="_modules/xvision/api/detector.html#Detector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.api.detector.Detector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="xvision.api.detector.Detector.detect">
+<code class="sig-name descname"><span class="pre">detect</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="reference internal" href="_modules/xvision/api/detector.html#Detector.detect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.api.detector.Detector.detect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="xvision-api-face-alignmentor-module">
-<h2>xvision.api.face_alignmentor module<a class="headerlink" href="#xvision-api-face-alignmentor-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-xvision.api.face_alignmentor">
+<span id="xvision-api-face-alignmentor-module"></span><h2>xvision.api.face_alignmentor module<a class="headerlink" href="#module-xvision.api.face_alignmentor" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="xvision.api.face_alignmentor.FaceAlignmentor">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.api.face_alignmentor.</span></code><code class="sig-name descname"><span class="pre">FaceAlignmentor</span></code><a class="reference internal" href="_modules/xvision/api/face_alignmentor.html#FaceAlignmentor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.api.face_alignmentor.FaceAlignmentor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xvision.api.detector.Detector" title="xvision.api.detector.Detector"><code class="xref py py-class docutils literal notranslate"><span class="pre">xvision.api.detector.Detector</span></code></a></p>
+</dd></dl>
+
 </div>
-<div class="section" id="xvision-api-face-detector-module">
-<h2>xvision.api.face_detector module<a class="headerlink" href="#xvision-api-face-detector-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-xvision.api.face_detector">
+<span id="xvision-api-face-detector-module"></span><h2>xvision.api.face_detector module<a class="headerlink" href="#module-xvision.api.face_detector" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="xvision.api.face_detector.FaceDetector">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.api.face_detector.</span></code><code class="sig-name descname"><span class="pre">FaceDetector</span></code><a class="reference internal" href="_modules/xvision/api/face_detector.html#FaceDetector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.api.face_detector.FaceDetector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xvision.api.detector.Detector" title="xvision.api.detector.Detector"><code class="xref py py-class docutils literal notranslate"><span class="pre">xvision.api.detector.Detector</span></code></a></p>
+</dd></dl>
+
 </div>
-<div class="section" id="xvision-api-face-tracker-module">
-<h2>xvision.api.face_tracker module<a class="headerlink" href="#xvision-api-face-tracker-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-xvision.api.face_tracker">
+<span id="xvision-api-face-tracker-module"></span><h2>xvision.api.face_tracker module<a class="headerlink" href="#module-xvision.api.face_tracker" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="xvision.api.face_tracker.FaceTracker">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.api.face_tracker.</span></code><code class="sig-name descname"><span class="pre">FaceTracker</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_detector</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#xvision.api.face_detector.FaceDetector" title="xvision.api.face_detector.FaceDetector"><span class="pre">xvision.api.face_detector.FaceDetector</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_alignmentor</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#xvision.api.face_alignmentor.FaceAlignmentor" title="xvision.api.face_alignmentor.FaceAlignmentor"><span class="pre">xvision.api.face_alignmentor.FaceAlignmentor</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/api/face_tracker.html#FaceTracker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.api.face_tracker.FaceTracker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#xvision.api.detector.Detector" title="xvision.api.detector.Detector"><code class="xref py py-class docutils literal notranslate"><span class="pre">xvision.api.detector.Detector</span></code></a></p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-xvision.api">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-xvision.api" title="Permalink to this headline">¶</a></h2>
