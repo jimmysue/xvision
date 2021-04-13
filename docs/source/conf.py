@@ -13,7 +13,11 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
-autodoc_mock_imports = ["_tkinter"]
+autodoc_mock_imports = [
+    "numpy",
+    'torch',
+    'cv2'
+    ]
 
 # -- Project information -----------------------------------------------------
 
