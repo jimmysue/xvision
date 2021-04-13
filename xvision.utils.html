@@ -86,7 +86,7 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">xvision.utils package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#xvision-utils-config-module">xvision.utils.config module</a></li>
+<li><a class="reference internal" href="#module-xvision.utils.config">xvision.utils.config module</a></li>
 <li><a class="reference internal" href="#module-xvision.utils.draw">xvision.utils.draw module</a></li>
 <li><a class="reference internal" href="#module-xvision.utils.logger">xvision.utils.logger module</a></li>
 <li><a class="reference internal" href="#module-xvision.utils.meter">xvision.utils.meter module</a></li>
@@ -168,8 +168,177 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="xvision-utils-config-module">
-<h2>xvision.utils.config module<a class="headerlink" href="#xvision-utils-config-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-xvision.utils.config">
+<span id="xvision-utils-config-module"></span><h2>xvision.utils.config module<a class="headerlink" href="#module-xvision.utils.config" title="Permalink to this headline">¶</a></h2>
+<p>YACS – Yet Another Configuration System is designed to be a simple
+configuration management system for academic and industrial research
+projects.</p>
+<p>See README.md for usage and examples.</p>
+<dl class="py class">
+<dt id="xvision.utils.config.CfgNode">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">xvision.utils.config.</span></code><code class="sig-name descname"><span class="pre">CfgNode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_allowed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>CfgNode represents an internal node in the configuration tree. It’s a simple
+dict-like container that allows for attribute-based access to keys.</p>
+<dl class="py attribute">
+<dt id="xvision.utils.config.CfgNode.DEPRECATED_KEYS">
+<code class="sig-name descname"><span class="pre">DEPRECATED_KEYS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'__deprecated_keys__'</span></em><a class="headerlink" href="#xvision.utils.config.CfgNode.DEPRECATED_KEYS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="xvision.utils.config.CfgNode.IMMUTABLE">
+<code class="sig-name descname"><span class="pre">IMMUTABLE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'__immutable__'</span></em><a class="headerlink" href="#xvision.utils.config.CfgNode.IMMUTABLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="xvision.utils.config.CfgNode.NEW_ALLOWED">
+<code class="sig-name descname"><span class="pre">NEW_ALLOWED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'__new_allowed__'</span></em><a class="headerlink" href="#xvision.utils.config.CfgNode.NEW_ALLOWED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="xvision.utils.config.CfgNode.RECURSIVE">
+<code class="sig-name descname"><span class="pre">RECURSIVE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'__recursive__'</span></em><a class="headerlink" href="#xvision.utils.config.CfgNode.RECURSIVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="xvision.utils.config.CfgNode.RENAMED_KEYS">
+<code class="sig-name descname"><span class="pre">RENAMED_KEYS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'__renamed_keys__'</span></em><a class="headerlink" href="#xvision.utils.config.CfgNode.RENAMED_KEYS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.clone">
+<code class="sig-name descname"><span class="pre">clone</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.clone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively copy this CfgNode.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.defrost">
+<code class="sig-name descname"><span class="pre">defrost</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.defrost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.defrost" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make this CfgNode and all of its children mutable.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.dump">
+<code class="sig-name descname"><span class="pre">dump</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.dump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump to a string.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.freeze">
+<code class="sig-name descname"><span class="pre">freeze</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.freeze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.freeze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make this CfgNode and all of its children immutable.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.is_frozen">
+<code class="sig-name descname"><span class="pre">is_frozen</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.is_frozen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.is_frozen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return mutability.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.is_new_allowed">
+<code class="sig-name descname"><span class="pre">is_new_allowed</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.is_new_allowed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.is_new_allowed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.key_is_deprecated">
+<code class="sig-name descname"><span class="pre">key_is_deprecated</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.key_is_deprecated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.key_is_deprecated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if a key is deprecated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.key_is_renamed">
+<code class="sig-name descname"><span class="pre">key_is_renamed</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.key_is_renamed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.key_is_renamed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if a key is renamed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.load_cfg">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">load_cfg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg_file_obj_or_str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.load_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.load_cfg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a cfg.
+:param cfg_file_obj_or_str: Supports loading from:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A file object backed by a YAML file</p></li>
+<li><p>A file object backed by a Python source file that exports an attribute
+“cfg” that is either a dict or a CfgNode</p></li>
+<li><p>A string that can be parsed as valid YAML</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.merge_from_file">
+<code class="sig-name descname"><span class="pre">merge_from_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg_filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.merge_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.merge_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a yaml config file and merge it this CfgNode.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.merge_from_list">
+<code class="sig-name descname"><span class="pre">merge_from_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.merge_from_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.merge_from_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge config (keys, values) in a list (e.g., from command line) into
+this CfgNode. For example, <cite>cfg_list = [‘FOO.BAR’, 0.5]</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.merge_from_other_cfg">
+<code class="sig-name descname"><span class="pre">merge_from_other_cfg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg_other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.merge_from_other_cfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.merge_from_other_cfg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge <cite>cfg_other</cite> into this CfgNode.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.parse_args">
+<code class="sig-name descname"><span class="pre">parse_args</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.parse_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.raise_key_rename_error">
+<code class="sig-name descname"><span class="pre">raise_key_rename_error</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.raise_key_rename_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.raise_key_rename_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.register_deprecated_key">
+<code class="sig-name descname"><span class="pre">register_deprecated_key</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.register_deprecated_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.register_deprecated_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register key (e.g. <cite>FOO.BAR</cite>) a deprecated option. When merging deprecated
+keys a warning is generated and the key is ignored.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.register_renamed_key">
+<code class="sig-name descname"><span class="pre">register_renamed_key</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.register_renamed_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.register_renamed_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a key as having been renamed from <cite>old_name</cite> to <cite>new_name</cite>.
+When merging a renamed key, an exception is thrown alerting to user to
+the fact that the key has been renamed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="xvision.utils.config.CfgNode.set_new_allowed">
+<code class="sig-name descname"><span class="pre">set_new_allowed</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_new_allowed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/utils/config.html#CfgNode.set_new_allowed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.utils.config.CfgNode.set_new_allowed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set this config (and recursively its subconfigs) to allow merging
+new keys from other configs.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="xvision.utils.config.load_cfg">
+<code class="sig-prename descclassname"><span class="pre">xvision.utils.config.</span></code><code class="sig-name descname"><span class="pre">load_cfg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg_file_obj_or_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xvision.utils.config.load_cfg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a cfg.
+:param cfg_file_obj_or_str: Supports loading from:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A file object backed by a YAML file</p></li>
+<li><p>A file object backed by a Python source file that exports an attribute
+“cfg” that is either a dict or a CfgNode</p></li>
+<li><p>A string that can be parsed as valid YAML</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-xvision.utils.draw">
 <span id="xvision-utils-draw-module"></span><h2>xvision.utils.draw module<a class="headerlink" href="#module-xvision.utils.draw" title="Permalink to this headline">¶</a></h2>
