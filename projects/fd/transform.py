@@ -259,12 +259,12 @@ class Buibug6Transform(object):
     def __call__(self, item):
         # dict to image, targets tuple
         image = item['image']
-        label = item['label'].reshape(-1, 1)
+        label = item['label'].astype(np.float32)
         bbox = item['bbox'].reshape(-1, 4)
         shape = item['shape'].reshape(-1, 10)
-        mask = item['mask'].reshape(-1, 1)
-        label[np.logical_and(mask == 0, label > 0)] = -1
-        targets = np.concatenate([bbox, shape, label], -1)
+        mask = item['mask']
+        label[~mask] = -1
+        targets = np.concatenate([bbox, shape, label[..., None]], -1)
         image, targets = self.preproc(image, targets)
         boxes = targets[:, :4]
         labels = targets[:, -1]
