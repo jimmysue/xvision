@@ -125,8 +125,9 @@ def main(cfg):
     parameters = group_parameters(model)
     optimizer = SGD(parameters, cfg.lr, cfg.momentum,
                     weight_decay=cfg.weight_decay)
+
     lr_scheduler = OneCycleLR(optimizer, max_lr=cfg.lr, div_factor=cfg.lr/cfg.warmup_lr,
-                              total_steps=total_steps, pct_start=0.01, final_div_factor=cfg.final_lr/cfg.warmup_lr)
+                              total_steps=total_steps, pct_start=0.01, final_div_factor=cfg.warmup_lr/cfg.final_lr)
 
     train_loader = torch.utils.data.DataLoader(trainset, batch_size=cfg.batch_size,
                                                shuffle=True, num_workers=cfg.num_workers, drop_last=True, pin_memory=True)
