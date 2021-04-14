@@ -262,7 +262,27 @@
 <dl class="py function">
 <dt id="xvision.ops.emd_loss.emd_loss">
 <code class="sig-prename descclassname"><span class="pre">xvision.ops.emd_loss.</span></code><code class="sig-name descname"><span class="pre">emd_loss</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xvision/ops/emd_loss.html#emd_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xvision.ops.emd_loss.emd_loss" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Impolement Earth Mover’s Distance loss</p>
+<p>This loss function was proposed in paper <a class="reference external" href="http://arxiv.org/abs/1709.05424">NIMA: Neural Image Assessment</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>preds</strong> (<em>Tensor</em>) – batched predictions of the probability mass function.
+The shape should be [N, C]</p></li>
+<li><p><strong>targets</strong> (<em>Tensor</em>) – target probability mass function same shape with preds</p></li>
+<li><p><strong>p</strong> (<em>int</em><em>, </em><em>optional</em>) – order of p-norm. Defaults to 2.</p></li>
+<li><p><strong>reduction</strong> (<em>str</em><em>, </em><em>optional</em>) – reduction method which can be one of ‘mean’, ‘sum’
+or none. Defaults to ‘mean’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the loss</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>[Tensor]</p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 <div class="section" id="module-xvision.ops.euclidean_loss">

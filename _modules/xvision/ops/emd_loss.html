@@ -152,6 +152,22 @@
 
 
 <div class="viewcode-block" id="emd_loss"><a class="viewcode-back" href="../../../xvision.ops.html#xvision.ops.emd_loss.emd_loss">[docs]</a><span class="k">def</span> <span class="nf">emd_loss</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Impolement Earth Mover&#39;s Distance loss</span>
+
+<span class="sd">    This loss function was proposed in paper `NIMA: Neural Image Assessment`_</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        preds (Tensor): batched predictions of the probability mass function.</span>
+<span class="sd">            The shape should be [N, C]</span>
+<span class="sd">        targets (Tensor): target probability mass function same shape with preds</span>
+<span class="sd">        p (int, optional): order of p-norm. Defaults to 2.</span>
+<span class="sd">        reduction (str, optional): reduction method which can be one of &#39;mean&#39;, &#39;sum&#39; </span>
+<span class="sd">            or none. Defaults to &#39;mean&#39;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        [Tensor]: the loss</span>
+<span class="sd">    .. _NIMA\: Neural Image Assessment: http://arxiv.org/abs/1709.05424</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">cdf_y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">cdf_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">cdf_diff</span> <span class="o">=</span> <span class="n">cdf_pred</span> <span class="o">-</span> <span class="n">cdf_y</span>
