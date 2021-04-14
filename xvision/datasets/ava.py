@@ -55,7 +55,7 @@ class AVADataset(data.Dataset):
                 path = Path(image_dir) / name
                 data.append(
                     {
-                        'path': path,
+                        'path': path.with_suffix('.jpg'),
                         'annotations': hist
                     }
                 )
