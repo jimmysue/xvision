@@ -69,8 +69,7 @@ def create_mmap_dataset(filename, data, transform, num_workers=1):
                                      for i, v in enumerate(tqdm.tqdm(data, desc=f'memmaping to {filename}')))
     else:
         for i, v in enumerate(tqdm.tqdm(data, desc=f'memmaping to {filename}')):
-            v = transform(v)
-            _structured_assign(fp, i, v)
+            process(i, v)
     fp.flush()
     return np.lib.format.open_memmap(filename, mode='r')
 

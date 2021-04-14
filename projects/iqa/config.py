@@ -15,7 +15,6 @@ _C.weight_decay = 5e-5
 _C.batch_size = 128
 _C.num_workers = 32
 
-_C.cache_dir = '/dockerdata/cache'
 _C.ava = CN()  # ava data info
 _C.ava.images = '/dockerdata/AVA/'
 _C.ava.train_labels = 'workspace/iqa/AVA_dataset/train_labels.csv'
