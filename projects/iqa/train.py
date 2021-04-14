@@ -85,6 +85,7 @@ def main(cfg):
     workdir.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else 'cpu')
     set_logger(workdir / 'log.txt')
+    cfg.dump_to_file(workdir / 'config.yml')
     saver = Saver(workdir, keep_num=10)
     logging.info(f'config: \n{cfg}')
     logging.info(f'use device: {device}')
