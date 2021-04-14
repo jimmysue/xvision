@@ -19,6 +19,8 @@ def get_logger(fullpath=None):
 
     return logger
 
+set_logger = get_logger
+
 
 if __name__ == '__main__':
 
