@@ -1,5 +1,6 @@
 import logging
 import time
+import cv2
 
 import torch
 
@@ -17,6 +18,9 @@ from xvision.utils.saver import Saver
 from xvision.datasets.loader import repeat_loader
 from xvision.ops.emd_loss import emd_loss
 from xvision.utils.meter import MetricLogger, SmoothedValue
+from xvision.datasets.memmap import MemMap
+
+from transform import Transform
 
 
 class BatchProcessor(object):
@@ -40,7 +44,7 @@ def train_steps(model, loader, optimizer, lr_scheduler, criterion, batch_process
         outputs = model(images)
         optimizer.zero_grad()
         loss = criterion(outputs, labels)
-        
+
         loss.backward()
         optimizer.step()
         lr_scheduler.step()
@@ -62,6 +66,20 @@ def evaluate(model, loader, criterion, process):
     return meter
 
 
+def cache_transform(item):
+    image = cv2.imread(str(item['path']))
+    image = cv2.resize(image, (256, 256))  # FIXME: remove hard codes
+    return {
+        'image': image,
+        'annotations': item['annotations']
+    }
+
+
+def create_memmap(label, image, path, parallel):
+    gen = AVADataset.parse(csv_file=label, image_dir=image)
+    MemMap.create(path, gen, cache_transform, parallel)
+
+
 def main(cfg):
     workdir = Path(cfg.workdir)
     workdir.mkdir(parents=True, exist_ok=True)
@@ -79,21 +97,26 @@ def main(cfg):
     else:
         model_dp = model
 
-    train_transform = transforms.Compose([
-        transforms.Resize(256),
-        transforms.RandomCrop(224),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor()])
+    train_transform = Transform(
+        transforms.Compose([
+            transforms.RandomCrop(224),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor()]))
 
-    val_transform = transforms.Compose([
-        transforms.Resize(256),
-        transforms.RandomCrop(224),
-        transforms.ToTensor()])
-    trainset = AVADataset(csv_file=cfg.ava.train_labels,
-                          image_dir=cfg.ava.images, transform=train_transform)
-    valset = AVADataset(csv_file=cfg.ava.val_labels,
-                        image_dir=cfg.ava.images, transform=val_transform)
+    val_transform = Transform(
+        transforms.Compose([
+            transforms.RandomCrop(224),
+            transforms.ToTensor()]))
 
+    
+    if not Path(cfg.ava.train_cache).exists():
+        create_memmap(cfg.ava.train_labels, cfg.ava.images, cfg.ava.train_cache, cfg.num_workers)
+    if not Path(cfg.ava.val_cache).exists():
+        create_memmap(cfg.ava.train_labels, cfg.ava.images, cfg.ava.val_cache, cfg.num_workers)
+
+    trainset = MemMap(cfg.ava.train_cache, train_transform)
+    valset = MemMap(cfg.ava.val_cache, val_transform)
+    
     total_steps = len(trainset) // cfg.batch_size * cfg.num_epochs
     eval_interval = len(trainset) // cfg.batch_size
     logging.info(f'total steps: {total_steps}, eval interval: {eval_interval}')

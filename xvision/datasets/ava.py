@@ -10,7 +10,7 @@ import os
 import numpy as np
 import cv2
 import tqdm
-import shutil
+
 
 from pathlib import Path
 import torch
@@ -27,31 +27,17 @@ class AVADataset(data.Dataset):
         transform: preprocessing and augmentation of the training images
     """
 
-    def __init__(self, csv_file, image_dir, transform=None, cache_dir=None):
+    def __init__(self, csv_file, image_dir, transform=None):
         # 更改了原始实现, 现在的实现csv文件没有序号列
         self.data = self.parse(csv_file, image_dir)
         self.transform = transform
-        self.image_dir = image_dir
-        if cache_dir:
-            cache_dir = Path(cache_dir)
-            cache_dir.mkdir(parents=True, exist_ok=True)
-        self.cache_dir = cache_dir
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, idx):
         item = self.data[idx]
-        if not self.cache_dir:
-            image = cv2.imread(str(item['path']), cv2.IMREAD_COLOR)
-        else:
-            fullpath = self.cache_dir / item['path']
-            image = cv2.imread(str(fullpath), cv2.IMREAD_COLOR)
-            if not image:
-                src = Path(self.image_dir) / item['path']
-                dst = Path(self.cache_dir) / item['path']
-                shutil.copy(src, dst)
-                image = cv2.imread(str(dst), cv2.IMREAD_COLOR)
+        image = cv2.imread(str(item['path']), cv2.IMREAD_COLOR)
         item['image'] = image
         item.pop('path')
         if self.transform:
@@ -66,10 +52,10 @@ class AVADataset(data.Dataset):
                 items = line.strip().split(',')
                 name = items[0]
                 hist = np.array(items[1:]).astype(np.float32)
-                path = Path(name).with_suffix('.jpg')
+                path = Path(image_dir) / name
                 data.append(
                     {
-                        'path': path,
+                        'path': path.with_suffix('.jpg'),
                         'annotations': hist
                     }
                 )
