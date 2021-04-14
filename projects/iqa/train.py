@@ -108,15 +108,16 @@ def main(cfg):
             transforms.RandomCrop(224),
             transforms.ToTensor()]))
 
-    
     if not Path(cfg.ava.train_cache).exists():
-        create_memmap(cfg.ava.train_labels, cfg.ava.images, cfg.ava.train_cache, cfg.num_workers)
+        create_memmap(cfg.ava.train_labels, cfg.ava.images,
+                      cfg.ava.train_cache, cfg.num_workers)
     if not Path(cfg.ava.val_cache).exists():
-        create_memmap(cfg.ava.train_labels, cfg.ava.images, cfg.ava.val_cache, cfg.num_workers)
+        create_memmap(cfg.ava.train_labels, cfg.ava.images,
+                      cfg.ava.val_cache, cfg.num_workers)
 
     trainset = MemMap(cfg.ava.train_cache, train_transform)
     valset = MemMap(cfg.ava.val_cache, val_transform)
-    
+
     total_steps = len(trainset) // cfg.batch_size * cfg.num_epochs
     eval_interval = len(trainset) // cfg.batch_size
     logging.info(f'total steps: {total_steps}, eval interval: {eval_interval}')
@@ -147,9 +148,11 @@ def main(cfg):
     trainloader = repeat_loader(train_loader)
     batch_processor = BatchProcessor(device)
     start = time.time()
-    for step in range(1, total_steps + 1, eval_interval):
+    for step in range(0, total_steps, eval_interval):
+        num_steps = min(step + eval_interval, total_steps) - step
+        step += num_steps
         trainmeter = train_steps(model_dp, trainloader, optimizer,
-                                 lr_scheduler, emd_loss, batch_processor, eval_interval)
+                                 lr_scheduler, emd_loss, batch_processor, num_steps)
         valmeter = evaluate(model_dp, val_loader, emd_loss, batch_processor)
         finish = time.time()
         img_s = cfg.batch_size * eval_interval / (finish - start)
@@ -159,7 +162,7 @@ def main(cfg):
             'model': model.state_dict(),
             'optimizer': optimizer.state_dict(),
             'lr_scheduler': lr_scheduler.state_dict(),
-            'step': 0,  # init step,
+            'step': step,  # init step,
             'cfg': cfg,
             'loss': loss
         }
