@@ -123,7 +123,8 @@ def main(args):
         'optimizer': optimizer.state_dict(),
         'lr_scheduler': lr_scheduler.state_dict(),
         'step': 0,
-        'loss': best_loss
+        'loss': best_loss,
+        'cfg': args
     }
     score_fn = IbugScore(args.left_eye, args.right_eye)
     saver.save(0, state)
@@ -146,7 +147,8 @@ def main(args):
             'optimizer': optimizer.state_dict(),
             'lr_scheduler': lr_scheduler.state_dict(),
             'step': step,
-            'loss': curr_loss
+            'loss': curr_loss,
+            'cfg': args
         }
         saver.save(step, state)
 
