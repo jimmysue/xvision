@@ -10,6 +10,7 @@ import numpy as np
 # rbox means bounding rotated box encoding with [cx, cy, w, h, r]
 # where r is box rotated angle in radian, and the anchor is clockwise angle
 # in image coordinate
+# rect means box encoded with [left, top, width, height]
 
 # copy from https://github.com/AffineVision/AffineVision/blob/master/affinevision/transforms/boxes.py
 
