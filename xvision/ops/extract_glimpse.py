@@ -27,7 +27,8 @@ def extract_glimpse(input: torch.Tensor, size: Tuple[int, int], offsets, centere
 
     Args:
         input (Tensor): A Tensor of type float32. A 4-D float tensor of shape 
-            [N, C, H, W]. size (tuple): 2-element integer tuple specified the 
+            [N, C, H, W]. 
+        size (tuple): 2-element integer tuple specified the 
             output glimpses' size. The glimpse height must be specified first, 
             following by the glimpse width.
         offsets (Tensor): A Tensor of type float32. A 2-D integer tensor of     
