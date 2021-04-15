@@ -251,7 +251,7 @@ if __name__ == '__main__':
     from collections import defaultdict
     from matplotlib import pyplot as plt
     from xvision.utils.draw import *
-    from projects.face_detection.config import cfg
+    from projects.fd.config import cfg
     train = "/Users/jimmy/Documents/data/WIDER/retinaface_gt_v1.1/train/label.txt"
     dir = "/Users/jimmy/Documents/data/WIDER/WIDER_train/images"
 
