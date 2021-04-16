@@ -164,6 +164,7 @@ def main(args):
         optimizer.step()
         lr_scheduler.step()
 
+        
         if (step + 1) % eval_interval == 0 or (step + 1) == total_steps:
             duration = time.time() - start
             img_s = eval_interval * args.batch_size / duration
@@ -187,6 +188,8 @@ def main(args):
             if (curr_loss < best_loss):
                 best_loss = curr_loss
                 saver.save_best(state)
+        elif (step + 1) % args.log_interval == 0:
+            logger.info(f'Step [{step + 1}/{total_steps}] train: [{train_meter}]')
 
 
 if __name__ == '__main__':

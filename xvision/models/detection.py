@@ -83,7 +83,7 @@ class BBoxPrior(Prior):
         else:
             # make layouts default to None, so that we can load from state_dict
             self.strides, self.layouts = [], []
-
+        self.fsizes = None
         self.register_buffer('anchors', None)
         self.register_buffer('encode_mean', encode_mean)
         self.register_buffer('encode_std', encode_std)
@@ -152,8 +152,10 @@ class BBoxPrior(Prior):
         return anchors
 
     def update(self, fsizes, device):
-        self.anchors = self.generate_anchors(
-            self.strides, fsizes, self.layouts, device)
+        if self.fsizes != fsizes:
+            self.fsizes = fsizes
+            self.anchors = self.generate_anchors(
+                self.strides, fsizes, self.layouts, device)
 
     def encode_bboxes(self, bboxes):
         # bboxes: [*, k, 4]

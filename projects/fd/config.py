@@ -40,7 +40,7 @@ _C.start_step = 0           # for resume
 _C.num_workers = 8
 _C.num_epochs = 100         # training script will calc total iters by number of epochs
 _C.device = None            # auto determine
-_C.eval_interval = 100      # evaluate interval
+_C.log_interval = 100      # print log interval
 _C.augments = CN()
 _C.augments.inters = [cv2.INTER_NEAREST, cv2.INTER_LINEAR,
                       cv2.INTER_CUBIC, cv2.INTER_LANCZOS4, cv2.INTER_AREA]
