@@ -187,6 +187,7 @@ class BBoxPrior(Prior):
         max_iou_of_anchor, box_indice = iou.max(dim=1)  # [k]
         max_iou_of_bbox, anchor_indice = iou.max(dim=0)  # [n]
 
+        max_iou_of_bbox = torch.where(max_iou_of_bbox < self.iou_threshold, self.iou_threshold, max_iou_of_bbox)
         # make sure each target assigend an anchor
         for target_index, anchor_index in enumerate(anchor_indice):
             max_iou_of_anchor[anchor_index] = max_iou_of_bbox[target_index]
@@ -194,10 +195,8 @@ class BBoxPrior(Prior):
         # find max iou of each box to determine denominant
 
         denominant = max_iou_of_bbox                    # [n]
-        denominant[denominant <
-                   self.iou_threshold] = self.iou_threshold     # [n]
         denominant = denominant[box_indice]             # [k]
-        max_iou_of_anchor[max_iou_of_anchor < self.iou_threshold / 2] = 0
+        max_iou_of_anchor[max_iou_of_anchor < self.iou_threshold] = 0
         scores = max_iou_of_anchor / denominant         # [k]
 
         labels = labels[box_indice]
