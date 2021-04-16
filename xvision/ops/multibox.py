@@ -11,7 +11,7 @@ def score_box_loss(target_scores, target_deltas, pred_logits, pred_deltas):
     score_loss = sigmoid_focal_loss(
         pred_logits, target_scores, reduction='sum')
     maxscore, _ = target_scores.max(-1)
-    pos_mask = maxscore > 0.5
+    pos_mask = maxscore > 0
 
     target_box_deltas_pos = target_deltas[pos_mask].reshape(-1, 2, 2)
     pred_box_deltas_pos = pred_deltas[pos_mask].reshape(-1, 2, 2)
@@ -31,7 +31,7 @@ def score_box_point_loss(target_scores, target_box_deltas, target_point_deltas, 
     score_loss = sigmoid_focal_loss(
         pred_logits, target_scores, reduction='sum')
     maxscore, _ = target_scores.max(-1)
-    pos_mask = maxscore > 0.5
+    pos_mask = maxscore > 0
 
     target_box_deltas_pos = target_box_deltas[pos_mask].reshape(-1, 2, 2)
     pred_box_deltas_pos = pred_box_deltas[pos_mask].reshape(-1, 2, 2)
