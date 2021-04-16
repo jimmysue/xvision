@@ -20,18 +20,21 @@ from xvision.models.detection import Detector, BBoxShapePrior
 
 from transform import Buibug6Transform
 
+
 class BatchProcessor(object):
     def __init__(self, device, mean, std) -> None:
         super().__init__()
         self.device = device
         self.mean = torch.tensor(mean, dtype=torch.float32, device=device)
         self.std = torch.tensor(std, dtype=torch.float32, device=device)
-    
+
     def __call__(self, batch):
-        image = batch.pop('image').to(self.device, non_blocking=True).float()  # N H W C
+        image = batch.pop('image').to(
+            self.device, non_blocking=True).float()  # N H W C
         image = (image - self.mean) / self.std
         image = image.permute(0, 3, 1, 2)
-        batch = {k: [i.to(self.device, non_blocking=True) for i in v] for k, v in batch.items() }
+        batch = {k: [i.to(self.device, non_blocking=True)
+                     for i in v] for k, v in batch.items()}
         batch['image'] = image
         return batch
 
@@ -92,9 +95,10 @@ def main(args):
                            shuffle=False, num_workers=args.num_workers, pin_memory=True, collate_fn=wider_collate)
 
     total_steps = len(trainset) * args.num_epochs // args.batch_size
-
+    eval_interval = len(trainset) // args.batch_size
     # model
-    model = models.__dict__[args.model.name](*args.model.args, **args.model.kwargs).to(device)
+    model = models.__dict__[args.model.name](
+        *args.model.args, **args.model.kwargs).to(device)
     prior = BBoxShapePrior(args.num_classes, 5, args.anchors,
                            args.iou_threshold, args.encode_mean, args.encode_std)
 
@@ -112,7 +116,8 @@ def main(args):
     parameters = group_parameters(model, bias_decay=0)
     div_factor = args.lr / args.warmup_lr
     final_factor = args.warmup_lr / args.final_lr
-    optimizer = SGD(parameters, lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+    optimizer = SGD(parameters, lr=args.lr,
+                    momentum=args.momentum, weight_decay=args.weight_decay)
     lr_scheduler = OneCycleLR(optimizer, max_lr=args.lr, div_factor=div_factor,
                               total_steps=total_steps, pct_start=args.warmup_pct, final_div_factor=final_factor)
     trainloader = repeat_loader(trainloader)
@@ -158,9 +163,9 @@ def main(args):
         optimizer.step()
         lr_scheduler.step()
 
-        if (step + 1) % args.eval_interval == 0 or (step + 1) == total_steps:
+        if (step + 1) % eval_interval == 0 or (step + 1) == total_steps:
             duration = time.time() - start
-            img_s = args.eval_interval * args.batch_size / duration
+            img_s = eval_interval * args.batch_size / duration
             eval_meter = evaluate(model_dp, valloader, batch_process)
 
             logger.info(

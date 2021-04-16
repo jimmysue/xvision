@@ -5,7 +5,7 @@ _C = CN()
 cfg = _C
 
 # workspace
-_C.workdir = "workspace/retinaface_res50pfn"
+_C.workdir = "workspace/retinaface-biubu-transform"
 
 # anchor layouts and model structure
 # data size
@@ -58,7 +58,7 @@ _C.val_image = '/dockerdata/WIDER_face/val/images'
 
 # configuration for test
 _C.test = CN(new_allowed=True)
-_C.test.image_dir = '/Users/jimmy/Documents/data/WIDER/WIDER_val/images'
+_C.test.image_dir = '/cfs/cfs-30592a081/data/WIDER_FACE/WIDER_face/val/images'
 _C.test.result_dir = 'result'
 _C.test.iou_threshold = 0.5
 _C.test.score_threshold = 0.1

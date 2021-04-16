@@ -3,6 +3,7 @@ import torch
 import cv2
 import numpy as np
 import tqdm
+import logging
 from copy import copy
 from pathlib import Path
 from xvision.utils import Saver
@@ -33,9 +34,8 @@ def main(args):
         if k.startswith('backbone.module'):
             k = k.replace('backbone.module', 'backbone')
         model_state[k] = v
-    detector.load_state_dict(model_state)
-
-    predictor = Predictor(detector, args.test.score_threshold, args.test.iou_threshold, device)
+    detector.load_state_dict(model_state, strict=True)
+    predictor = Predictor(detector, args.image_mean, args.image_std, args.test.score_threshold, args.test.iou_threshold, device)
     output_dir = workdir / 'result'
     image_dir = Path(args.test.image_dir)
     for imagefile in tqdm.tqdm(image_dir.rglob('*.jpg')):
