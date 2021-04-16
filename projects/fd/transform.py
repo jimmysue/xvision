@@ -252,9 +252,9 @@ class preproc(object):
 
 
 class Buibug6Transform(object):
-    def __init__(self, dsize) -> None:
+    def __init__(self, dsize, image_mean) -> None:
         super().__init__()
-        self.preproc = preproc(dsize[0], [0, 0, 0])
+        self.preproc = preproc(dsize[0], image_mean)
 
     def __call__(self, item):
         # dict to image, targets tuple

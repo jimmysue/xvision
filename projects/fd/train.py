@@ -82,7 +82,7 @@ def main(args):
 
     # prepare dataset
     valtransform = ValTransform(dsize=args.dsize)
-    traintransform = Buibug6Transform(dsize=args.dsize)
+    traintransform = Buibug6Transform(dsize=args.dsize, args.image_mean)
     trainset = WiderFace(args.train_label, args.train_image,
                          min_face=0, with_shapes=True, transform=traintransform)
     valset = WiderFace(args.val_label, args.val_image,
@@ -128,7 +128,8 @@ def main(args):
         'lr_scheduler': lr_scheduler.state_dict(),
         'optimizer': optimizer.state_dict(),
         'step': 0,
-        'loss': best_loss
+        'loss': best_loss,
+        'cfg': args
     }
     saver.save(0, state)
 
@@ -177,8 +178,9 @@ def main(args):
                 'model': model.state_dict(),
                 'lr_scheduler': lr_scheduler.state_dict(),
                 'optimizer': optimizer.state_dict(),
-                'step': curr_loss,
-
+                'step': step + 1,
+                'loss': curr_loss,
+                'cfg': args
             }
             saver.save(step + 1, state)
 
