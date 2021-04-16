@@ -82,7 +82,7 @@ def main(args):
 
     # prepare dataset
     valtransform = ValTransform(dsize=args.dsize)
-    traintransform = Buibug6Transform(dsize=args.dsize, args.image_mean)
+    traintransform = Buibug6Transform(args.dsize, args.image_mean)
     trainset = WiderFace(args.train_label, args.train_image,
                          min_face=0, with_shapes=True, transform=traintransform)
     valset = WiderFace(args.val_label, args.val_image,
