@@ -187,7 +187,7 @@ class BBoxPrior(Prior):
         max_iou_of_anchor, box_indice = iou.max(dim=1)  # [k]
         max_iou_of_bbox, anchor_indice = iou.max(dim=0)  # [n]
 
-        max_iou_of_bbox = torch.where(max_iou_of_bbox < self.iou_threshold, self.iou_threshold, max_iou_of_bbox)
+        max_iou_of_bbox[max_iou_of_bbox < self.iou_threshold] = self.iou_threshold
         # make sure each target assigend an anchor
         for target_index, anchor_index in enumerate(anchor_indice):
             max_iou_of_anchor[anchor_index] = max_iou_of_bbox[target_index]
@@ -266,6 +266,30 @@ class BBoxPrior(Prior):
             bboxes = self.decode_bboxes(pred_deltas)
             return scores, bboxes
 
+    def split(self, scores, fsizes):
+        # [B, k, +]
+        # return [ [B, h1, w1, +], [B, h2, w2, +], [B, h3, w3, +]] where h*, w* is feature size of each level anchor
+        # h, w, k, 1
+        last = 0
+        nums = []
+        sizes = []
+        for i, (w, h) in enumerate(fsizes):
+            k = len(self.layouts[i])
+            nums.append(
+                (last, last + w * h * k,  k)
+            )
+            last = last + w * h * k
+            sizes.append((w, h))
+
+        res = []
+        for (s, l, k), (w, h) in zip(nums, sizes):
+            r = scores[:, s:l, ...]
+            shape = [r.shape[0], h, w] + [k] + list(r.shape[3:])
+            r = r.reshape(shape)
+            for i in range(k):
+                res.append(r[:, :, :, i, ...])
+
+        return res
 
 class BBoxShapePrior(BBoxPrior):
     def __init__(self, num_classes=1, num_points=5, anchor_layouts=None, iou_threshold=0.35, encode_mean=None, encode_std=None):
