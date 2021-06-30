@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -154,6 +157,11 @@
 
 
 <span class="k">def</span> <span class="nf">_pixel_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+    <span class="c1"># matrix 是 浮点坐标 -&gt; 浮点坐标, opencv 要 pixel 坐标 -&gt; pixel -&gt; 坐标</span>
+    <span class="c1"># 因此需要需要如下过程</span>
+    <span class="c1"># 1. pixel 坐标 -&gt; 浮点坐标      translate(0.5)</span>
+    <span class="c1"># 2. 浮点坐标 -&gt; 浮点坐标         matrix</span>
+    <span class="c1"># 3. 浮点坐标  -&gt; 像素坐标        translate(-0.5)</span>
     <span class="k">return</span> <span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">@</span> <span class="n">matrix</span> <span class="o">@</span> <span class="n">translate</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 
 
