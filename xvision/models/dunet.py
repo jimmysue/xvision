@@ -44,7 +44,6 @@ class DUnet(nn.Module):
         link = DULink(0, 8, 2, None)
         for _ in range(4):
             link = DULink(8, 8, 2, link)
-
         self.link = link
 
     def forward(self, x):
